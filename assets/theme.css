@@ -1,0 +1,168 @@
+.og-board {
+  background-color: brown;
+}
+
+/* black */
+
+piece.black.one {
+  background-image: url('images/pieces/l1.png');
+}
+piece.black.two {
+  background-image: url('images/pieces/l2.png');
+}
+piece.black.three {
+  background-image: url('images/pieces/l3.png');
+}
+piece.black.four {
+  background-image: url('images/pieces/l4.png');
+}
+piece.black.five {
+  background-image: url('images/pieces/l5.png');
+}
+piece.black.six {
+  background-image: url('images/pieces/l6.png');
+}
+piece.black.seven {
+  background-image: url('images/pieces/l7.png');
+}
+piece.black.eight {
+  background-image: url('images/pieces/l8.png');
+}
+piece.black.nine {
+  background-image: url('images/pieces/l9.png');
+}
+piece.black.ten {
+  background-image: url('images/pieces/l10.png');
+}
+piece.black.eleven {
+  background-image: url('images/pieces/l11.png');
+}
+piece.black.twelve {
+  background-image: url('images/pieces/l12.png');
+}
+piece.black.thirteen {
+  background-image: url('images/pieces/l13.png');
+}
+
+/* red */
+piece.red.one {
+  background-image: url('images/pieces/r1.png');
+}
+piece.red.two {
+  background-image: url('images/pieces/r2.png');
+}
+piece.red.three {
+  background-image: url('images/pieces/r3.png');
+}
+piece.red.four {
+  background-image: url('images/pieces/r4.png');
+}
+piece.red.five {
+  background-image: url('images/pieces/r5.png');
+}
+piece.red.six {
+  background-image: url('images/pieces/r6.png');
+}
+piece.red.seven {
+  background-image: url('images/pieces/r7.png');
+}
+piece.red.eight {
+  background-image: url('images/pieces/r8.png');
+}
+piece.red.nine {
+  background-image: url('images/pieces/r9.png');
+}
+piece.red.ten {
+  background-image: url('images/pieces/r10.png');
+}
+piece.red.eleven {
+  background-image: url('images/pieces/r11.png');
+}
+piece.red.twelve {
+  background-image: url('images/pieces/r12.png');
+}
+piece.red.thirteen {
+  background-image: url('images/pieces/r13.png');
+}
+
+/* blue */
+piece.blue.one {
+  background-image: url('images/pieces/b1.png');
+}
+piece.blue.two {
+  background-image: url('images/pieces/b2.png');
+}
+piece.blue.three {
+  background-image: url('images/pieces/b3.png');
+}
+piece.blue.four {
+  background-image: url('images/pieces/b4.png');
+}
+piece.blue.five {
+  background-image: url('images/pieces/b5.png');
+}
+piece.blue.six {
+  background-image: url('images/pieces/b6.png');
+}
+piece.blue.seven {
+  background-image: url('images/pieces/b7.png');
+}
+piece.blue.eight {
+  background-image: url('images/pieces/b8.png');
+}
+piece.blue.nine {
+  background-image: url('images/pieces/b9.png');
+}
+piece.blue.ten {
+  background-image: url('images/pieces/b10.png');
+}
+piece.blue.eleven {
+  background-image: url('images/pieces/b11.png');
+}
+piece.blue.twelve {
+  background-image: url('images/pieces/b12.png');
+}
+piece.blue.thirteen {
+  background-image: url('images/pieces/b13.png');
+}
+
+/* green */
+piece.green.one {
+  background-image: url('images/pieces/g1.png');
+}
+piece.green.two {
+  background-image: url('images/pieces/g2.png');
+}
+piece.green.three {
+  background-image: url('images/pieces/g3.png');
+}
+piece.green.four {
+  background-image: url('images/pieces/g4.png');
+}
+piece.green.five {
+  background-image: url('images/pieces/g5.png');
+}
+piece.green.six {
+  background-image: url('images/pieces/g6.png');
+}
+piece.green.seven {
+  background-image: url('images/pieces/g7.png');
+}
+piece.green.eight {
+  background-image: url('images/pieces/g8.png');
+}
+piece.green.nine {
+  background-image: url('images/pieces/g9.png');
+}
+piece.green.ten {
+  background-image: url('images/pieces/g10.png');
+}
+piece.green.eleven {
+  background-image: url('images/pieces/g11.png');
+}
+piece.green.twelve {
+  background-image: url('images/pieces/g12.png');
+}
+piece.green.thirteen {
+  background-image: url('images/pieces/g13.png');
+}
