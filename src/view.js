@@ -29,8 +29,8 @@ function renderPiece(ctrl, pos, p) {
   var draggable = ctrl.data.draggable.current;
   if (draggable.orig === key) {
     attrs.style[util.transformProp()] = util.translate([
-      draggable.pos[0],
-      draggable.pos[1]
+      draggable.pos[0] + draggable.dec[0],
+      draggable.pos[1] + draggable.dec[1]
     ]);
     attrs.class += ' dragging';
   }
@@ -50,7 +50,8 @@ function renderDragOver(ctrl, pos) {
   };
 }
 
-function renderContent(ctrl) {
+
+function renderBoard(ctrl) {
   var d = ctrl.data;
   var positions = util.allPos;
   var children = [];
@@ -72,7 +73,17 @@ function renderContent(ctrl) {
     children.push(dragOver);
   }
 
-  return children;
+  return {
+    tag: 'div',
+    attrs: {
+      config: function(el, isUpdate, context) {
+        if (isUpdate) return;
+        ctrl.data.boardBounds = util.memo(el.getBoundingClientRect.bind(el));
+      },
+      class: 'og-board'
+    },
+    children: children
+  };
 }
 
 function doDrag(d, withDrag) {
@@ -113,11 +124,15 @@ function bindEvents(ctrl, el, context) {
   };
 }
 
-function renderBoard(ctrl) {
+function renderContent(ctrl) {
+  return [renderBoard(ctrl)];
+}
+
+function renderTable(ctrl) {
   return {
     tag: 'div',
     attrs: {
-      class: 'og-board',
+      class: 'og-table',
       config: function(el, isUpdate, context) {
         if (isUpdate) return;
         bindEvents(ctrl, el, context);
@@ -142,9 +157,9 @@ module.exports = function(ctrl) {
     tag: 'div',
     attrs: {
       class: [
-        'og-board-wrap'
+        'og-table-wrap'
       ].join(' ')
     },
-    children: [renderBoard(ctrl)]
+    children: [renderTable(ctrl)]
   };
 };

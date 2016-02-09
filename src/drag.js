@@ -3,6 +3,18 @@ import util from './util';
 
 var originTarget;
 
+function computeSquareBounds(data, bounds, key) {
+  var pos = util.key2pos(key);
+  var columns = util.columns;
+  var rows = util.rows;
+  return {
+    left: bounds.left + bounds.width * pos[0] / columns,
+    top: bounds.top + bounds.height * pos[1] / rows,
+    width: bounds.width / columns,
+    height: bounds.height / rows
+  };
+}
+
 function start(data, e) {
   if (e.button !== undefined && e.button !== 0) return; // only touch or left click
 
@@ -12,17 +24,22 @@ function start(data, e) {
   originTarget = e.target;
   var previouslySelected = data.selected;
   var position = util.eventPosition(e);
-  var bounds = data.bounds();
+  var bounds = data.boardBounds();
   var orig = board.getKeyAtDomPosOnPiece(data, position, bounds);
   board.selectSquare(data, orig);
   var stillSelected = data.selected === orig;
   if (data.pieces[orig] && stillSelected) {
+    var squareBounds = computeSquareBounds(data, bounds, orig);
     data.draggable.current = {
       previouslySelected: previouslySelected,
       orig: orig,
       rel: position,
       epos: position,
       pos: [0, 0],
+      dec: [
+        position[0] - (squareBounds.left + squareBounds.width / 2),
+        position[1] - (squareBounds.top + squareBounds.height / 2)
+      ],
       bounds: bounds,
       started: false
     };

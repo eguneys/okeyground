@@ -15,14 +15,20 @@ section {
 }
 
 .okeyground.small {
-  width: 380px;
-  height: 100px;
+  width: 304px;
+  height: 152px;
 }
 
 /*
  * (38 * 16) (50 * 2)
+ * 2:1
  */
 .okeyground.normal {
   width: 608px;
-  height: 100px;
+  height: 304px;
+}
+
+.okeyground.large {
+  width: 600px;
+  height: 300px;  
 }

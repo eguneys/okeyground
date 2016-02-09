@@ -1,9 +1,21 @@
+.og-table-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+.og-table {
+  height: 100%;
+  width: 100%;
+  position: relative
+}
+
 .og-board {
   cursor: pointer;
   -webkit-user-select: none;
-  position: relative;
+  position: absolute;
+  bottom: 0;
   width: 100%;
-  height: 100%;
+  height: 32.8%;
 }
 
 .og-board .drag-over {
