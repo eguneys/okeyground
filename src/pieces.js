@@ -37,7 +37,11 @@ const allPieces = (() => {
 })();
 
 function read(pieces) {
-  return pieces;
+  var res = [];
+  for (var i = 0; i < pieces.length; i++) {
+    res[i * 2 + 1] = pieces[i];
+  }
+  return res;
 }
 
 var initial = allPieces.splice(0, 20);

@@ -1,7 +1,16 @@
 import util from './util';
 
+function baseUserMove(data, orig, dest) {
+  if (orig === dest || !data.pieces[orig]) return false;
+  var temp = data.pieces[dest];
+  data.pieces[dest] = data.pieces[orig];
+  data.pieces[orig] = temp;
+};
+
 function userMove(data, orig, dest) {
-  if (!dest) {
+  setSelected(data, null);
+  if (dest) {
+    baseUserMove(data, orig, dest);
   }
 }
 
@@ -9,7 +18,7 @@ function selectSquare(data, key) {
   if (data.selected) {
     if (key) {
       if (data.selected !== key) {
-        //userMove(data, data.selected, key);
+        userMove(data, data.selected, key);
       }
     } else {
       setSelected(data, null);
@@ -28,6 +37,21 @@ function isMovable(data, orig) {
   return true;
 }
 
+
+function getKeyAtDomPosOnPiece(data, pos, bounds, except) {
+  var key = getKeyAtDomPos(data, pos, bounds);
+  if (key - 1 === except)
+    return key;
+  return getKeyOnPiece(data, key);
+}
+
+function getKeyOnPiece(data, key) {
+  if (key > 0 && data.pieces[key - 1]) {
+    return key - 1;
+  }
+  return key;
+}
+
 function getKeyAtDomPos(data, pos, bounds) {
   if (!bounds && !data.bounds) return -1;
   bounds = bounds || data.bounds();
@@ -38,7 +62,9 @@ function getKeyAtDomPos(data, pos, bounds) {
 };
 
 module.exports = {
+  userMove: userMove,
   selectSquare: selectSquare,
   setSelected: setSelected,
-  getKeyAtDomPos: getKeyAtDomPos
+  getKeyAtDomPos: getKeyAtDomPos,
+  getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece
 };

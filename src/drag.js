@@ -13,7 +13,7 @@ function start(data, e) {
   var previouslySelected = data.selected;
   var position = util.eventPosition(e);
   var bounds = data.bounds();
-  var orig = board.getKeyAtDomPos(data, position, bounds);
+  var orig = board.getKeyAtDomPosOnPiece(data, position, bounds);
   board.selectSquare(data, orig);
   var stillSelected = data.selected === orig;
   if (data.pieces[orig] && stillSelected) {
@@ -22,7 +22,9 @@ function start(data, e) {
       orig: orig,
       rel: position,
       epos: position,
-      pos: [0, 0]
+      pos: [0, 0],
+      bounds: bounds,
+      started: false
     };
   }
   processDrag(data);
@@ -32,10 +34,16 @@ function processDrag(data) {
   util.requestAnimationFrame(function() {
     var cur = data.draggable.current;
     if (cur.orig) {
-      cur.pos = [
-        cur.epos[0] - cur.rel[0],
-        cur.epos[1] - cur.rel[1]
-      ];
+      if (!cur.started && util.distance(cur.epos, cur.rel) >= data.draggable.distance) {
+        cur.started = true;
+      }
+      if (cur.started) {
+        cur.pos = [
+          cur.epos[0] - cur.rel[0],
+          cur.epos[1] - cur.rel[1]
+        ];
+        cur.over = board.getKeyAtDomPosOnPiece(data, cur.epos, cur.bounds, cur.orig);
+      }
     }
     data.render();
     if(cur.orig) processDrag(data);
@@ -54,6 +62,10 @@ function end(data, e) {
   if (!orig) return;
 
   var dest = draggable.current.over;
+
+  if (draggable.current.started) {
+    board.userMove(data, orig, dest);
+  }
 
   if (orig === draggable.current.previouslySelected && (orig === dest || !dest)) {
     board.setSelected(data, null);
