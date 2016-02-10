@@ -86,6 +86,23 @@ function renderBoard(ctrl) {
   };
 }
 
+function renderTop(ctrl) {
+  var d = ctrl.data;
+  var children = [];
+
+  return {
+    tag: 'div',
+    attrs: {
+      class: 'og-top'
+    },
+    children: children
+  };
+}
+
+function renderContent(ctrl) {
+  return [renderTop(ctrl), renderBoard(ctrl)];
+}
+
 function doDrag(d, withDrag) {
   return function(e) {
     withDrag(d, e);
@@ -122,10 +139,6 @@ function bindEvents(ctrl, el, context) {
       document.removeEventListener(ev, onend);
     });
   };
-}
-
-function renderContent(ctrl) {
-  return [renderBoard(ctrl)];
 }
 
 function renderTable(ctrl) {

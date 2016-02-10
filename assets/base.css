@@ -9,6 +9,11 @@
   position: relative
 }
 
+.og-top {
+  width: 100%;
+  height: 67.2%;
+}
+
 .og-board {
   cursor: pointer;
   -webkit-user-select: none;
