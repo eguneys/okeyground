@@ -14,21 +14,33 @@ section {
   border-radius: 2px;
 }
 
+
 .okeyground.small {
   width: 304px;
-  height: 152px;
+  height: 228px;
 }
 
 /*
  * (38 * 16) (50 * 2)
  * 2:1
+ *
+ * 4:3
+ * (38 * 16) (38 * 16 * 3/4)
+ *
+ * 50:38
+ * (38 * 16) (38 * 16 * 38 / 50)
+ *
  */
 .okeyground.normal {
   width: 608px;
-  height: 304px;
+  height: 456px;
 }
 
+
+/*
+ *
+ */
 .okeyground.large {
   width: 600px;
-  height: 300px;  
+  height: 450px;
 }

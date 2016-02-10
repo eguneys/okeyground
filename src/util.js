@@ -1,6 +1,8 @@
 const columns = 16 * 2;
 const rows = 2;
 
+const discards = ['up', 'down', 'left', 'right'];
+
 function pos2key(pos) {
   var key =  pos[1] * columns + pos[0];
   return key + 1;
@@ -71,6 +73,7 @@ function memo(f) {
 module.exports = {
   columns: columns,
   rows: rows,
+  discards: discards,
   allPos: allPos,
   classSet: classSet,
   pos2key: pos2key,

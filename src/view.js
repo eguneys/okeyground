@@ -13,17 +13,17 @@ function posStyle(pos) {
   };
 }
 
-function renderPiece(ctrl, pos, p) {
+function renderPieceBase(ctrl, key, p, style = {}, cls = '') {
   var d = ctrl.data;
-  var key = util.pos2key(pos);
 
   var classes = util.classSet({
     'selected': d.selected === key
   });
 
   var attrs = {
-    style: posStyle(pos),
-    class: classes + ' ' + pieceClass(p)
+    key: key,
+    style: style,
+    class: classes + ' ' + pieceClass(p) + cls
   };
 
   var draggable = ctrl.data.draggable.current;
@@ -50,6 +50,10 @@ function renderDragOver(ctrl, pos) {
   };
 }
 
+function renderPiece(ctrl, pos, key, p) {
+  var style = posStyle(pos);
+  return renderPieceBase(ctrl, key, p, style);
+}
 
 function renderBoard(ctrl) {
   var d = ctrl.data;
@@ -61,7 +65,7 @@ function renderBoard(ctrl) {
     var key = util.pos2key(positions[i]);
     var piece = d.pieces[key];
     if (piece) {
-      children.push(renderPiece(ctrl, positions[i], piece));
+      children.push(renderPiece(ctrl, positions[i], key, piece));
     }
 
     if (d.draggable.current.over === key) {
@@ -89,6 +93,10 @@ function renderBoard(ctrl) {
 function renderTop(ctrl) {
   var d = ctrl.data;
   var children = [];
+
+  for (var i in d.discards) {
+    children.push(renderPieceBase(ctrl, i, d.discards[i], {}, ' ' + i));
+  }
 
   return {
     tag: 'div',

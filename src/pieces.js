@@ -44,9 +44,21 @@ function read(pieces) {
   return res;
 }
 
+function readDiscards(discards) {
+  var res = {};
+  util.discards.map((discard, i) => {
+    res[discard] = discards[i];
+  });
+
+  return res;
+}
+
 var initial = allPieces.splice(0, 20);
+var initialDiscards = allPieces.splice(0, 4);
 
 module.exports = {
   initial: initial,
-  read: read
+  read: read,
+  initialDiscards: initialDiscards,
+  readDiscards: readDiscards
 };

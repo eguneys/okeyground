@@ -8,10 +8,10 @@ var browserify = require('browserify');
 var uglify = require('gulp-uglify');
 var streamify = require('gulp-streamify');
 
-//var sass = require('gulp-ruby-sass');
+var sass = require('gulp-ruby-sass');
 
 var assetFiles = './assets/**/*';
-//var sassFiles = ['./sass/*.scss'];
+var sassFiles = ['./sass/*.scss'];
 var sources = ['./src/main.js'];
 var destination = './build';
 var onError = function(error) {
@@ -42,11 +42,11 @@ gulp.task('assets', function() {
     .pipe(gulp.dest(path.join(destination, 'assets')));
 });
 
-// gulp.task('sass', function() {
-//   return sass(sassFiles)
-//     .on('error', sass.logError)
-//     .pipe(gulp.dest(destination));
-// });
+gulp.task('sass', function() {
+  return sass(sassFiles)
+    .on('error', sass.logError)
+    .pipe(gulp.dest(destination));
+});
 
 gulp.task('dev', ['assets'], function() {
   var opts = watchify.args;
@@ -66,7 +66,7 @@ gulp.task('dev', ['assets'], function() {
       .pipe(gulp.dest(destination));
   }
 
-  //gulp.watch(sassFiles, ['sass']);
+  gulp.watch(sassFiles, ['sass']);
 
   return rebundle();
 });

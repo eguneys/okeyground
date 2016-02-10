@@ -9,6 +9,7 @@ function configure(data, config) {
 module.exports = function(cfg) {
   var defaults = {
     pieces: pieces.read(pieces.initial),
+    discards: pieces.readDiscards(pieces.initialDiscards),
     selected: null, // piece currently selected  poskey || null
     draggable: {
       enabled: true,
