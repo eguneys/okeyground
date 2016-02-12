@@ -53,12 +53,25 @@ function readDiscards(discards) {
   return res;
 }
 
+function readOpenGroups(groups) {
+  return groups;
+}
+
 var initial = allPieces.splice(0, 20);
 var initialDiscards = allPieces.splice(0, 4);
+
+var initialOpenGroups = [
+  allPieces.splice(0, 4),
+  allPieces.splice(4, 8),
+  allPieces.splice(8, 12),
+  allPieces.splice(12, 16),
+];
 
 module.exports = {
   initial: initial,
   read: read,
   initialDiscards: initialDiscards,
-  readDiscards: readDiscards
+  initialOpenGroups: initialOpenGroups,
+  readDiscards: readDiscards,
+  readOpenGroups: readOpenGroups
 };

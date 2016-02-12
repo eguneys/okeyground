@@ -13,6 +13,21 @@ function posStyle(pos) {
   };
 }
 
+function renderMiniPiece(ctrl, key, p) {
+  var d = ctrl.data;
+
+  var attrs = {
+    key: key,
+    class: pieceClass(p) + ' mini'
+  };
+
+  return {
+    tag: 'piece',
+    attrs: attrs
+  };
+}
+
+// fix this extra params
 function renderPieceBase(ctrl, key, p, style = {}, cls = '') {
   var d = ctrl.data;
 
@@ -23,7 +38,7 @@ function renderPieceBase(ctrl, key, p, style = {}, cls = '') {
   var attrs = {
     key: key,
     style: style,
-    class: classes + ' ' + pieceClass(p) + cls
+    class: [pieceClass(p), classes, cls].join(' ')
   };
 
   var draggable = ctrl.data.draggable.current;
@@ -90,13 +105,57 @@ function renderBoard(ctrl) {
   };
 }
 
-function renderTop(ctrl) {
-  var d = ctrl.data;
+function renderOpenGroup(ctrl, group) {
   var children = [];
 
-  for (var i in d.discards) {
-    children.push(renderPieceBase(ctrl, i, d.discards[i], {}, ' ' + i));
+  for (var i = 0; i < group.length; i++) {
+    var piece = group[i];
+    children.push(renderMiniPiece(ctrl, i, piece));
   }
+
+  return children;
+}
+
+function renderOpenGroups(ctrl, groups) {
+  var children = [];
+
+  for (var i = 0; i < groups.length; i++) {
+    children.push(renderOpenGroup(ctrl, groups[i]));
+  }
+
+  return children;
+}
+
+function renderOpens(ctrl) {
+  var d = ctrl.data;
+
+  var children = renderOpenGroups(ctrl, d.openSeries);
+
+  return {
+    tag: 'div',
+    attrs: {
+      class: 'og-opens'
+    },
+    children: children
+  };
+}
+
+
+function renderDiscards(ctrl) {
+  var d = ctrl.data;
+  var children = [];
+  for (var i in d.discards) {
+    children.push(renderPieceBase(ctrl, i, d.discards[i], {}, ' discard-' + i));
+  }
+  return children;
+}
+
+function renderTop(ctrl) {
+
+  var children = [
+    renderDiscards(ctrl),
+    renderOpens(ctrl)
+  ];
 
   return {
     tag: 'div',

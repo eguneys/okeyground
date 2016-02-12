@@ -1,11 +1,43 @@
-$aspectRatio: 4/3;
-$boardWidth: 38 * 16;
-$boardHeight: percentage(100 / $boardWidth * $aspectRatio);
+$aspect-ratio: 4/3;
+$i-board-width: 38 * 16;
+$i-board-height: 50 * 2;
 
-$topMargin: 2;
+$board-ratio: $i-board-width / $i-board-height;
 
-$topHeight: 100 - $boardHeight - $topMargin;
-$topPieceHeight: percentage($boardHeight * .5 / $topHeight);
+$board-width: percentage(1);
+$board-height: percentage($aspect-ratio / $board-ratio);
+
+$piece-width: percentage(100/16/100); /* 6.25% */
+$piece-height: percentage(100/2/100); /* 50% */
+
+
+$i-top-width: 38 * 16;
+$i-top-height: 50 * 7;
+
+$top-ratio: $i-top-width / $i-top-height;
+
+$top-width: percentage(1);
+$top-height: percentage($aspect-ratio / $top-ratio);
+
+$top-piece-width: percentage(100/16/100);
+$top-piece-height: percentage(100/7/100);
+
+
+$opens-rows: 7;
+$opens-cols: 20;
+
+$opens-piece-width: percentage(100/$opens-cols/100);
+$opens-piece-height: percentage(100/$opens-rows/100);
+
+$i-opens-width: 38 * $opens-cols / 2;
+$i-opens-height: 50 * $opens-rows / 2;
+
+$opens-ratio: $i-opens-width / $i-opens-height;
+
+$opens-shrink-rate: 1 / $aspect-ratio;
+
+$opens-width: percentage(1 * $opens-shrink-rate);
+$opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
 
 .og-table-wrap {
   width: 100%;
@@ -22,9 +54,27 @@ $topPieceHeight: percentage($boardHeight * .5 / $topHeight);
 
 .og-top {
   position: relative;
-  width: 100%;
+  width: $top-width;
   /* height: 78.1%; */
-  height: $topHeight
+  height: $top-height;
+}
+
+.og-opens {
+  position: absolute;
+  width: $opens-width;
+  height: $opens-height;
+  border: 1px solid;
+  margin: auto;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+
+.og-opens piece.mini {
+  height: $opens-piece-height;
+  width: $opens-piece-width;
 }
 
 /* width: (38 * 16)
@@ -37,15 +87,15 @@ $topPieceHeight: percentage($boardHeight * .5 / $topHeight);
   -webkit-user-select: none;
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: $board-width;
   /* height: 21.9%; */
-  height: $boardHeight
+  height: $board-height
 }
 
 .og-board .drag-over {
   position: absolute;
   height: 50%;
-  width: 6.25%;
+  width: $piece-width;
   box-shadow: inset 0 0 10px 2px rgba(216, 85, 0, 0.9)
 }
 
@@ -56,35 +106,34 @@ piece {
 
 /* .21.9 .50 */
 .og-board piece {
-  height: 50%;
-  width: 6.25%;
+  height: $piece-height;
+  width: $piece-width;
 }
 /*
  * 
  * .21.9 .50 / .78.1 
  */
-.og-top piece {
-  /* height: 14.02%; */
-  height: $topPieceHeight;
-  width: 6.25%;
+.og-top>piece {
+  height: $top-piece-height;
+  width: $piece-width;
 }
 
-.og-top piece.up {
+.og-top piece.discard-up {
   top: 0%;
   left: 0%
 }
 
-.og-top piece.left {
+.og-top piece.discard-left {
   bottom: 0%;
   left: 0%;
 }
 
-.og-top piece.down {
+.og-top piece.discard-down {
   right: 0%;
   bottom: 0%;
 }
 
-.og-top piece.right {
+.og-top piece.discard-right {
   top: 0%;
   right: 0%;
 }
