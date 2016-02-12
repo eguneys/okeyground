@@ -10,7 +10,7 @@ module.exports = function(cfg) {
   var defaults = {
     pieces: pieces.read(pieces.initial),
     discards: pieces.readDiscards(pieces.initialDiscards),
-    openSeries: pieces.readOpenGroups(pieces.initialOpenGroups),
+    opens: pieces.readOpenGroups(pieces.initialOpenGroups),
     selected: null, // piece currently selected  poskey || null
     draggable: {
       enabled: true,

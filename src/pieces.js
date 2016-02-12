@@ -8,58 +8,189 @@ var colors = {
 };
 
 var numbers = {
-  1: 'one',
-  2: 'two',
-  3: 'three',
-  4: 'four',
-  5: 'five',
-  6: 'six',
-  7: 'seven',
-  8: 'eight',
-  9: 'nine',
-  10: 'ten',
-  11: 'eleven',
-  12: 'twelve',
-  13: 'thirteen'
+  '1': 'one',
+  '2': 'two',
+  '3': 'three',
+  '4': 'four',
+  '5': 'five',
+  '6': 'six',
+  '7': 'seven',
+  '8': 'eight',
+  '9': 'nine',
+  '10': 'ten',
+  '11': 'eleven',
+  '12': 'twelve',
+  '13': 'thirteen'
 };
 
 const allPieces = (() => {
   var ps = [];
   for (var color in colors) {
     for (var number in numbers) {
-      ps.push({
-        color: colors[color],
-        number: numbers[number]
-      });
+      ps.push(makePiece(color, number));
     }
   };
   return ps;
 })();
 
+var initial = 'r1r2 r3r4r5r6r7r8r9r10r11r12r13l1l2l3l4l5l6l7   g1g2  l3';
+var initialDiscards = ' r2r3l1';
+var initialOpenGroups = `r8l8b8
+b1b2b3
+b9b10b11b12
+l13r13b13
+r12b12g12
+r7r8r9r10
+g10g11g12
+l6b6r6
+l9l10l11
+b7l7r7g7
+r13l13b13g13
+l10r10b10g10
+l6r6g6
+l1b1g1
+/r1r1
+g1g1
+g2g2
+g3g3
+g4g4
+g5g5
+g6g6
+g7g7
+g8g8
+g9g9
+g10g10
+g11g11
+g12g12
+
+`;
+
+function readPiece(str) {
+  var color = str[0];
+  var digit1 = str[1];
+  var digit2 = str[2];
+
+  var parsed = 2;
+
+  if (!colors[color]) {
+    return {
+      left: str.slice(1)
+    };
+  }
+
+  if (numbers[digit1 + digit2]) {
+    digit1 += digit2;
+    parsed = 3;
+  }
+
+  return {
+    piece: makePiece(color, digit1),
+    left: str.slice(parsed)
+  };
+}
+
+function readPieceGroup(str) {
+  var res = [];
+
+  var i = 0;
+
+  while (str.length > 0) {
+    var parsed = readPiece(str);
+
+    if (parsed.piece) {
+      res[i] = parsed.piece;
+    }
+    i ++;
+    str = parsed.left;
+  }
+
+  return res;
+}
+
 function read(pieces) {
   var res = [];
-  for (var i = 0; i < pieces.length; i++) {
-    res[i * 2 + 1] = pieces[i];
+
+  pieces = readPieceGroup(pieces);
+
+  var k = 1;
+  for (var i = 0; i<= pieces.length; i++) {
+    if (pieces[i]) {
+      res[k] = pieces[i];
+    }
+    k+=2;
   }
+
   return res;
 }
 
 function readDiscards(discards) {
   var res = {};
-  util.discards.map((discard, i) => {
-    res[discard] = discards[i];
-  });
+
+  discards = readPieceGroup(discards);
+
+  for (var i = 0; i<= discards.length; i++) {
+    if (discards[i]) {
+      res[util.discards[i]] = discards[i];
+    }
+  }
 
   return res;
 }
 
 function readOpenGroups(groups) {
-  return groups;
+  var res = [];
+
+  var [series, pairs] = groups.split('/');
+  series = readPieceGroup(series);
+  pairs = readPieceGroup(pairs);
+
+  var startColumn = [];
+  var i, key, column;
+  var row = 0;
+
+  for (i = 0; i<= series.length; i++) {
+    if (series[i]) {
+      column = startColumn[row] || 1;
+      key = util.miniPos2key([column, row]);
+      res[key] = series[i];
+      startColumn[row] = column + 1;
+    } else {
+      startColumn[row]+=2;
+      row++;
+      if (row >= util.miniRows) {
+        row = 0;
+      }
+    }
+  }
+
+  startColumn = [];
+  i = 0; key = 0; column = 0;
+  row = 0;
+
+  for (i = 0; i<= pairs.length; i++) {
+    if (pairs[i]) {
+      column = startColumn[row] || util.miniColumns - 1;
+      key = util.miniPos2key([column, row]);
+      res[key] = pairs[i];
+      startColumn[row] = column - 1;
+    } else {
+      startColumn[row]-=1;
+      row++;
+      if (row >= util.miniRows) {
+        row = 0;
+      }
+    }
+  }
+
+  return res;
 }
 
-var initial = allPieces.slice(0, 20);
-var initialDiscards = allPieces.slice(0, 4);
-var initialOpenGroups = allPieces.slice(0).concat(allPieces.slice(0)).concat(allPieces.slice(0));
+function makePiece(color, number) {
+  return {
+    color: colors[color],
+    number: numbers[number]
+  };
+};
 
 module.exports = {
   initial: initial,

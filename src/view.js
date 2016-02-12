@@ -128,7 +128,7 @@ function renderOpenGroups(ctrl, groups) {
 function renderOpens(ctrl) {
   var d = ctrl.data;
 
-  var children = renderOpenGroups(ctrl, d.openSeries);
+  var children = renderOpenGroups(ctrl, d.opens);
 
   return {
     tag: 'div',

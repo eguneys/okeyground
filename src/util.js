@@ -4,7 +4,7 @@ const rows = 2;
 const miniColumns = 20;
 const miniRows = 8;
 
-const discards = ['up', 'down', 'left', 'right'];
+const discards = ['up', 'left', 'down', 'right'];
 
 function allPosBy(rows, columns) {
   var ps = [];
