@@ -1,6 +1,6 @@
-## Formatting
+### Formatting
 
-* Piece
+#### Piece
 
 ```
 piece = color + number
@@ -14,7 +14,7 @@ l = black
 
 example: `r1 b13 g5`
 
-* Board
+#### Board
 
 16 x 2 dimensions
 
@@ -24,7 +24,7 @@ board = [piece|\s]{32}
 
 example: `r1b13g5 r1b13g5g5    g1`
 
-* Discard
+#### Discard
 
 every direction discards to its right side.
 so `up` discards `top left`, `down` discards `bottom right`.
@@ -37,7 +37,7 @@ represents: `[up, left, down, right]`
 
 example: `r13b1l1 `
 
-* Opens
+#### Opens
 
 Opened series appear on the left side
 Opened pairs appear on the right side
