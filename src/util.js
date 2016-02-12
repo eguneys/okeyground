@@ -1,7 +1,20 @@
 const columns = 16 * 2;
 const rows = 2;
 
+const miniColumns = 20;
+const miniRows = 8;
+
 const discards = ['up', 'down', 'left', 'right'];
+
+function allPosBy(rows, columns) {
+  var ps = [];
+  for (var y = 0; y < rows; y++) {
+    for (var x = 0; x < columns; x++) {
+      ps.push([x, y]);
+    }
+  };
+  return ps;
+};
 
 function pos2key(pos) {
   var key =  pos[1] * columns + pos[0];
@@ -13,15 +26,18 @@ function key2pos(key) {
   return [key % columns, Math.floor(key / columns)];
 }
 
-const allPos = (() => {
-  var ps = [];
-  for (var y = 0; y < rows; y++) {
-    for (var x = 0; x < columns; x++) {
-      ps.push([x, y]);
-    }
-  };
-  return ps;
-})();
+const allPos = allPosBy(rows, columns);
+
+function miniPos2key(pos) {
+  var key =  pos[1] * miniColumns + pos[0];
+  return key;
+}
+
+function miniKey2pos(key) {
+  return [key % miniColumns, Math.floor(key / miniColumns)];
+}
+
+const miniAllPos = allPosBy(miniRows, miniColumns);
 
 function classSet(classes) {
   var arr = [];
@@ -73,11 +89,16 @@ function memo(f) {
 module.exports = {
   columns: columns,
   rows: rows,
-  discards: discards,
   allPos: allPos,
-  classSet: classSet,
   pos2key: pos2key,
   key2pos: key2pos,
+  miniColumns: miniColumns,
+  miniRows: miniRows,
+  miniAllPos: miniAllPos,
+  miniPos2key: miniPos2key,
+  miniKey2pos: miniKey2pos,
+  discards: discards,
+  classSet: classSet,
   eventPosition: eventPosition,
   distance: distance,
   transformProp: transformProp,

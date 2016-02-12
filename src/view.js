@@ -13,11 +13,15 @@ function posStyle(pos) {
   };
 }
 
-function renderMiniPiece(ctrl, key, p) {
+function renderMiniPiece(ctrl, pos, key, p) {
   var d = ctrl.data;
 
   var attrs = {
     key: key,
+    style: {
+      left: pos[0] * (100 / util.miniColumns) + '%',
+      top: pos[1] * (100 / util.miniRows) + '%'
+    },
     class: pieceClass(p) + ' mini'
   };
 
@@ -105,22 +109,17 @@ function renderBoard(ctrl) {
   };
 }
 
-function renderOpenGroup(ctrl, group) {
-  var children = [];
-
-  for (var i = 0; i < group.length; i++) {
-    var piece = group[i];
-    children.push(renderMiniPiece(ctrl, i, piece));
-  }
-
-  return children;
-}
-
 function renderOpenGroups(ctrl, groups) {
+  var positions = util.miniAllPos;
   var children = [];
 
-  for (var i = 0; i < groups.length; i++) {
-    children.push(renderOpenGroup(ctrl, groups[i]));
+  for (var i = 0; i < positions.length; i++) {
+    var key = util.miniPos2key(positions[i]);
+    var piece = groups[key];
+
+    if (piece) {
+      children.push(renderMiniPiece(ctrl, positions[i], key, piece));
+    }
   }
 
   return children;

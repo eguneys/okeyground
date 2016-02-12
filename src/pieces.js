@@ -57,15 +57,9 @@ function readOpenGroups(groups) {
   return groups;
 }
 
-var initial = allPieces.splice(0, 20);
-var initialDiscards = allPieces.splice(0, 4);
-
-var initialOpenGroups = [
-  allPieces.splice(0, 4),
-  allPieces.splice(4, 8),
-  allPieces.splice(8, 12),
-  allPieces.splice(12, 16),
-];
+var initial = allPieces.slice(0, 20);
+var initialDiscards = allPieces.slice(0, 4);
+var initialOpenGroups = allPieces.slice(0).concat(allPieces.slice(0)).concat(allPieces.slice(0));
 
 module.exports = {
   initial: initial,
