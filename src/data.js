@@ -11,6 +11,7 @@ module.exports = function(cfg) {
     pieces: pieces.read(pieces.initial),
     discards: pieces.readDiscards(pieces.initialDiscards),
     opens: pieces.readOpenGroups(pieces.initialOpenGroups),
+    middles: pieces.readMiddles(pieces.initialMiddles),
     selected: null, // piece currently selected  poskey || null
     draggable: {
       enabled: true,

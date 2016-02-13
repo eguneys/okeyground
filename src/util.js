@@ -7,7 +7,18 @@ const topRows = 7;
 const miniColumns = 20;
 const miniRows = 8;
 
-const discards = ['up', 'left', 'down', 'right'];
+const discards = ['dup', 'dleft', 'ddown', 'dright'];
+const middleCountKey = 'mmiddleCount';
+const gostergeKey = 'mgosterge';
+
+const emptyPiece = {
+  color: 'empty',
+  number: 1
+};
+
+function pieceEqual(p1, p2) {
+  return p1.color === p2.color && p1.number === p2.number;
+}
 
 function allPosBy(rows, columns) {
   var ps = [];
@@ -19,6 +30,8 @@ function allPosBy(rows, columns) {
   return ps;
 };
 
+var middleKeyPrefix = 'm';
+var discardKeyPrefix = 'd';
 var boardKeyPrefix = 'b';
 var opensKeyPrefix = 'o';
 
@@ -118,6 +131,8 @@ module.exports = {
   topRows: topRows,
   columns: columns,
   rows: rows,
+  emptyPiece: emptyPiece,
+  pieceEqual: pieceEqual,
   allPos: allPos,
   pos2key: pos2key,
   key2pos: key2pos,
@@ -131,6 +146,8 @@ module.exports = {
   isBoardKey: isBoardKey,
   isOpensKey: isOpensKey,
   discards: discards,
+  middleCount: middleCountKey,
+  gosterge: gostergeKey,
   classSet: classSet,
   eventPosition: eventPosition,
   distance: distance,

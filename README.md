@@ -37,6 +37,16 @@ represents: `[up, left, down, right]`
 
 example: `r13b1l1 `
 
+#### Middle
+
+```
+middle = middleCount + gosterge
+gosterge = piece
+middleCount = \d
+```
+
+example: `20r10`
+
 #### Opens
 
 Opened series appear on the left side

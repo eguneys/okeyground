@@ -35,12 +35,24 @@ function renderMiniPiece(ctrl, pos, key, p) {
   };
 }
 
+function renderMiddlePiece(ctrl, key, p) {
+  var attrs = {
+    class: pieceClass(p) + ' ' + key,
+    'data-middle-count': ctrl.data.middles[key]
+  };
+
+  return {
+    tag: 'piece',
+    attrs: attrs
+  };
+}
+
 function renderTopPiece(ctrl, key, p) {
   var d = ctrl.data;
 
   var attrs = {
     key: key,
-    class: pieceClass(p) + ' discard-' + key
+    class: pieceClass(p) + ' ' + key
   };
 
   var draggable = ctrl.data.draggable.current;
@@ -219,9 +231,24 @@ function renderDiscards(ctrl) {
   return children;
 }
 
+function renderMiddles(ctrl) {
+  var d = ctrl.data;
+  var children = [];
+
+  children.push(renderTopPiece(ctrl, util.gosterge, d.middles[util.gosterge]));
+  children.push(renderMiddlePiece(ctrl, util.middleCount, util.emptyPiece));
+
+  if (d.draggable.current.over === util.gosterge) {
+    children.push(renderTopDragOver(ctrl, util.gosterge));
+  }
+
+  return children;
+}
+
 function renderTop(ctrl) {
 
   var children = [
+    renderMiddles(ctrl),
     renderDiscards(ctrl),
     renderOpens(ctrl)
   ];
@@ -318,6 +345,7 @@ module.exports = function(ctrl) {
             ctrl.data.bounds.clear();
             ctrl.data.boardBounds.clear();
             ctrl.data.opensBounds.clear();
+            ctrl.data.topBounds.clear();
           };
         });
       },

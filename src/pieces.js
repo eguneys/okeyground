@@ -34,6 +34,7 @@ const allPieces = (() => {
 })();
 
 var initial = 'r1r2 r3r4r5r6r7r8r9r10r11r12r13l1l2l3l4l5l6l7   g1g2  l3';
+var initialMiddles = '20l3';
 var initialDiscards = ' r2r3l1';
 var initialOpenGroups = `r8l8b8
 b1b2b3
@@ -64,6 +65,28 @@ g11g11
 g12g12
 
 `;
+
+function readDigit(str) {
+  var number1 = parseInt(str[0]);
+  var number2 = parseInt(str[0] + str[1]);
+
+  if (isNaN(number2)) {
+    if (isNaN(number1)) {
+      return {
+        left: str.slice(1)
+      };
+    }
+    return {
+      number: number1,
+      left: str.slice(1)
+    };
+  } else {
+    return {
+      number: number2,
+      left: str.slice(2)
+    };
+  }
+}
 
 function readPiece(str) {
   var color = str[0];
@@ -183,6 +206,17 @@ function readOpenGroups(groups) {
   return res;
 }
 
+function readMiddles(middles) {
+  var res = {};
+  var parsed = readDigit(middles);
+
+  res[util.middleCount] = parsed.number;
+  parsed = readPiece(parsed.left);
+  res[util.gosterge] = parsed.piece;
+
+  return res;
+}
+
 function makePiece(color, number) {
   return {
     color: colors[color],
@@ -193,8 +227,10 @@ function makePiece(color, number) {
 module.exports = {
   initial: initial,
   read: read,
+  initialMiddles: initialMiddles,
   initialDiscards: initialDiscards,
   initialOpenGroups: initialOpenGroups,
+  readMiddles: readMiddles,
   readDiscards: readDiscards,
   readOpenGroups: readOpenGroups
 };

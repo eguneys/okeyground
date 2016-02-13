@@ -11,7 +11,9 @@ $piece-width: percentage(100/16/100); /* 6.25% */
 $piece-height: percentage(100/2/100); /* 50% */
 
 
-$i-top-width: 38 * 16;
+$i-top-cols: 16;
+
+$i-top-width: 38 * $i-top-cols;
 $i-top-height: 50 * 7;
 
 $top-ratio: $i-top-width / $i-top-height;
@@ -64,9 +66,14 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
   height: $top-piece-height;
   width: $piece-width;
 
-  &.down {
+  &.ddown {
     right: 0%;
     bottom: 0%;
+  }
+
+  &.mgosterge {
+    bottom: 0%;
+    left: $top-piece-width * ($i-top-cols - 3)
   }
 }
 
@@ -76,25 +83,47 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
  */
 .og-top>piece {
   height: $top-piece-height;
-  width: $piece-width;
+  width: $top-piece-width;
 }
 
-.og-top piece.discard-up {
+.og-top piece.mgosterge {
+  bottom: 0%;
+  left: $top-piece-width * ($i-top-cols - 3)
+}
+
+.og-top piece.mmiddleCount {
+  cursor: pointer;
+  bottom: 0%;
+  left: $top-piece-width * ($i-top-cols - 4);
+
+  &::before {
+    position: absolute;
+    top: calc(50% - 7px);
+    left: calc(50% - 3px);
+    font-size: 11px;
+    font-weight: bold;
+    content: attr(data-middle-count);
+    opacity: 0.7;
+  }
+}
+
+.og-top piece.dup {
   top: 0%;
   left: 0%
 }
 
-.og-top piece.discard-left {
+.og-top piece.dleft {
+  cursor: pointer;
   bottom: 0%;
   left: 0%;
 }
 
-.og-top piece.discard-down {
+.og-top piece.ddown {
   right: 0%;
   bottom: 0%;
 }
 
-.og-top piece.discard-right {
+.og-top piece.dright {
   top: 0%;
   right: 0%;
 }

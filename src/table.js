@@ -14,6 +14,14 @@ function basePlaceDiscard(data, orig, dest) {
   return true;
 }
 
+function baseGosterge(data, orig) {
+  var piece = data.pieces[orig];
+  if (!piece) return false;
+  if (util.pieceEqual(piece, data.middles[util.gosterge])) {
+    console.log('here');
+  }
+}
+
 function placeOpens(data, orig, dest) {
   if (dest && util.isOpensKey(dest)) {
     if (basePlaceOpens(data, orig, dest)) {
@@ -23,8 +31,12 @@ function placeOpens(data, orig, dest) {
 }
 
 function placeTop(data, orig, dest) {
-  if (dest && dest === 'down') {
+  if (dest && dest === util.discards[2]) {
     if (basePlaceDiscard(data, orig, dest)) {
+      return true;
+    }
+  } else if (dest === util.gosterge) {
+    if (baseGosterge(data, orig)) {
       return true;
     }
   }
@@ -47,10 +59,18 @@ function getTopKeyAtDomPos(data, pos, bounds) {
   var row = Math.floor(util.topRows * ((pos[1] - bounds.top) / bounds.height));
   if (row >= 0 && row < util.topRows && column >= 0 && column < util.topColumns)
 
-    // discard down is at the bottom right
-    if (row === util.topRows - 1 && column === util.topColumns - 1) {
-      return 'down';
+    if (row === util.topRows - 1) {
+
+      // discard down is at the bottom right
+      if(column === util.topColumns - 1) {
+        return util.discards[2];
+      }
+      if (column === util.topColumns - 3) {
+        // gosterge is on third column to last
+        return util.gosterge;
+      }
     }
+
 }
 
 module.exports = {

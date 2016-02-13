@@ -2,6 +2,13 @@
   background-color: brown;
 }
 
+piece.empty {
+  background-image: url('images/pieces/e.png');
+}
+piece.fake {
+  background-image: url('images/pieces/f.png');
+}
+
 /* black */
 
 piece.black.one {
