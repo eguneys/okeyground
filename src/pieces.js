@@ -112,12 +112,10 @@ function read(pieces) {
 
   pieces = readPieceGroup(pieces);
 
-  var k = 1;
   for (var i = 0; i<= pieces.length; i++) {
     if (pieces[i]) {
-      res[k] = pieces[i];
+      res[util.encodeKey(i * 2, 'b')] = pieces[i];
     }
-    k+=2;
   }
 
   return res;

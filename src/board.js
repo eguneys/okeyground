@@ -9,7 +9,7 @@ function baseUserMove(data, orig, dest) {
 
 function userMove(data, orig, dest) {
   setSelected(data, null);
-  if (dest) {
+  if (dest && util.isBoardKey(dest)) {
     baseUserMove(data, orig, dest);
   }
 }
@@ -40,20 +40,21 @@ function isMovable(data, orig) {
 
 function getKeyAtDomPosOnPiece(data, pos, bounds, except) {
   var key = getKeyAtDomPos(data, pos, bounds);
-  if (key - 1 === except)
-    return key;
-  return getKeyOnPiece(data, key);
-}
 
-function getKeyOnPiece(data, key) {
-  if (key > 0 && data.pieces[key - 1]) {
-    return key - 1;
+  if (!key) {
+    return key;
+  }
+
+  var prevKey = util.decBoardKey(key);
+
+  if (prevKey !== except && data.pieces[prevKey]) {
+    return prevKey;
   }
   return key;
 }
 
 function getKeyAtDomPos(data, pos, bounds) {
-  if (!bounds && !data.bounds) return -1;
+  if (!bounds && !data.bounds) return;
   bounds = bounds || data.bounds();
   var column = Math.floor(util.columns * ((pos[0] - bounds.left) / bounds.width));
   var row = Math.floor(util.rows * ((pos[1] - bounds.top) / bounds.height));

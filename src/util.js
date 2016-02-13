@@ -16,13 +16,36 @@ function allPosBy(rows, columns) {
   return ps;
 };
 
+var boardKeyPrefix = 'b';
+var opensKeyPrefix = 'o';
+
+function encodeKey(key, c) {
+  return c + key;
+}
+
+function decodeKey(key, c) {
+  return parseInt(key.slice(1));
+}
+
+function decBoardKey(key) {
+  return encodeKey(decodeKey(key) - 1, boardKeyPrefix);
+}
+
+function isBoardKey(key) {
+  return key[0] === boardKeyPrefix;
+}
+
+function isOpensKey(key) {
+  return key[0] === opensKeyPrefix;
+}
+
 function pos2key(pos) {
   var key =  pos[1] * columns + pos[0];
-  return key + 1;
+  return encodeKey(key, boardKeyPrefix);
 }
 
 function key2pos(key) {
-  key = key - 1;
+  key = decodeKey(key);
   return [key % columns, Math.floor(key / columns)];
 }
 
@@ -30,10 +53,11 @@ const allPos = allPosBy(rows, columns);
 
 function miniPos2key(pos) {
   var key =  pos[1] * miniColumns + pos[0];
-  return key;
+  return encodeKey(key, opensKeyPrefix);
 }
 
 function miniKey2pos(key) {
+  key = decodeKey(key);
   return [key % miniColumns, Math.floor(key / miniColumns)];
 }
 
@@ -97,6 +121,10 @@ module.exports = {
   miniAllPos: miniAllPos,
   miniPos2key: miniPos2key,
   miniKey2pos: miniKey2pos,
+  encodeKey: encodeKey,
+  decBoardKey: decBoardKey,
+  isBoardKey: isBoardKey,
+  isOpensKey: isOpensKey,
   discards: discards,
   classSet: classSet,
   eventPosition: eventPosition,

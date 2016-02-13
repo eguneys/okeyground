@@ -1,4 +1,5 @@
 import board from './board';
+import table from './table';
 import util from './util';
 
 var originTarget;
@@ -24,12 +25,13 @@ function start(data, e) {
   originTarget = e.target;
   var previouslySelected = data.selected;
   var position = util.eventPosition(e);
-  var bounds = data.boardBounds();
-  var orig = board.getKeyAtDomPosOnPiece(data, position, bounds);
+  var boardBounds = data.boardBounds();
+  var opensBounds = data.opensBounds();
+  var orig = board.getKeyAtDomPosOnPiece(data, position, boardBounds);
   board.selectSquare(data, orig);
   var stillSelected = data.selected === orig;
   if (data.pieces[orig] && stillSelected) {
-    var squareBounds = computeSquareBounds(data, bounds, orig);
+    var squareBounds = computeSquareBounds(data, boardBounds, orig);
     data.draggable.current = {
       previouslySelected: previouslySelected,
       orig: orig,
@@ -40,7 +42,8 @@ function start(data, e) {
         position[0] - (squareBounds.left + squareBounds.width / 2),
         position[1] - (squareBounds.top + squareBounds.height / 2)
       ],
-      bounds: bounds,
+      boardBounds: boardBounds,
+      opensBounds: opensBounds,
       started: false
     };
   }
@@ -59,7 +62,10 @@ function processDrag(data) {
           cur.epos[0] - cur.rel[0],
           cur.epos[1] - cur.rel[1]
         ];
-        cur.over = board.getKeyAtDomPosOnPiece(data, cur.epos, cur.bounds, cur.orig);
+        cur.over =
+          board.getKeyAtDomPosOnPiece(data, cur.epos, cur.boardBounds, cur.orig)
+          ||
+          table.getOpensKeyAtDomPos(data, cur.epos, cur.opensBounds, cur.orig);
       }
     }
     data.render();
@@ -81,7 +87,8 @@ function end(data, e) {
   var dest = draggable.current.over;
 
   if (draggable.current.started) {
-    board.userMove(data, orig, dest);
+    if (board.userMove(data, orig, dest)) {
+    }
   }
 
   if (orig === draggable.current.previouslySelected && (orig === dest || !dest)) {

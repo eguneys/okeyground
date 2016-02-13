@@ -13,15 +13,19 @@ function posStyle(pos) {
   };
 }
 
+function miniPosStyle(pos) {
+  return {
+    left: pos[0] * (100 / util.miniColumns) + '%',
+    top: pos[1] * (100 / util.miniRows) + '%'
+  };
+}
+
 function renderMiniPiece(ctrl, pos, key, p) {
   var d = ctrl.data;
 
   var attrs = {
     key: key,
-    style: {
-      left: pos[0] * (100 / util.miniColumns) + '%',
-      top: pos[1] * (100 / util.miniRows) + '%'
-    },
+    style: miniPosStyle(pos),
     class: pieceClass(p) + ' mini'
   };
 
@@ -31,8 +35,7 @@ function renderMiniPiece(ctrl, pos, key, p) {
   };
 }
 
-// fix this extra params
-function renderPieceBase(ctrl, key, p, style = {}, cls = '') {
+function renderPiece(ctrl, pos, key, p) {
   var d = ctrl.data;
 
   var classes = util.classSet({
@@ -41,12 +44,18 @@ function renderPieceBase(ctrl, key, p, style = {}, cls = '') {
 
   var attrs = {
     key: key,
-    style: style,
-    class: [pieceClass(p), classes, cls].join(' ')
+    style: posStyle(pos),
+    class: [pieceClass(p), classes].join(' ')
   };
 
   var draggable = ctrl.data.draggable.current;
   if (draggable.orig === key) {
+
+    if (draggable.over && util.isOpensKey(draggable.over)) {
+      attrs.style['width'] = draggable.opensBounds.width / util.miniColumns + 'px';
+      attrs.style['height'] = draggable.opensBounds.height / util.miniRows + 'px';
+    }
+
     attrs.style[util.transformProp()] = util.translate([
       draggable.pos[0] + draggable.dec[0],
       draggable.pos[1] + draggable.dec[1]
@@ -59,19 +68,24 @@ function renderPieceBase(ctrl, key, p, style = {}, cls = '') {
   };
 }
 
-function renderDragOver(ctrl, pos) {
+function renderMiniDragOver(ctrl, pos) {
   return {
     tag: 'div',
     attrs: {
-      class: 'drag-over',
-      style: posStyle(pos)
+      style: miniPosStyle(pos),
+      class: 'drag-over'
     }
   };
 }
 
-function renderPiece(ctrl, pos, key, p) {
-  var style = posStyle(pos);
-  return renderPieceBase(ctrl, key, p, style);
+function renderDragOver(ctrl, pos) {
+  return {
+    tag: 'div',
+    attrs: {
+      style: posStyle(pos),
+      class: 'drag-over'
+    }
+  };
 }
 
 function renderBoard(ctrl) {
@@ -110,8 +124,10 @@ function renderBoard(ctrl) {
 }
 
 function renderOpenGroups(ctrl, groups) {
+  var d = ctrl.data;
   var positions = util.miniAllPos;
   var children = [];
+  var dragOver;
 
   for (var i = 0; i < positions.length; i++) {
     var key = util.miniPos2key(positions[i]);
@@ -120,6 +136,14 @@ function renderOpenGroups(ctrl, groups) {
     if (piece) {
       children.push(renderMiniPiece(ctrl, positions[i], key, piece));
     }
+
+    if (d.draggable.current.over === key) {
+      dragOver = renderMiniDragOver(ctrl, positions[i]);
+    }
+  }
+
+  if (dragOver) {
+    children.push(dragOver);
   }
 
   return children;
@@ -133,6 +157,10 @@ function renderOpens(ctrl) {
   return {
     tag: 'div',
     attrs: {
+      config: function(el, isUpdate, context) {
+        if (isUpdate) return;
+        ctrl.data.opensBounds = util.memo(el.getBoundingClientRect.bind(el));
+      },
       class: 'og-opens'
     },
     children: children
@@ -144,7 +172,7 @@ function renderDiscards(ctrl) {
   var d = ctrl.data;
   var children = [];
   for (var i in d.discards) {
-    children.push(renderPieceBase(ctrl, i, d.discards[i], {}, ' discard-' + i));
+    //children.push(renderPieceBase(ctrl, i, d.discards[i], {}, ' discard-' + i));
   }
   return children;
 }
@@ -235,6 +263,18 @@ module.exports = function(ctrl) {
   return {
     tag: 'div',
     attrs: {
+      config: function(el, isUpdate) {
+        if (isUpdate) return;
+        ['onscroll', 'onresize'].forEach(function(n) {
+          var prev = window[n];
+          window[n] = function() {
+            prev && prev();
+            ctrl.data.bounds.clear();
+            ctrl.data.boardBounds.clear();
+            ctrl.data.opensBounds.clear();
+          };
+        });
+      },
       class: [
         'og-table-wrap'
       ].join(' ')
