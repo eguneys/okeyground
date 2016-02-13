@@ -59,63 +59,17 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
   height: $top-height;
 }
 
-.og-opens {
+.og-top .drag-over {
   position: absolute;
-  width: $opens-width;
-  height: $opens-height;
-  border: 1px solid;
-  margin: auto;
-  bottom: 0;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-
-
-.og-opens piece.mini {
-  height: $opens-piece-height;
-  width: $opens-piece-width;
-}
-
-.og-opens .drag-over {
-  position: absolute;
-  height: $opens-piece-height;
-  width: $opens-piece-width;
-  box-shadow: inset 0 0 10px 2px rgba(216, 85, 0, 0.9)
-}
-
-/* width: (38 * 16)
- * height: width * 4 / 3
- * 100 / height
- * 100 / 456
- */
-.og-board {
-  cursor: pointer;
-  -webkit-user-select: none;
-  position: absolute;
-  bottom: 0;
-  width: $board-width;
-  /* height: 21.9%; */
-  height: $board-height
-}
-
-.og-board .drag-over {
-  position: absolute;
-  height: $piece-height;
+  height: $top-piece-height;
   width: $piece-width;
-  box-shadow: inset 0 0 10px 2px rgba(216, 85, 0, 0.9)
+
+  &.down {
+    right: 0%;
+    bottom: 0%;
+  }
 }
 
-piece {
-  position: absolute;
-  background-size: cover;
-}
-
-/* .21.9 .50 */
-.og-board piece {
-  height: $piece-height;
-  width: $piece-width;
-}
 /*
  * 
  * .21.9 .50 / .78.1 
@@ -145,6 +99,62 @@ piece {
   right: 0%;
 }
 
+.og-opens {
+  position: absolute;
+  width: $opens-width;
+  height: $opens-height;
+  border: 1px solid;
+  margin: auto;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+
+.og-opens piece.mini {
+  height: $opens-piece-height;
+  width: $opens-piece-width;
+}
+
+.og-opens .drag-over {
+  position: absolute;
+  height: $opens-piece-height;
+  width: $opens-piece-width;
+}
+
+/* width: (38 * 16)
+ * height: width * 4 / 3
+ * 100 / height
+ * 100 / 456
+ */
+.og-board {
+  cursor: pointer;
+  -webkit-user-select: none;
+  position: absolute;
+  bottom: 0;
+  width: $board-width;
+  /* height: 21.9%; */
+  height: $board-height
+}
+
+.og-board .drag-over {
+  position: absolute;
+  height: $piece-height;
+  width: $piece-width;
+}
+
+piece {
+  position: absolute;
+  background-size: cover;
+}
+
+/* .21.9 .50 */
+.og-board piece {
+  height: $piece-height;
+  width: $piece-width;
+}
+
 piece.selected:not(.dragging) {
   z-index: 2;
   box-shadow: 0 0 0 2px rgba(0, 85, 80, 0.5);
@@ -153,4 +163,8 @@ piece.selected:not(.dragging) {
 piece.dragging {
   z-index: 9;
   cursor: move;
+}
+
+.drag-over {
+  box-shadow: inset 0 0 10px 2px rgba(216, 85, 0, 0.9)
 }

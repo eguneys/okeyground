@@ -27,6 +27,7 @@ function start(data, e) {
   var position = util.eventPosition(e);
   var boardBounds = data.boardBounds();
   var opensBounds = data.opensBounds();
+  var topBounds = data.topBounds();
   var orig = board.getKeyAtDomPosOnPiece(data, position, boardBounds);
   board.selectSquare(data, orig);
   var stillSelected = data.selected === orig;
@@ -44,6 +45,7 @@ function start(data, e) {
       ],
       boardBounds: boardBounds,
       opensBounds: opensBounds,
+      topBounds: topBounds,
       started: false
     };
   }
@@ -65,7 +67,9 @@ function processDrag(data) {
         cur.over =
           board.getKeyAtDomPosOnPiece(data, cur.epos, cur.boardBounds, cur.orig)
           ||
-          table.getOpensKeyAtDomPos(data, cur.epos, cur.opensBounds, cur.orig);
+          table.getOpensKeyAtDomPos(data, cur.epos, cur.opensBounds)
+          ||
+          table.getTopKeyAtDomPos(data, cur.epos, cur.topBounds);
       }
     }
     data.render();
@@ -88,6 +92,10 @@ function end(data, e) {
 
   if (draggable.current.started) {
     if (board.userMove(data, orig, dest)) {
+    }
+    else if (table.placeOpens(data, orig, dest)) {
+    }
+    else if (table.placeTop(data, orig, dest)) {
     }
   }
 

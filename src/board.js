@@ -5,12 +5,15 @@ function baseUserMove(data, orig, dest) {
   var temp = data.pieces[dest];
   data.pieces[dest] = data.pieces[orig];
   data.pieces[orig] = temp;
+  return true;
 };
 
 function userMove(data, orig, dest) {
   setSelected(data, null);
   if (dest && util.isBoardKey(dest)) {
-    baseUserMove(data, orig, dest);
+    if (baseUserMove(data, orig, dest)) {
+      return true;
+    }
   }
 }
 

@@ -35,6 +35,28 @@ function renderMiniPiece(ctrl, pos, key, p) {
   };
 }
 
+function renderTopPiece(ctrl, key, p) {
+  var d = ctrl.data;
+
+  var attrs = {
+    key: key,
+    class: pieceClass(p) + ' discard-' + key
+  };
+
+  var draggable = ctrl.data.draggable.current;
+  if (draggable.orig === key) {
+    attrs.style[util.transformProp()] = util.translate([
+      draggable.pos[0] + draggable.dec[0],
+      draggable.pos[1] + draggable.dec[1]
+    ]);
+    attrs.class += ' dragging';
+  }
+  return {
+    tag: 'piece',
+    attrs: attrs
+  };
+}
+
 function renderPiece(ctrl, pos, key, p) {
   var d = ctrl.data;
 
@@ -65,6 +87,15 @@ function renderPiece(ctrl, pos, key, p) {
   return {
     tag: 'piece',
     attrs: attrs
+  };
+}
+
+function renderTopDragOver(ctrl, key) {
+  return {
+    tag: 'div',
+    attrs: {
+      class: 'drag-over ' + key
+    }
   };
 }
 
@@ -171,9 +202,20 @@ function renderOpens(ctrl) {
 function renderDiscards(ctrl) {
   var d = ctrl.data;
   var children = [];
-  for (var i in d.discards) {
-    //children.push(renderPieceBase(ctrl, i, d.discards[i], {}, ' discard-' + i));
+  var dragOver;
+
+  for (var key in d.discards) {
+    children.push(renderTopPiece(ctrl, key, d.discards[key]));
+
+    if (d.draggable.current.over === key) {
+      dragOver = renderTopDragOver(ctrl, key);
+    }
   }
+
+  if (dragOver) {
+    children.push(dragOver);
+  }
+
   return children;
 }
 
@@ -187,6 +229,10 @@ function renderTop(ctrl) {
   return {
     tag: 'div',
     attrs: {
+      config: function(el, isUpdate, context) {
+        if (isUpdate) return;
+        ctrl.data.topBounds = util.memo(el.getBoundingClientRect.bind(el));
+      },
       class: 'og-top'
     },
     children: children

@@ -1,6 +1,9 @@
 const columns = 16 * 2;
 const rows = 2;
 
+const topColumns = 16;
+const topRows = 7;
+
 const miniColumns = 20;
 const miniRows = 8;
 
@@ -111,6 +114,8 @@ function memo(f) {
 }
 
 module.exports = {
+  topColumns: topColumns,
+  topRows: topRows,
   columns: columns,
   rows: rows,
   allPos: allPos,
