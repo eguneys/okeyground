@@ -4,10 +4,11 @@ import util from './util';
 
 var originTarget;
 
-function computeSquareBounds(data, bounds, key) {
-  var pos = util.key2pos(key);
-  var columns = util.columns;
-  var rows = util.rows;
+function computeSquareBounds(data, bounds,
+                             pos,
+                             rows = util.rows,
+                             columns = util.columns) {
+
   return {
     left: bounds.left + bounds.width * pos[0] / columns,
     top: bounds.top + bounds.height * pos[1] / rows,
@@ -30,23 +31,28 @@ function start(data, e) {
   var topBounds = data.topBounds();
   var orig = board.getKeyAtDomPosOnPiece(data, position, boardBounds);
 
-  if (!orig && previouslySelected) {
-    orig = table.getOpensKeyAtDomPos(data, position, opensBounds);
+  board.selectSquare(data, orig);
 
-    if (orig) {
+  if (!orig && previouslySelected) {
+    if ((orig = table.getOpensKeyAtDomPos(data, position, opensBounds))) {
       table.placeOpens(data, previouslySelected, orig);
     } else {
-      orig = table.getTopKeyAtDomPos(data, position, topBounds);
-      if (orig) {
+      if ((orig = table.getDiscardKeyAtDomPos(data, position, topBounds))) {
         table.placeTop(data, previouslySelected, orig);
       }
     }
+  } else if (!orig) {
+    if ((orig = table.getDrawKeyAtDomPos(data, position, topBounds))) {
+      table.selectTop(data, orig);
+    }
   }
 
-  board.selectSquare(data, orig);
   var stillSelected = data.selected === orig;
-  if (data.pieces[orig] && stillSelected) {
-    var squareBounds = computeSquareBounds(data, boardBounds, orig);
+  if (stillSelected) {
+    var squareBounds = (util.isBoardKey(orig))?
+          computeSquareBounds(data, boardBounds, util.key2pos(orig)):
+          computeSquareBounds(data, topBounds, util.topKey2pos(orig), util.topRows, util.topColumns);
+
     data.draggable.current = {
       orig: orig,
       rel: position,
@@ -78,11 +84,14 @@ function processDrag(data) {
           cur.epos[1] - cur.rel[1]
         ];
         cur.over =
-          board.getKeyAtDomPosOnPiece(data, cur.epos, cur.boardBounds, cur.orig)
-          ||
-          table.getOpensKeyAtDomPos(data, cur.epos, cur.opensBounds)
-          ||
-          table.getTopKeyAtDomPos(data, cur.epos, cur.topBounds);
+          board.getKeyAtDomPosOnPiece(data, cur.epos, cur.boardBounds, cur.orig);
+
+        if (!cur.over && util.isBoardKey(cur.orig)) {
+          cur.over =
+            table.getOpensKeyAtDomPos(data, cur.epos, cur.opensBounds)
+            ||
+            table.getDiscardKeyAtDomPos(data, cur.epos, cur.topBounds);
+        }
       }
     }
     data.render();

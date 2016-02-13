@@ -36,10 +36,26 @@ function renderMiniPiece(ctrl, pos, key, p) {
 }
 
 function renderMiddlePiece(ctrl, key, p) {
+  var d = ctrl.data;
+
+  var classes = util.classSet({
+    'selected': d.selected === key
+  });
+
   var attrs = {
-    class: pieceClass(p) + ' ' + key,
+    style: {},
+    class: [pieceClass(p), key, classes].join(' '),
     'data-middle-count': ctrl.data.middles[key]
   };
+
+  var draggable = ctrl.data.draggable.current;
+  if (draggable.orig === key) {
+    attrs.style[util.transformProp()] = util.translate([
+      draggable.pos[0] + draggable.dec[0],
+      draggable.pos[1] + draggable.dec[1]
+    ]);
+    attrs.class += ' dragging';
+  }
 
   return {
     tag: 'piece',
@@ -50,9 +66,14 @@ function renderMiddlePiece(ctrl, key, p) {
 function renderTopPiece(ctrl, key, p) {
   var d = ctrl.data;
 
+  var classes = util.classSet({
+    'selected': d.selected === key
+  });
+
   var attrs = {
     key: key,
-    class: pieceClass(p) + ' ' + key
+    style: {},
+    class: [pieceClass(p), key, classes].join(' ')
   };
 
   var draggable = ctrl.data.draggable.current;

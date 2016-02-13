@@ -11,6 +11,15 @@ const discards = ['dup', 'dleft', 'ddown', 'dright'];
 const middleCountKey = 'mmiddleCount';
 const gostergeKey = 'mgosterge';
 
+const topPosMap = {
+  'dup': [0, 0],
+  'dleft': [0, topRows - 1],
+  'ddown': [topColumns - 1, topRows - 1],
+  'dright': [topColumns - 1, 0],
+  'mmiddleCount': [topColumns - 4, topRows - 1],
+  'mgosterge': [topColumns - 3, topRows - 1]
+};
+
 const emptyPiece = {
   color: 'empty',
   number: 1
@@ -55,6 +64,10 @@ function isOpensKey(key) {
   return key[0] === opensKeyPrefix;
 }
 
+
+
+
+
 function pos2key(pos) {
   var key =  pos[1] * columns + pos[0];
   return encodeKey(key, boardKeyPrefix);
@@ -65,7 +78,9 @@ function key2pos(key) {
   return [key % columns, Math.floor(key / columns)];
 }
 
-const allPos = allPosBy(rows, columns);
+function topKey2pos(key) {
+  return topPosMap[key];
+}
 
 function miniPos2key(pos) {
   var key =  pos[1] * miniColumns + pos[0];
@@ -77,6 +92,7 @@ function miniKey2pos(key) {
   return [key % miniColumns, Math.floor(key / miniColumns)];
 }
 
+const allPos = allPosBy(rows, columns);
 const miniAllPos = allPosBy(miniRows, miniColumns);
 
 function classSet(classes) {
@@ -134,6 +150,7 @@ module.exports = {
   emptyPiece: emptyPiece,
   pieceEqual: pieceEqual,
   allPos: allPos,
+  topKey2pos: topKey2pos,
   pos2key: pos2key,
   key2pos: key2pos,
   miniColumns: miniColumns,

@@ -42,40 +42,66 @@ function placeTop(data, orig, dest) {
   }
 }
 
-function getOpensKeyAtDomPos(data, pos, bounds) {
-  if (!bounds && !data.bounds) return;
-  bounds = bounds || data.bounds();
-  var column = Math.floor(util.miniColumns * ((pos[0] - bounds.left) / bounds.width));
-  var row = Math.floor(util.miniRows * ((pos[1] - bounds.top) / bounds.height));
-  if (row >= 0 && row < util.miniRows && column >= 0 && column < util.miniColumns)
-    return util.miniPos2key([column, row]);
+function selectTop(data, key) {
+  if (data.selected) {
+    //
+  } else {
+    setSelected(data, key);
+  }
 }
 
-function getTopKeyAtDomPos(data, pos, bounds) {
-  if (!bounds && !data.bounds) return;
-  bounds = bounds || data.bounds();
+function setSelected(data, key) {
+  data.selected = key;
+}
 
-  var column = Math.floor(util.topColumns * ((pos[0] - bounds.left) / bounds.width));
-  var row = Math.floor(util.topRows * ((pos[1] - bounds.top) / bounds.height));
-  if (row >= 0 && row < util.topRows && column >= 0 && column < util.topColumns)
+function withRowColumn(f, tColumns = util.topColumns, tRows = util.topRows) {
+  return function(data, pos, bounds) {
+    if (!bounds && !data.bounds) return;
+    bounds = bounds || data.bounds();
 
-    if (row === util.topRows - 1) {
+    var column = Math.floor(tColumns * ((pos[0] - bounds.left) / bounds.width));
+    var row = Math.floor(tRows * ((pos[1] - bounds.top) / bounds.height));
+    if (row >= 0 && row < tRows && column >= 0 && column < tColumns)
+      return f(row, column);
+  };
+}
 
-      // discard down is at the bottom right
-      if(column === util.topColumns - 1) {
-        return util.discards[2];
-      }
-      if (column === util.topColumns - 3) {
-        // gosterge is on third column to last
-        return util.gosterge;
-      }
+const getOpensKeyAtDomPos = withRowColumn(function(row, column) {
+  return util.miniPos2key([column, row]);
+}, util.miniColumns, util.miniRows);
+
+const getDrawKeyAtDomPos = withRowColumn(function(row, column) {
+  if (row === util.topRows - 1) {
+    // draw left
+    if (column === 0) {
+      return util.discards[1];
     }
+    // middle
+    if (column === util.topColumns - 4) {
+      return util.middleCount;
+    }
+  }
+});
 
-}
+const getDiscardKeyAtDomPos = withRowColumn(function(row, column) {
+  if (row === util.topRows - 1) {
+
+    // discard down is at the bottom right
+    if(column === util.topColumns - 1) {
+      return util.discards[2];
+    }
+    if (column === util.topColumns - 3) {
+      // gosterge is on third column to last
+      return util.gosterge;
+    }
+  }
+});
 
 module.exports = {
+  selectTop: selectTop,
   placeTop: placeTop,
   placeOpens: placeOpens,
-  getTopKeyAtDomPos: getTopKeyAtDomPos,
+  getDrawKeyAtDomPos: getDrawKeyAtDomPos,
+  getDiscardKeyAtDomPos: getDiscardKeyAtDomPos,
   getOpensKeyAtDomPos: getOpensKeyAtDomPos
 };
