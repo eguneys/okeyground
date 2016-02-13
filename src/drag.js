@@ -29,12 +29,25 @@ function start(data, e) {
   var opensBounds = data.opensBounds();
   var topBounds = data.topBounds();
   var orig = board.getKeyAtDomPosOnPiece(data, position, boardBounds);
+
+  if (!orig && previouslySelected) {
+    orig = table.getOpensKeyAtDomPos(data, position, opensBounds);
+
+    if (orig) {
+      table.placeOpens(data, previouslySelected, orig);
+    } else {
+      orig = table.getTopKeyAtDomPos(data, position, topBounds);
+      if (orig) {
+        table.placeTop(data, previouslySelected, orig);
+      }
+    }
+  }
+
   board.selectSquare(data, orig);
   var stillSelected = data.selected === orig;
   if (data.pieces[orig] && stillSelected) {
     var squareBounds = computeSquareBounds(data, boardBounds, orig);
     data.draggable.current = {
-      previouslySelected: previouslySelected,
       orig: orig,
       rel: position,
       epos: position,
@@ -97,10 +110,6 @@ function end(data, e) {
     }
     else if (table.placeTop(data, orig, dest)) {
     }
-  }
-
-  if (orig === draggable.current.previouslySelected && (orig === dest || !dest)) {
-    board.setSelected(data, null);
   }
   draggable.current = {};
 }

@@ -6,7 +6,7 @@ function baseUserMove(data, orig, dest) {
   data.pieces[dest] = data.pieces[orig];
   data.pieces[orig] = temp;
   return true;
-};
+}
 
 function userMove(data, orig, dest) {
   setSelected(data, null);
@@ -24,8 +24,9 @@ function selectSquare(data, key) {
         userMove(data, data.selected, key);
       }
     } else {
-      setSelected(data, null);
+
     }
+    setSelected(data, null);
   } else if (isMovable(data, key)) {
     setSelected(data, key);
   }
@@ -37,7 +38,7 @@ function setSelected(data, key) {
 
 function isMovable(data, orig) {
   var piece = data.pieces[orig];
-  return true;
+  return piece;
 }
 
 

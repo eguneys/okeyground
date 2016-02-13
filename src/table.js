@@ -37,7 +37,7 @@ function getOpensKeyAtDomPos(data, pos, bounds) {
   var row = Math.floor(util.miniRows * ((pos[1] - bounds.top) / bounds.height));
   if (row >= 0 && row < util.miniRows && column >= 0 && column < util.miniColumns)
     return util.miniPos2key([column, row]);
-};
+}
 
 function getTopKeyAtDomPos(data, pos, bounds) {
   if (!bounds && !data.bounds) return;
