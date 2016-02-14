@@ -8,11 +8,37 @@ function baseUserMove(data, orig, dest) {
   return true;
 }
 
+function baseUserDrawMiddle(data, orig, dest) {
+  if (data.pieces[dest]) return false;
+  data.middles[util.middleCount]--;
+  return true;
+}
+
+function baseUserDrawLeft(data, orig, dest) {
+  if (data.pieces[dest]) return false;
+  data.pieces[dest] = data.discards[util.discards[1]];
+  delete data.discards[util.discards[1]];
+  return true;
+}
+
 function userMove(data, orig, dest) {
-  setSelected(data, null);
-  if (dest && util.isBoardKey(dest)) {
+  if (dest && util.isBoardKey(orig) && util.isBoardKey(dest)) {
     if (baseUserMove(data, orig, dest)) {
       return true;
+    }
+  }
+}
+
+function userDraw(data, orig, dest) {
+  if (dest && util.isBoardKey(dest)) {
+    if (util.isMiddleKey(orig)) {
+      if (baseUserDrawMiddle(data, orig, dest)) {
+        return true;
+      }
+    } else if (util.isDrawLeftKey(orig)) {
+      if (baseUserDrawLeft(data, orig, dest)) {
+        return true;
+      }
     }
   }
 }
@@ -21,7 +47,9 @@ function selectSquare(data, key) {
   if (data.selected) {
     if (key) {
       if (data.selected !== key) {
-        userMove(data, data.selected, key);
+        if (userMove(data, data.selected, key)) {
+        } else if (userDraw(data, data.selected, key)) {
+        }
       }
     } else {
 
@@ -68,6 +96,7 @@ function getKeyAtDomPos(data, pos, bounds) {
 
 module.exports = {
   userMove: userMove,
+  userDraw: userDraw,
   selectSquare: selectSquare,
   setSelected: setSelected,
   getKeyAtDomPos: getKeyAtDomPos,

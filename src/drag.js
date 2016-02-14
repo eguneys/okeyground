@@ -113,11 +113,11 @@ function end(data, e) {
   var dest = draggable.current.over;
 
   if (draggable.current.started) {
+    board.setSelected(data, null);
     if (board.userMove(data, orig, dest)) {
-    }
-    else if (table.placeOpens(data, orig, dest)) {
-    }
-    else if (table.placeTop(data, orig, dest)) {
+    } else if (table.placeOpens(data, orig, dest)) {
+    } else if (table.placeTop(data, orig, dest)) {
+    } else if (board.userDraw(data, orig, dest)) {
     }
   }
   draggable.current = {};

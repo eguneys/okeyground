@@ -64,7 +64,13 @@ function isOpensKey(key) {
   return key[0] === opensKeyPrefix;
 }
 
+function isMiddleKey(key) {
+  return key === middleCountKey;
+}
 
+function isDrawLeftKey(key) {
+  return key === discards[1];
+}
 
 
 
@@ -162,6 +168,8 @@ module.exports = {
   decBoardKey: decBoardKey,
   isBoardKey: isBoardKey,
   isOpensKey: isOpensKey,
+  isMiddleKey: isMiddleKey,
+  isDrawLeftKey: isDrawLeftKey,
   discards: discards,
   middleCount: middleCountKey,
   gosterge: gostergeKey,

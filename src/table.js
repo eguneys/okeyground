@@ -43,11 +43,7 @@ function placeTop(data, orig, dest) {
 }
 
 function selectTop(data, key) {
-  if (data.selected) {
-    //
-  } else {
-    setSelected(data, key);
-  }
+  setSelected(data, key);
 }
 
 function setSelected(data, key) {
