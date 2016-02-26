@@ -5,7 +5,7 @@
     "compile": "rm -rf build && gulp prod",
     "prepublish": "npm run compile"
   },
-  "main": "src/main.js",
+  "main": "build/okeyground.min.js",
   "dependencies": {
     "merge": "^1.2.0",
     "mithril": "^0.2.0",
