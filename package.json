@@ -29,5 +29,6 @@
     "watchify": "^3.6.1"
   },
   "author": "Emre Guneyler <eguneys@hotmail.com> (http://eguneys.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "version": "1.0.0"
 }
