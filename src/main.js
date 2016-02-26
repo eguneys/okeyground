@@ -1,6 +1,7 @@
 import m from 'mithril';
 import ctrl from './ctrl';
 import view from './view';
+import util from './util';
 
 function init(element, config) {
   var controller = new ctrl(config);
@@ -9,3 +10,4 @@ function init(element, config) {
 
 
 module.exports = init;
+module.exports.util = util;

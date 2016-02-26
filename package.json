@@ -2,7 +2,7 @@
   "name": "okeyground",
   "description": "",
   "scripts": {
-    "compile": "gulp prod",
+    "compile": "rm -rf build && gulp prod",
     "prepublish": "npm run compile"
   },
   "main": "build/okeyground.min.js",
