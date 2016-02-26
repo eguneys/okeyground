@@ -29,7 +29,10 @@ gulp.task('lint', function() {
 gulp.task('prod', function() {
   return browserify('./src/main.js', {
     standalone: standalone
-  }).bundle()
+  }).transform('babelify',
+               { presets: ["es2015"],
+                 plugins: ['add-module-exports'] })
+    .bundle()
     .on('error', onError)
     .pipe(source('okeyground.min.js'))
     .pipe(streamify(uglify()))
