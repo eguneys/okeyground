@@ -137,6 +137,14 @@ function translate(pos) {
   return 'translate(' + pos[0] + 'px,' + pos[1] + 'px)';
 }
 
+function partialApply(fn, args) {
+  return fn.bind.apply(fn, [null].concat(args));
+}
+
+function partial() {
+  return partialApply(arguments[0], Array.prototype.slice.call(arguments, 1));
+}
+
 function memo(f) {
   var v, ret = function() {
     if (v === undefined) v = f();
@@ -179,5 +187,7 @@ module.exports = {
   transformProp: transformProp,
   translate: translate,
   requestAnimationFrame: (window.requestAnimationFrame || window.setTimeout).bind(window),
+  partialApply: partialApply,
+  partial: partial,
   memo: memo
 };
