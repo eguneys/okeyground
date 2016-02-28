@@ -10,4 +10,6 @@ function init(element, config) {
 
 
 module.exports = init;
+module.exports.controller = ctrl;
+module.exports.view = view;
 module.exports.util = util;
