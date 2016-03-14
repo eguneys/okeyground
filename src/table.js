@@ -1,7 +1,11 @@
 import util from './util';
+import move from './move';
+
+const { callUserFunction }  = util;
 
 function basePlaceOpens(data, orig, dest) {
   if (!data.pieces[orig]) return false;
+  callUserFunction(util.partial(data.events.move, move.placeOpens));
   data.opens[dest] = data.pieces[orig];
   delete data.pieces[orig];
   return true;
@@ -9,6 +13,7 @@ function basePlaceOpens(data, orig, dest) {
 
 function basePlaceDiscard(data, orig, dest) {
   if (!data.pieces[orig]) return false;
+  callUserFunction(util.partial(data.events.move, move.discard));
   data.discards[dest] = data.pieces[orig];
   delete data.pieces[orig];
   return true;
@@ -18,13 +23,16 @@ function baseGosterge(data, orig) {
   var piece = data.pieces[orig];
   if (!piece) return false;
   if (util.pieceEqual(piece, data.middles[util.gosterge])) {
-    console.log('here');
+    callUserFunction(util.partial(data.events.move, move.sign));
+    return true;
   }
+  return false;
 }
 
 function placeOpens(data, orig, dest) {
   if (dest && util.isOpensKey(dest)) {
     if (basePlaceOpens(data, orig, dest)) {
+      callUserFunction(util.partial(data.movable.events.after, move.placeOpens));
       return true;
     }
   }
@@ -33,10 +41,12 @@ function placeOpens(data, orig, dest) {
 function placeTop(data, orig, dest) {
   if (dest && dest === util.discards[2]) {
     if (basePlaceDiscard(data, orig, dest)) {
+      callUserFunction(util.partial(data.movable.events.after, move.discard));
       return true;
     }
   } else if (dest === util.gosterge) {
     if (baseGosterge(data, orig)) {
+      callUserFunction(util.partial(data.movable.events.after, move.sign));
       return true;
     }
   }

@@ -1,4 +1,7 @@
 import util from './util';
+import move from './move';
+
+const { callUserFunction }  = util;
 
 function baseUserMove(data, orig, dest) {
   if (orig === dest || !data.pieces[orig]) return false;
@@ -10,12 +13,14 @@ function baseUserMove(data, orig, dest) {
 
 function baseUserDrawMiddle(data, orig, dest) {
   if (data.pieces[dest]) return false;
+  callUserFunction(util.partial(data.events.move, move.drawMiddle));
   data.middles[util.middleCount]--;
   return true;
 }
 
 function baseUserDrawLeft(data, orig, dest) {
   if (data.pieces[dest]) return false;
+  callUserFunction(util.partial(data.events.move, move.drawLeft));
   data.pieces[dest] = data.discards[util.discards[1]];
   delete data.discards[util.discards[1]];
   return true;
@@ -35,10 +40,12 @@ function userDraw(data, orig, dest) {
   if (dest && util.isBoardKey(dest)) {
     if (util.isMiddleKey(orig)) {
       if (baseUserDrawMiddle(data, orig, dest)) {
+        callUserFunction(util.partial(data.movable.events.after, move.drawMiddle));
         return true;
       }
     } else if (util.isDrawLeftKey(orig)) {
       if (baseUserDrawLeft(data, orig, dest)) {
+        callUserFunction(util.partial(data.movable.events.after, move.drawLeft));
         return true;
       }
     }

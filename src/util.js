@@ -156,6 +156,10 @@ function memo(f) {
   return ret;
 }
 
+function callUserFunction(f) {
+  setTimeout(f, 1);
+}
+
 module.exports = {
   topColumns: topColumns,
   topRows: topRows,
@@ -189,5 +193,6 @@ module.exports = {
   requestAnimationFrame: (window.requestAnimationFrame || window.setTimeout).bind(window),
   partialApply: partialApply,
   partial: partial,
-  memo: memo
+  memo: memo,
+  callUserFunction: callUserFunction
 };
