@@ -33,7 +33,42 @@
       <script>
        (function() {
          var ground;
-         ground = Okeyground(document.getElementById('ground9'), {});
+        var initial = 'r1r2 r3r4r5r6r7r8r9r10r11r12r13l1l2l3l4l5l6l7   g1g2  l3';
+        var initialMiddles = '20l3';
+        var initialDiscards = ' r2r3l1';
+        var initialOpenGroups = `r8l8b8
+        b1b2b3
+        b9b10b11b12
+        l13r13b13
+        r12b12g12
+        r7r8r9r10
+        g10g11g12
+        l6b6r6
+        l9l10l11
+        b7l7r7g7
+        r13l13b13g13
+        l10r10b10g10
+        l6r6g6
+        l1b1g1
+        /r1r1
+        g1g1
+        g2g2
+        g3g3
+        g4g4
+        g5g5
+        g6g6
+        g7g7
+        g8g8
+        g9g9
+        g10g10
+        g11g11
+        g12g12
+
+        `;
+
+         var fen = [initial, initialDiscards, initialOpenGroups, initialMiddles].join('/');
+
+         ground = Okeyground(document.getElementById('ground9'), {fen: fen});
        })();
       </script>
     </section>

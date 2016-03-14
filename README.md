@@ -60,3 +60,18 @@ pairs = series = [piece|\s]
 each piece group is separated by a `\s`
 
 example: `r13b1l1 r2b2l2 r1r2r3r4r5/r1r1 g2g2 l2l2`
+
+
+#### FEN
+
+fen = board/discard/series/pairs/middle
+
+
+#### Rules
+
+move pieces on board
+draw middle
+draw left
+discard
+discard end
+show sign

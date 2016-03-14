@@ -42,7 +42,7 @@ gulp.task('prod', ['sass'], function() {
 gulp.task('assets', function() {
   var path = require('path');
   gulp.src(assetFiles)
-    .pipe(gulp.dest(path.join(destination, 'assets')));
+    .pipe(gulp.dest(path.join(destination)));
 });
 
 gulp.task('sass', function() {

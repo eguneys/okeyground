@@ -23,8 +23,10 @@ function baseUserDrawLeft(data, orig, dest) {
 
 function userMove(data, orig, dest) {
   if (dest && util.isBoardKey(orig) && util.isBoardKey(dest)) {
-    if (baseUserMove(data, orig, dest)) {
-      return true;
+    if (canMove(data, orig, dest)) {
+      if (baseUserMove(data, orig, dest)) {
+        return true;
+      }
     }
   }
 }
@@ -69,6 +71,11 @@ function isMovable(data, orig) {
   return piece;
 }
 
+function canMove(data, orig, dest) {
+  return orig != dest && isMovable(data, orig) && (
+    data.movable.free
+  );
+}
 
 function getKeyAtDomPosOnPiece(data, pos, bounds, except) {
   var key = getKeyAtDomPos(data, pos, bounds);

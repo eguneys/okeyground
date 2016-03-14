@@ -130,7 +130,8 @@ function readPieceGroup(str) {
   return res;
 }
 
-function read(pieces) {
+
+function readBoard(pieces) {
   var res = [];
 
   pieces = readPieceGroup(pieces);
@@ -217,6 +218,17 @@ function readMiddles(middles) {
   return res;
 }
 
+function read(fen) {
+  fen = fen.split('/');
+
+  return {
+    pieces: readBoard(fen[0]),
+    discards: readDiscards(fen[1]),
+    opens: readOpenGroups([fen[2], fen[3]].join('/')),
+    middles: readMiddles(fen[4])
+  };
+}
+
 function makePiece(color, number) {
   return {
     color: colors[color],
@@ -227,6 +239,7 @@ function makePiece(color, number) {
 module.exports = {
   initial: initial,
   read: read,
+  readBoard: readBoard,
   initialMiddles: initialMiddles,
   initialDiscards: initialDiscards,
   initialOpenGroups: initialOpenGroups,

@@ -4,11 +4,20 @@ import pieces from './pieces';
 function configure(data, config) {
   if (!config) return;
   merge.recursive(data, config);
+
+  // if a fen was provided, replace the pieces
+  if (data.fen) {
+    var fen = pieces.read(data.fen);
+    data.pieces = fen.pieces;
+    data.discards = fen.discards;
+    data.opens = fen.opens;
+    data.middles = fen.middles;
+  }
 }
 
 module.exports = function(cfg) {
   var defaults = {
-    pieces: pieces.read(pieces.initial),
+    pieces: pieces.readBoard(pieces.initial),
     discards: pieces.readDiscards(pieces.initialDiscards),
     opens: pieces.readOpenGroups(pieces.initialOpenGroups),
     middles: pieces.readMiddles(pieces.initialMiddles),
@@ -26,6 +35,9 @@ module.exports = function(cfg) {
       //   started: // whether the drag has started
       // }
       current: {}
+    },
+    movable: {
+      free: true
     }
   };
 
