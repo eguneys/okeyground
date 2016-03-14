@@ -37,7 +37,13 @@ module.exports = function(cfg) {
       current: {}
     },
     movable: {
-      free: true
+      free: true,
+      events: {
+        after: function(key) {} // called after the move has been played
+      }
+    },
+    events: {
+      move: function(key) {}
     }
   };
 
