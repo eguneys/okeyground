@@ -233,7 +233,7 @@ function makePiece(color, number) {
   return {
     color: colors[color],
     number: numbers[number],
-    key: colors[color] + numbers[number]
+    key: color + number
   };
 };
 

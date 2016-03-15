@@ -2,7 +2,6 @@
   "name": "okeyground",
   "description": "",
   "scripts": {
-    "prepublish": "npm run compile",
     "compile": "rm -rf build && gulp prod"
   },
   "main": "build/okeyground.min.js",
@@ -30,5 +29,5 @@
   },
   "author": "Emre Guneyler <eguneys@hotmail.com> (http://eguneys.com)",
   "license": "MIT",
-  "version": "1.0.9"
+  "version": "1.0.10"
 }

@@ -15,14 +15,14 @@
        var ground;
        ground = Okeyground(document.getElementById('ground7'), {
          events: {
-           move: function(key) {
-             console.log('events move', key);
+           move: function(key, piece) {
+             console.log('events move', key, piece);
            }
          },
          movable: {
            events: {
-             after: function(key) {
-               console.log('movable events after', key);
+             after: function(key, piece) {
+               console.log('movable events after', key, piece);
              }
            }
          }
