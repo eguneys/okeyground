@@ -12,8 +12,9 @@ function basePlaceOpens(data, orig, dest) {
 }
 
 function basePlaceDiscard(data, orig, dest) {
-  if (!data.pieces[orig]) return false;
-  callUserFunction(util.partial(data.events.move, move.discard));
+  const piece = data.pieces[orig];
+  if (!piece) return false;
+  callUserFunction(util.partial(data.events.move, move.discard, piece.key));
   data.discards[dest] = data.pieces[orig];
   delete data.pieces[orig];
   return true;
@@ -23,7 +24,7 @@ function baseGosterge(data, orig) {
   var piece = data.pieces[orig];
   if (!piece) return false;
   if (util.pieceEqual(piece, data.middles[util.gosterge])) {
-    callUserFunction(util.partial(data.events.move, move.sign));
+    callUserFunction(util.partial(data.events.move, move.sign, piece.key));
     return true;
   }
   return false;

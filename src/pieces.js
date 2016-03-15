@@ -232,7 +232,8 @@ function read(fen) {
 function makePiece(color, number) {
   return {
     color: colors[color],
-    number: numbers[number]
+    number: numbers[number],
+    key: colors[color] + numbers[number]
   };
 };
 

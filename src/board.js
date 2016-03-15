@@ -79,9 +79,8 @@ function isMovable(data, orig) {
 }
 
 function canMove(data, orig, dest) {
-  return orig != dest && isMovable(data, orig) && (
-    data.movable.free
-  );
+  return orig != dest && isMovable(data, orig);
+  //data.movable.free
 }
 
 function getKeyAtDomPosOnPiece(data, pos, bounds, except) {
