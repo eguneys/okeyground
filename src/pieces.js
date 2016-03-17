@@ -136,7 +136,7 @@ function readBoard(pieces) {
 
   pieces = readPieceGroup(pieces);
 
-  for (var i = 0; i<= pieces.length; i++) {
+  for (var i = 0; i < pieces.length; i++) {
     if (pieces[i]) {
       res[util.encodeKey(i * 2, 'b')] = pieces[i];
     }
@@ -150,7 +150,7 @@ function readDiscards(discards) {
 
   discards = readPieceGroup(discards);
 
-  for (var i = 0; i<= discards.length; i++) {
+  for (var i = 0; i < 4; i++) {
     res[util.discards[i]] = [];
     if (discards[i]) {
       res[util.discards[i]].push(discards[i]);
@@ -171,7 +171,7 @@ function readOpenGroups(groups) {
   var i, key, column;
   var row = 0;
 
-  for (i = 0; i<= series.length; i++) {
+  for (i = 0; i < series.length; i++) {
     if (series[i]) {
       column = startColumn[row] || 1;
       key = util.miniPos2key([column, row]);
@@ -190,7 +190,7 @@ function readOpenGroups(groups) {
   i = 0; key = 0; column = 0;
   row = 0;
 
-  for (i = 0; i<= pairs.length; i++) {
+  for (i = 0; i < pairs.length; i++) {
     if (pairs[i]) {
       column = startColumn[row] || util.miniColumns - 1;
       key = util.miniPos2key([column, row]);
