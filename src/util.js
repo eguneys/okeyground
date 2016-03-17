@@ -118,6 +118,8 @@ function miniKey2pos(key) {
 const allPos = allPosBy(rows, columns);
 const miniAllPos = allPosBy(miniRows, miniColumns);
 
+const allKeys = allPos.map(pos2key);
+
 function classSet(classes) {
   var arr = [];
   for (var i in classes) {
@@ -185,6 +187,7 @@ module.exports = {
   emptyPiece: emptyPiece,
   pieceEqual: pieceEqual,
   allPos: allPos,
+  allKeys: allKeys,
   topKey2pos: topKey2pos,
   pos2key: pos2key,
   key2pos: key2pos,

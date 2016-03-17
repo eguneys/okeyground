@@ -33,11 +33,12 @@ module.exports = function(cfg) {
     movable: {
       free: true,
       events: {
-        after: function(key) {} // called after the move has been played
+        // move key: dm | dl | dd | lt
+        after: function(key, piece) {} // called after the move has been played
       }
     },
     events: {
-      move: function(key) {}
+      move: function(key, piece) {}
     }
   };
 

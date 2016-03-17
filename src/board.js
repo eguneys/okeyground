@@ -15,7 +15,6 @@ function baseSettleMiddleHolder(data) {
   var piece = data.middleHolder.piece;
   if (key && piece) {
     data.pieces[key] = piece;
-    console.log('middle settled');
     data.middleHolder.current = false;
     data.middleHolder.key = null;
     data.middleHolder.piece = null;
@@ -32,8 +31,8 @@ function baseUserMove(data, orig, dest) {
 
 function baseUserEndDrawMiddle(data, orig, dest) {
   if (!dest || data.pieces[dest]) {
-    console.log('no draw end dest found');
-    dest = 10;
+    var freeDest = findFreePlaceForMiddlePiece(data);
+    dest = freeDest;
   }
   callUserFunction(util.partial(data.events.move, move.drawMiddleEnd));
   data.middleHolder.key = dest;
@@ -72,7 +71,6 @@ function userBeginDrawMiddle(data, orig) {
       // if (baseUserDrawMiddle(data, orig, dest)) {
       //   callUserFunction(util.partial(data.movable.events.after, move.drawMiddle));
       baseUserBeginDrawMiddle(data, orig);
-      console.log('begin draw middle');
       return true;
     }
   }
@@ -84,7 +82,6 @@ function userEndDrawMiddle(data, orig, dest) {
       if (canEndDrawMiddle(data, orig)) {
         // if (baseUserDrawMiddle(data, orig, dest)) {
         //   callUserFunction(util.partial(data.movable.events.after, move.drawMiddle));
-        console.log('end draw middle');
         baseUserEndDrawMiddle(data, orig, dest);
         return true;
       }
@@ -167,6 +164,18 @@ function canEndDrawMiddle(data) {
 
 function canDrawLeft(data, orig, dest) {
   return isDrawable(data) && !canEndDrawMiddle(data);
+}
+
+function findFreePlaceForMiddlePiece(data) {
+  var nexts = util.allKeys.slice(1);
+  var nnexts = util.allKeys.slice(2);
+  var frees = util.allKeys.map((key, i) => {
+    return [key, nexts[i], nnexts[i]];
+  }).filter(([key1, key2, key3]) => {
+    return key1 && key2 && key3 && !data.pieces[key1] && !data.pieces[key2] && !data.pieces[key3];
+  });
+
+  return frees[frees.length - 1][1];
 }
 
 function getKeyAtDomPosOnPiece(data, pos, bounds, except) {

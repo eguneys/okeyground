@@ -99,3 +99,16 @@ draw middle
 opponent
   draw middle / draw left / discard
     api move do move
+
+
+### API
+
+// reconfigure the instance. Accepts all options mentioned above.
+ground.set(options);
+
+// make a move for turn side.
+// dm | dl | dd | lt
+ground.apiMove(move, piece);
+
+// provide the drawn middle piece, required to end the draw middle progress.
+ground.apiDrawMiddleEnd(piece)
