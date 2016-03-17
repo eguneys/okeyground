@@ -75,3 +75,27 @@ draw left
 discard
 discard end
 show sign
+
+## Moves
+
+draw middle
+draw left
+discard
+discard end
+
+api move (key, piece)
+  turnSide == player
+
+player
+
+draw left / discard
+  user move place on board
+  api move noop
+
+draw middle
+  user move add middle placeholder
+  api move (piece) replace placeholder
+
+opponent
+  draw middle / draw left / discard
+    api move do move

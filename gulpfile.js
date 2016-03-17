@@ -39,6 +39,27 @@ gulp.task('prod', ['sass'], function() {
     .pipe(gulp.dest(destination));
 });
 
+gulp.task('prod-watch', ['sass'], function() {
+  var opts = watchify.args;
+  opts.debug = true;
+  opts.standalone = standalone;
+  var bundleStream = watchify(browserify(sources, opts))
+    .transform('babelify',
+               { presets: ["es2015"],
+                 plugins: ['add-module-exports'] })
+    .on('update', rebundle)
+    .on('log', gutil.log);
+
+  function rebundle() {
+    return bundleStream.bundle()
+      .on('error', onError)
+      .pipe(source('okeyground.min.js'))
+      .pipe(gulp.dest(destination));
+  }
+
+  return rebundle();
+});
+
 gulp.task('assets', function() {
   var path = require('path');
   gulp.src(assetFiles)

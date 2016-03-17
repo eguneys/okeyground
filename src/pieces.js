@@ -151,8 +151,9 @@ function readDiscards(discards) {
   discards = readPieceGroup(discards);
 
   for (var i = 0; i<= discards.length; i++) {
+    res[util.discards[i]] = [];
     if (discards[i]) {
-      res[util.discards[i]] = discards[i];
+      res[util.discards[i]].push(discards[i]);
     }
   }
 
@@ -240,6 +241,7 @@ function makePiece(color, number) {
 module.exports = {
   initial: initial,
   read: read,
+  readPiece: readPiece,
   readBoard: readBoard,
   initialMiddles: initialMiddles,
   initialDiscards: initialDiscards,

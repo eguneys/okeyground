@@ -35,7 +35,7 @@ function renderMiniPiece(ctrl, pos, key, p) {
   };
 }
 
-function renderMiddlePiece(ctrl, key, p) {
+function renderMiddlePiece(ctrl, key, p, drag = false) {
   var d = ctrl.data;
 
   var classes = util.classSet({
@@ -49,7 +49,7 @@ function renderMiddlePiece(ctrl, key, p) {
   };
 
   var draggable = ctrl.data.draggable.current;
-  if (draggable.orig === key) {
+  if (drag && draggable.orig === key) {
     attrs.style[util.transformProp()] = util.translate([
       draggable.pos[0] + draggable.dec[0],
       draggable.pos[1] + draggable.dec[1]
@@ -238,7 +238,11 @@ function renderDiscards(ctrl) {
   var dragOver;
 
   for (var key in d.discards) {
-    children.push(renderTopPiece(ctrl, key, d.discards[key]));
+    var piece = d.discards[key][0];
+
+    if (piece) {
+      children.push(renderTopPiece(ctrl, key, piece));
+    }
 
     if (d.draggable.current.over === key) {
       dragOver = renderTopDragOver(ctrl, key);
@@ -256,8 +260,11 @@ function renderMiddles(ctrl) {
   var d = ctrl.data;
   var children = [];
 
+  var draggingMiddlePiece = d.middleHolder.piece || util.emptyPiece;
+
   children.push(renderTopPiece(ctrl, util.gosterge, d.middles[util.gosterge]));
   children.push(renderMiddlePiece(ctrl, util.middleCount, util.emptyPiece));
+  children.push(renderMiddlePiece(ctrl, util.middleCount, draggingMiddlePiece, true));
 
   if (d.draggable.current.over === util.gosterge) {
     children.push(renderTopDragOver(ctrl, util.gosterge));
@@ -344,6 +351,10 @@ function renderTable(ctrl) {
         ctrl.data.render = function() {
           m.render(el, renderContent(ctrl));
         };
+        ctrl.data.renderRAF = function() {
+          util.requestAnimationFrame(ctrl.data.render);
+        };
+
         ctrl.data.bounds = util.memo(el.getBoundingClientRect.bind(el));
         ctrl.data.element = el;
         ctrl.data.render();

@@ -32,6 +32,11 @@ function start(data, e) {
   var orig = board.getKeyAtDomPosOnPiece(data, position, boardBounds);
 
   board.selectSquare(data, orig);
+  if (!orig) {
+    if ((orig = table.getDrawKeyAtDomPos(data, position, topBounds))) {
+      board.selectTop(data, orig, previouslySelected);
+    }
+  }
 
   if (!orig && previouslySelected) {
     if ((orig = table.getOpensKeyAtDomPos(data, position, opensBounds))) {
@@ -41,14 +46,10 @@ function start(data, e) {
         table.placeTop(data, previouslySelected, orig);
       }
     }
-  } else if (!orig) {
-    if ((orig = table.getDrawKeyAtDomPos(data, position, topBounds))) {
-      table.selectTop(data, orig);
-    }
   }
 
   var stillSelected = data.selected === orig;
-  if (stillSelected) {
+  if (stillSelected && table.isDraggable(data, orig)) {
     var squareBounds = (util.isBoardKey(orig))?
           computeSquareBounds(data, boardBounds, util.key2pos(orig)):
           computeSquareBounds(data, topBounds, util.topKey2pos(orig), util.topRows, util.topColumns);
@@ -117,7 +118,8 @@ function end(data, e) {
     if (board.userMove(data, orig, dest)) {
     } else if (table.placeOpens(data, orig, dest)) {
     } else if (table.placeTop(data, orig, dest)) {
-    } else if (board.userDraw(data, orig, dest)) {
+    } else if (board.userDrawLeft(data, orig, dest)) {
+    } else if (board.userEndDrawMiddle(data, orig, dest)) {
     }
   }
   draggable.current = {};

@@ -7,6 +7,23 @@ const topRows = 7;
 const miniColumns = 20;
 const miniRows = 8;
 
+const povMap = {
+  east: { east: 'down', west: 'up', north: 'right', south: 'left' },
+  west: { east: 'up', west: 'down', north: 'left', south: 'right' },
+  north: { east: 'left', west: 'right', north: 'down', south: 'up' },
+  south: { east: 'right', west: 'left', north: 'up', south: 'down' }
+};
+
+function findPov(povSide, turnSide) {
+  return povMap[povSide][turnSide];
+}
+
+const discardPovMap = { up: 0, left: 1, down: 2, right: 3 };
+const drawPovMap = { up: 3, left: 0, down: 1, right: 2 };
+
+const discardByPov = (pov) => discards[discardPovMap[pov]];
+const drawByPov = (pov) => discards[drawPovMap[pov]];
+
 const discards = ['dup', 'dleft', 'ddown', 'dright'];
 const middleCountKey = 'mmiddleCount';
 const gostergeKey = 'mgosterge';
@@ -182,6 +199,9 @@ module.exports = {
   isOpensKey: isOpensKey,
   isMiddleKey: isMiddleKey,
   isDrawLeftKey: isDrawLeftKey,
+  findPov: findPov,
+  drawByPov: drawByPov,
+  discardByPov: discardByPov,
   discards: discards,
   middleCount: middleCountKey,
   gosterge: gostergeKey,

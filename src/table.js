@@ -1,7 +1,50 @@
 import util from './util';
 import move from './move';
+import pieces from './pieces';
 
 const { callUserFunction }  = util;
+
+function apiMove(data, mmove, piece) {
+  if (data.turnSide === data.povSide) {
+  } else {
+    const pov = util.findPov(data.povSide, data.turnSide);
+    switch (mmove) {
+    case move.drawMiddle: baseOpponentDrawMiddle(data);
+      break;
+    case move.drawLeft: baseOpponentDrawLeft(data, util.drawByPov(pov));
+      break;
+    case move.discard:
+      piece = pieces.readPiece(piece).piece;
+      baseOpponentDiscard(data, util.discardByPov(pov), piece);
+      break;
+    case move.leaveTaken:
+      piece = pieces.readPiece(piece).piece;
+      baseOpponentLeaveTaken(data, util.drawByPov(pov), piece);
+      break;
+    default: console.error('unknown move');
+    }
+  }
+};
+
+function baseOpponentDiscard(data, dest, piece) {
+  data.discards[dest].unshift(piece);
+  return true;
+}
+
+function baseOpponentDrawMiddle(data) {
+  data.middles[util.middleCount]--;
+  return true;
+}
+
+function baseOpponentDrawLeft(data, dest) {
+  data.discards[dest].shift();
+  return true;
+}
+
+function baseOpponentLeaveTaken(data, dest, piece) {
+  data.discards[dest].unshift(piece);
+  return true;
+}
 
 function basePlaceOpens(data, orig, dest) {
   if (!data.pieces[orig]) return false;
@@ -15,7 +58,7 @@ function basePlaceDiscard(data, orig, dest) {
   const piece = data.pieces[orig];
   if (!piece) return false;
   callUserFunction(util.partial(data.events.move, move.discard, piece.key));
-  data.discards[dest] = data.pieces[orig];
+  data.discards[dest].unshift(data.pieces[orig]);
   delete data.pieces[orig];
   return true;
 }
@@ -32,25 +75,34 @@ function baseGosterge(data, orig) {
 
 function placeOpens(data, orig, dest) {
   if (dest && util.isOpensKey(dest)) {
-    if (basePlaceOpens(data, orig, dest)) {
-      callUserFunction(util.partial(data.movable.events.after, move.placeOpens));
-      return true;
+    if (canPlaceOpens(data, orig, dest)) {
+      if (basePlaceOpens(data, orig, dest)) {
+        callUserFunction(util.partial(data.movable.events.after, move.placeOpens));
+        return true;
+      }
     }
   }
+  return false;
 }
 
 function placeTop(data, orig, dest) {
+  var piece = data.pieces[orig];
   if (dest && dest === util.discards[2]) {
-    if (basePlaceDiscard(data, orig, dest)) {
-      callUserFunction(util.partial(data.movable.events.after, move.discard));
-      return true;
+    if (canDiscard(data, orig, dest)) {
+      if (basePlaceDiscard(data, orig, dest)) {
+        callUserFunction(util.partial(data.movable.events.after, move.discard, piece.key));
+        return true;
+      }
     }
   } else if (dest === util.gosterge) {
-    if (baseGosterge(data, orig)) {
-      callUserFunction(util.partial(data.movable.events.after, move.sign));
-      return true;
+    if (canGosterge(data, orig)) {
+      if (baseGosterge(data, orig)) {
+        callUserFunction(util.partial(data.movable.events.after, move.sign));
+        return true;
+      }
     }
   }
+  return false;
 }
 
 function selectTop(data, key) {
@@ -59,6 +111,28 @@ function selectTop(data, key) {
 
 function setSelected(data, key) {
   data.selected = key;
+}
+
+function isDraggable(data, key) {
+  if (util.isMiddleKey(key) || util.isDrawLeftKey(key)) {
+    return data.povSide === data.turnSide;
+  } else return util.isBoardKey(key);
+}
+
+function isMovable(data) {
+  return data.povSide === data.turnSide;
+}
+
+function canPlaceOpens(data, orig, dest) {
+  return isMovable(data);
+}
+
+function canDiscard(data, orig, dest) {
+  return isMovable(data);
+}
+
+function canGosterge(data, orig) {
+  return isMovable(data);
 }
 
 function withRowColumn(f, tColumns = util.topColumns, tRows = util.topRows) {
@@ -104,11 +178,13 @@ const getDiscardKeyAtDomPos = withRowColumn(function(row, column) {
   }
 });
 
-module.exports = {
-  selectTop: selectTop,
-  placeTop: placeTop,
-  placeOpens: placeOpens,
-  getDrawKeyAtDomPos: getDrawKeyAtDomPos,
-  getDiscardKeyAtDomPos: getDiscardKeyAtDomPos,
-  getOpensKeyAtDomPos: getOpensKeyAtDomPos
+export default {
+  apiMove,
+  selectTop,
+  placeTop,
+  placeOpens,
+  isDraggable,
+  getDrawKeyAtDomPos,
+  getDiscardKeyAtDomPos,
+  getOpensKeyAtDomPos
 };

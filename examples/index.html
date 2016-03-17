@@ -11,12 +11,58 @@
     <section>
     <div class="okeyground normal" id="ground7"></div>
     <script>
+
+      function delay(f, d) {
+        d = d | 1000;
+        setTimeout(f, d);
+      }
+
+     function setTurn(ground, side) {
+       ground.set({
+         turnSide: side
+       });
+     }
+
+     function aiMove(ground, side) {
+       console.log('draw middle', side);
+       ground.apiMove('dm');
+       delay(function() {
+         console.log('discard ', side);
+         ground.apiMove('dd', 'l10');
+         setTurn(ground, side);
+       });
+     }
+
+     function aiMoveLeft(ground, side) {
+       console.log('draw left', side);
+       ground.apiMove('dl');
+       delay(function() {
+         console.log('leave taken', side);
+         ground.apiMove('lt', 'r9');
+       });
+       delay(function() {
+         console.log('draw left', side);
+         ground.apiMove('dl');
+       }, 1500);
+       delay(function() {
+         console.log('discard ', side);
+         ground.apiMove('dd', 'l10');
+         setTurn(ground, side);
+       }, 2000);
+     }
+
      (function() {
        var ground;
        ground = Okeyground(document.getElementById('ground7'), {
          events: {
            move: function(key, piece) {
              console.log('events move', key, piece);
+
+             if (key === 'dm') {
+               setTimeout(function() {
+                 ground.apiDrawMiddleEnd('r10')
+               }, 1000);
+             }
            }
          },
          movable: {
@@ -27,6 +73,22 @@
            }
          }
        });
+
+       var onMove = function() {
+         setTurn(ground, 'north');
+         delay(aiMove.bind(null, ground, 'west'), 1000);
+         delay(aiMove.bind(null, ground, 'south'), 4000);
+         delay(aiMove.bind(null, ground, 'east'), 8000);
+       };
+       var onMoveLeft = function() {
+         console.log('move left');
+         setTurn(ground, 'north');
+         delay(aiMoveLeft.bind(null, ground, 'west'), 1000);
+         delay(aiMoveLeft.bind(null, ground, 'south'), 4000);
+         delay(aiMoveLeft.bind(null, ground, 'east'), 8000);
+       };
+       //onMove();
+       //delay(onMoveLeft.bind(null), 12000);
      })();
     </script>
     </section>
