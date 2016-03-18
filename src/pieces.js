@@ -1,13 +1,13 @@
 import util from './util';
 
-var colors = {
+const colors = {
   b: 'blue',
   r: 'red',
   g: 'green',
   l: 'black'
 };
 
-var numbers = {
+const numbers = {
   '1': 'one',
   '2': 'two',
   '3': 'three',
@@ -23,16 +23,25 @@ var numbers = {
   '13': 'thirteen'
 };
 
-const allPieces = (() => {
+function colorSeries(color) {
   var ps = [];
-  for (var color in colors) {
-    for (var number in numbers) {
-      ps.push(makePiece(color, number));
-    }
-  };
+  for (var number in numbers) {
+    ps.push(makePiece(color, number).key);
+  }
   return ps;
+};
+
+const allSeries = (() => {
+  var s = {};
+  for (var color in colors) {
+    s[colors[color]] = colorSeries(color);
+  }
+  return s;
 })();
 
+const seriesByColor = (color) => allSeries[color];
+
+var rainbow = 'r1g1l1b1 r2g2l2b2 r3g3l3b3 r4g4l4b4 r13g13l13b13 r1g1l1b1';
 var initial = 'r1r2 r3r4r5r6r7r8r9r10r11r12r13l1l2l3l4l5l6l7   g1g2  l3';
 var initialMiddles = '20l3';
 var initialDiscards = ' r2r3l1';
@@ -113,6 +122,28 @@ function readPiece(str) {
 }
 
 function readPieceGroup(str) {
+  var res = [], current = [];
+
+  var i = 0;
+
+  while (str.length > 0) {
+    var parsed = readPiece(str);
+
+    if (parsed.piece) {
+      current.push(parsed.piece);
+    } else {
+      if (current.length > 0) {
+        res.push(current);
+      }
+      current = [];
+    }
+    str = parsed.left;
+  }
+
+  return res;
+}
+
+function readBoardPieceGroup(str) {
   var res = [];
 
   var i = 0;
@@ -123,18 +154,17 @@ function readPieceGroup(str) {
     if (parsed.piece) {
       res[i] = parsed.piece;
     }
-    i ++;
+    i++;
     str = parsed.left;
   }
 
   return res;
 }
 
-
 function readBoard(pieces) {
-  var res = [];
+  var res = {};
 
-  pieces = readPieceGroup(pieces);
+  pieces = readBoardPieceGroup(pieces);
 
   for (var i = 0; i < pieces.length; i++) {
     if (pieces[i]) {
@@ -148,7 +178,7 @@ function readBoard(pieces) {
 function readDiscards(discards) {
   var res = {};
 
-  discards = readPieceGroup(discards);
+  discards = readBoardPieceGroup(discards);
 
   for (var i = 0; i < 4; i++) {
     res[util.discards[i]] = [];
@@ -161,51 +191,112 @@ function readDiscards(discards) {
 }
 
 function readOpenGroups(groups) {
-  var res = [];
-
   var [series, pairs] = groups.split('/');
   series = readPieceGroup(series);
   pairs = readPieceGroup(pairs);
+
+  var layout = layoutOpens(series, pairs);
+
+  return {
+    series,
+    pairs,
+    layout,
+    relayout: function(data) {
+      data.opens.layout = layoutOpens(data.opens.series, data.opens.pairs);
+    }
+  };
+}
+
+function layoutOpens(series, pairs) {
+  var layout = {};
+  var groupMap = { series: {}, pairs: {} };
 
   var startColumn = [];
   var i, key, column;
   var row = 0;
 
+  var c1, r1;
+
   for (i = 0; i < series.length; i++) {
-    if (series[i]) {
+    var serie = series[i];
+
+    c1 = (startColumn[row] || 1) - 1;
+    r1 = row;
+    groupMap.series[util.miniPos2key([c1, r1])] = i;
+
+    for (var j = 0; j<serie.length; j++) {
       column = startColumn[row] || 1;
       key = util.miniPos2key([column, row]);
-      res[key] = series[i];
+      layout[key] = serie[j];
       startColumn[row] = column + 1;
-    } else {
-      startColumn[row]+=2;
-      row++;
-      if (row >= util.miniRows) {
-        row = 0;
-      }
+    }
+
+    startColumn[row]+=2;
+    row++;
+    if (row >= util.miniRows) {
+      row = 0;
     }
   }
 
   startColumn = [];
-  i = 0; key = 0; column = 0;
+  i = 0; j = 0; key = 0; column = 0;
   row = 0;
 
   for (i = 0; i < pairs.length; i++) {
-    if (pairs[i]) {
+    var pair = pairs[i];
+
+    c1 = (startColumn[row] || util.miniColumns - 1) - 1;
+    r1 = row;
+    groupMap.pairs[util.miniPos2key([c1, r1])] = i;
+
+    for (j = 0; j < pair.length; j++) {
       column = startColumn[row] || util.miniColumns - 1;
       key = util.miniPos2key([column, row]);
-      res[key] = pairs[i];
+      layout[key] = pair[j];
       startColumn[row] = column - 1;
-    } else {
-      startColumn[row]-=1;
-      row++;
-      if (row >= util.miniRows) {
-        row = 0;
-      }
+    }
+    startColumn[row]-=1;
+    row++;
+    if (row >= util.miniRows) {
+      row = 0;
     }
   }
 
-  return res;
+  return { layout, groupMap };
+}
+
+function getOpenSerieFromPos(data, pos) {
+  var { series, layout: { groupMap } } = data.opens;
+  var [column, row] = pos;
+
+  for (var key in groupMap.series) {
+    var groupIndex = groupMap.series[key];
+    var group = series[groupIndex];
+    var [startColumn, startRow] = util.miniKey2pos(key);
+
+    var index = column - startColumn;
+
+    if (index < 0 || index > (group.length + 1) || row != startRow) continue;
+
+    return [groupIndex, index];
+  }
+}
+
+function getOpenPairFromPos(data, pos) {
+  var { pairs, layout: { groupMap } } = data.opens;
+  var [column, row] = pos;
+
+  for (var key in groupMap.pairs) {
+    var groupIndex = groupMap.pairs[key];
+    var group = pairs[groupIndex];
+    var [startColumn, startRow] = util.miniKey2pos(key);
+
+    var index = column - startColumn;
+
+    if (index < 0 || index > 1 || row != startRow) continue;
+
+    return [groupIndex, index];
+  }
 }
 
 function readMiddles(middles) {
@@ -240,6 +331,7 @@ function makePiece(color, number) {
 
 module.exports = {
   initial: initial,
+  rainbow: rainbow,
   read: read,
   readPiece: readPiece,
   readBoard: readBoard,
@@ -248,5 +340,10 @@ module.exports = {
   initialOpenGroups: initialOpenGroups,
   readMiddles: readMiddles,
   readDiscards: readDiscards,
-  readOpenGroups: readOpenGroups
+  readOpenGroups: readOpenGroups,
+  layoutOpens: layoutOpens,
+  seriesByColor: seriesByColor,
+  colors: colors,
+  getOpenSerieFromPos: getOpenSerieFromPos,
+  getOpenPairFromPos: getOpenPairFromPos
 };

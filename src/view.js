@@ -216,7 +216,7 @@ function renderOpenGroups(ctrl, groups) {
 function renderOpens(ctrl) {
   var d = ctrl.data;
 
-  var children = renderOpenGroups(ctrl, d.opens);
+  var children = renderOpenGroups(ctrl, d.opens.layout.layout);
 
   return {
     tag: 'div',

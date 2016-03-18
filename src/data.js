@@ -6,7 +6,7 @@ module.exports = function(cfg) {
   var defaults = {
     povSide: 'east', // side of board
     turnSide: 'east', // turn to play. east | west | north | south
-    pieces: pieces.readBoard(pieces.initial),
+    pieces: pieces.readBoard(pieces.rainbow),
     discards: pieces.readDiscards(pieces.initialDiscards), // array of discarded pieces
     opens: pieces.readOpenGroups(pieces.initialOpenGroups),
     middles: pieces.readMiddles(pieces.initialMiddles),

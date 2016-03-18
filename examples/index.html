@@ -10,17 +10,27 @@
 
     <section>
     <div class="okeyground normal" id="ground7"></div>
+    <button onclick="openSeries(window.ground1)">Open Series</button>
+    <button onclick="openPairs(window.ground1)">Open Pairs</button>
     <script>
 
-      function delay(f, d) {
-        d = d | 1000;
-        setTimeout(f, d);
-      }
+     function delay(f, d) {
+       d = d | 1000;
+       setTimeout(f, d);
+     }
 
      function setTurn(ground, side) {
        ground.set({
          turnSide: side
        });
+     }
+
+     function openSeries(ground) {
+       ground.playOpenSeries();
+     }
+
+     function openPairs(ground) {
+       ground.playOpenPairs();
      }
 
      function aiMove(ground, side) {
@@ -69,11 +79,13 @@
            events: {
              after: function(key, piece) {
                console.log('movable events after', key, piece);
-               onMove();
+               //onMove();
              }
            }
          }
        });
+
+       window.ground1 = ground;
 
        var onMove = function() {
          setTurn(ground, 'north');

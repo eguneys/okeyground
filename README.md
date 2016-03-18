@@ -103,12 +103,18 @@ opponent
 
 ### API
 
-// reconfigure the instance. Accepts all options mentioned above.
-ground.set(options);
+    // reconfigure the instance. Accepts all options mentioned above.
+    ground.set(options);
 
-// make a move for turn side.
-// dm | dl | dd | lt
-ground.apiMove(move, piece);
+    // make a move for turn side.
+    // dm | dl | dd | lt
+    ground.apiMove(move, piece);
 
-// provide the drawn middle piece, required to end the draw middle progress.
-ground.apiDrawMiddleEnd(piece)
+    // provide the drawn middle piece, required to end the draw middle progress.
+    ground.apiDrawMiddleEnd(piece)
+
+
+#### Getters
+
+    // get piece groups on board
+    var pieceGroups = ground.getPieceGroups();

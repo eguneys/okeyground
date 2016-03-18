@@ -13,4 +13,8 @@ module.exports = function(cfg) {
   this.apiMove = anim(table.apiMove, this.data);
 
   this.apiDrawMiddleEnd = anim(board.apiDrawMiddleEnd, this.data);
+
+  this.playOpenSeries = anim(board.playOpenSeries, this.data);
+
+  this.playOpenPairs = anim(board.playOpenPairs, this.data);
 };

@@ -12,5 +12,6 @@ module.exports = function(data, config) {
     data.discards = fen.discards;
     data.opens = fen.opens;
     data.middles = fen.middles;
+    delete data.fen;
   }
 }

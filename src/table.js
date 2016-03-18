@@ -48,10 +48,42 @@ function baseOpponentLeaveTaken(data, dest, piece) {
 
 function basePlaceOpens(data, orig, dest) {
   if (!data.pieces[orig]) return false;
-  callUserFunction(util.partial(data.events.move, move.placeOpens));
-  data.opens[dest] = data.pieces[orig];
-  delete data.pieces[orig];
-  return true;
+  var piece = data.pieces[orig];
+
+  var seriePos = pieces.getOpenSerieFromPos(data, util.miniKey2pos(dest));
+
+  if (seriePos) {
+    callUserFunction(util.partial(data.events.move, move.placeOpens));
+
+    var [groupIndex, index] = seriePos;
+    var group = data.opens.series[groupIndex];
+
+    var isAppend = (index === 0 || index === group.length + 1) ? 0: 1;
+
+    group.splice(index - isAppend, isAppend, piece);
+
+    data.opens.relayout(data);
+
+    delete data.pieces[orig];
+    return true;
+  }
+
+  var pairPos = pieces.getOpenPairFromPos(data, util.miniKey2pos(dest));
+
+  if (pairPos) {
+    callUserFunction(util.partial(data.events.move, move.placeOpens));
+
+    [groupIndex, index] = pairPos;
+    group = data.opens.pairs[groupIndex];
+
+    group.splice((index + 1) % 2, 1, piece);
+
+    data.opens.relayout(data);
+
+    delete data.pieces[orig];
+  }
+
+  return false;
 }
 
 function basePlaceDiscard(data, orig, dest) {

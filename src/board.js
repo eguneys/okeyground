@@ -1,13 +1,51 @@
 import util from './util';
 import move from './move';
 import pieces from './pieces';
+import open from './open';
 
 const { callUserFunction }  = util;
+
+function playOpenSeries(data) {
+  var groups = getPieceGroupKeys(data);
+  groups = groups.filter(group => canOpenSeries(data, group));
+  if (groups.length > 0) {
+    baseOpenSeries(data, groups);
+  }
+}
+
+function playOpenPairs(data) {
+  var groups = getPieceGroupKeys(data);
+  groups = groups.filter(group => canOpenPairs(data, group));
+  if (groups.length > 0) {
+    baseOpenPairs(data, groups);
+  }
+}
 
 function apiDrawMiddleEnd(data, piece) {
   piece = pieces.readPiece(piece).piece;
   data.middleHolder.piece = piece;
   baseSettleMiddleHolder(data);
+}
+
+
+function baseOpenPairs(data, groups) {
+  var groupPieces = groups.map(group => group.map(_ => data.pieces[_]));
+
+  groups.forEach(group => group.map(key => delete data.pieces[key]));
+
+  var pairs = data.opens.pairs.concat(groupPieces);
+  data.opens.pairs = pairs;
+  data.opens.relayout(data);
+}
+
+function baseOpenSeries(data, groups) {
+  var groupPieces = groups.map(group => group.map(_ => data.pieces[_]));
+
+  groups.forEach(group => group.map(key => delete data.pieces[key]));
+
+  var series = data.opens.series.concat(groupPieces);
+  data.opens.series = series;
+  data.opens.relayout(data);
 }
 
 function baseSettleMiddleHolder(data) {
@@ -140,6 +178,10 @@ function setSelected(data, key) {
   data.selected = key;
 }
 
+function isTurnMovable(data) {
+  return data.povSide === data.turnSide;
+}
+
 function isMovable(data, orig) {
   var piece = data.pieces[orig];
   return piece;
@@ -151,7 +193,7 @@ function canMove(data, orig, dest) {
 }
 
 function isDrawable(data) {
-  return data.povSide === data.turnSide;
+  return isTurnMovable(data);
 }
 
 function canDrawMiddle(data, orig) {
@@ -164,6 +206,16 @@ function canEndDrawMiddle(data) {
 
 function canDrawLeft(data, orig, dest) {
   return isDrawable(data) && !canEndDrawMiddle(data);
+}
+
+function canOpenSeries(data, group) {
+  return isTurnMovable(data) &&
+    open.series(group.map(key => data.pieces[key]));
+}
+
+function canOpenPairs(data, group) {
+  return isTurnMovable(data) &&
+    open.pairs(group.map(key => data.pieces[key]));
 }
 
 function findFreePlaceForMiddlePiece(data) {
@@ -202,7 +254,41 @@ function getKeyAtDomPos(data, pos, bounds) {
     return util.pos2key([column, row]);
 };
 
+function getPieceGroups(data) {
+  return getPieceGroupKeys(data)
+    .map(group => group.map((key) => data.pieces[key]));
+}
+
+function getPieceGroupKeys(data) {
+  const firstRowLastKey = util.pos2key([util.columns - 1, 0]);
+  var nexts = util.allKeys.slice(1);
+  var [current, groups] = util.allKeys.map((key, i) => {
+    return [key, nexts[i]];
+  }).reduce(([current, groups], [key1, key2]) => {
+    if (data.pieces[key1]) {
+      current.push(key1);
+    }
+    if (key1 && !data.pieces[key1] && key2 && !data.pieces[key2] ||
+        key1 === firstRowLastKey) {
+      if (current.length !== 0) {
+        groups.push(current);
+        current = [];
+      }
+    }
+
+    return [current, groups];
+  }, [[], []]);
+
+  if (current.length !== 0) {
+    groups.push(current);
+  }
+
+  return groups;
+}
+
 module.exports = {
+  playOpenSeries: playOpenSeries,
+  playOpenPairs: playOpenPairs,
   apiDrawMiddleEnd, apiDrawMiddleEnd,
   userMove: userMove,
   userDrawLeft: userDrawLeft,
@@ -212,5 +298,6 @@ module.exports = {
   selectTop: selectTop,
   setSelected: setSelected,
   getKeyAtDomPos: getKeyAtDomPos,
-  getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece
+  getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece,
+  getPieceGroups: getPieceGroups
 };
