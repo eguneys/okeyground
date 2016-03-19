@@ -6,7 +6,7 @@ const sign = "ss";
 const openSeries = "os";
 const openPairs = "op";
 const collectOpen = "co";
-const placeOpens = "po";
+const dropOpens = "do";
 
 module.exports = {
   drawMiddle: drawMiddle,
@@ -17,5 +17,5 @@ module.exports = {
   openSeries: openSeries,
   openPairs: openPairs,
   collectOpen: collectOpen,
-  placeOpens: placeOpens
+  dropOpens: dropOpens
 };

@@ -40,10 +40,10 @@ function start(data, e) {
 
   if (!orig && previouslySelected) {
     if ((orig = table.getOpensKeyAtDomPos(data, position, opensBounds))) {
-      table.placeOpens(data, previouslySelected, orig);
+      table.dropOpens(data, previouslySelected, orig);
     } else {
       if ((orig = table.getDiscardKeyAtDomPos(data, position, topBounds))) {
-        table.placeTop(data, previouslySelected, orig);
+        table.dropTop(data, previouslySelected, orig);
       }
     }
   }
@@ -116,8 +116,8 @@ function end(data, e) {
   if (draggable.current.started) {
     board.setSelected(data, null);
     if (board.userMove(data, orig, dest)) {
-    } else if (table.placeOpens(data, orig, dest)) {
-    } else if (table.placeTop(data, orig, dest)) {
+    } else if (table.dropOpens(data, orig, dest)) {
+    } else if (table.dropTop(data, orig, dest)) {
     } else if (board.userDrawLeft(data, orig, dest)) {
     } else if (board.userEndDrawMiddle(data, orig, dest)) {
     }

@@ -61,7 +61,7 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
   height: $top-height;
 }
 
-.og-top .drag-over {
+.og-top .oc {
   position: absolute;
   height: $top-piece-height;
   width: $piece-width;
@@ -86,7 +86,7 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
   width: $top-piece-width;
 }
 
-.og-top piece.mgosterge {
+.og-top .mgosterge {
   bottom: 0%;
   left: $top-piece-width * ($i-top-cols - 3)
 }
@@ -146,7 +146,7 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
   width: $opens-piece-width;
 }
 
-.og-opens .drag-over {
+.og-opens .oc {
   position: absolute;
   height: $opens-piece-height;
   width: $opens-piece-width;
@@ -194,6 +194,11 @@ piece.dragging {
   cursor: move;
 }
 
+.move-dest {
+  background: radial-gradient(transparent 0%, transparent 70%, rgba(20, 85, 30, 0.5) 80%);
+}
+
 .drag-over {
-  box-shadow: inset 0 0 10px 2px rgba(216, 85, 0, 0.9)
+  background: rgba(20, 85, 30, 0.3);
+  //box-shadow: inset 0 0 10px 2px rgba(216, 85, 0, 0.9)
 }

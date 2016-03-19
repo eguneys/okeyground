@@ -123,34 +123,48 @@ function renderPiece(ctrl, pos, key, p) {
   };
 }
 
-function renderTopDragOver(ctrl, key) {
-  return {
-    tag: 'div',
-    attrs: {
-      class: 'drag-over ' + key
-    }
+function renderTopWithClass(klass) {
+  return function(ctrl, key) {
+    return {
+      tag: 'div',
+      attrs: {
+        class: klass + ' oc ' + key
+      }
+    };
   };
 }
 
-function renderMiniDragOver(ctrl, pos) {
-  return {
-    tag: 'div',
-    attrs: {
-      style: miniPosStyle(pos),
-      class: 'drag-over'
-    }
+function renderMiniWithClass(klass) {
+  return function(ctrl, pos) {
+    return {
+      tag: 'div',
+      attrs: {
+        style: miniPosStyle(pos),
+        class: klass + ' oc'
+      }
+    };
   };
 }
 
-function renderDragOver(ctrl, pos) {
-  return {
-    tag: 'div',
-    attrs: {
-      style: posStyle(pos),
-      class: 'drag-over'
-    }
+function renderBoardPieceWithClass(klass) {
+  return function(ctrl, pos) {
+    return {
+      tag: 'div',
+      attrs: {
+        style: posStyle(pos),
+        class: klass
+      }
+    };
   };
 }
+
+const renderTopDragOver = renderTopWithClass('drag-over');
+const renderDragOver = renderBoardPieceWithClass('drag-over');
+const renderMiniDragOver = renderMiniWithClass('drag-over');
+
+
+const renderMiniDest = renderMiniWithClass('move-dest');
+const renderTopDest = renderTopWithClass('move-dest');
 
 function renderBoard(ctrl) {
   var d = ctrl.data;
@@ -192,6 +206,7 @@ function renderOpenGroups(ctrl, groups) {
   var positions = util.miniAllPos;
   var children = [];
   var dragOver;
+  var miniDests = [];
 
   for (var i = 0; i < positions.length; i++) {
     var key = util.miniPos2key(positions[i]);
@@ -204,11 +219,16 @@ function renderOpenGroups(ctrl, groups) {
     if (d.draggable.current.over === key) {
       dragOver = renderMiniDragOver(ctrl, positions[i]);
     }
+
+    if (!piece || piece.color === "red")
+      miniDests.push(renderMiniDest(ctrl, positions[i]));
   }
 
   if (dragOver) {
     children.push(dragOver);
   }
+
+  children.push(miniDests);
 
   return children;
 }
@@ -251,6 +271,12 @@ function renderDiscards(ctrl) {
 
   if (dragOver) {
     children.push(dragOver);
+  }
+
+  var topDest = renderTopDest(ctrl, 'ddown');
+
+  if (topDest) {
+    children.push(topDest);
   }
 
   return children;

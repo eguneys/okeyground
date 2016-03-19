@@ -69,7 +69,7 @@ function baseUserMove(data, orig, dest) {
 
 function baseUserEndDrawMiddle(data, orig, dest) {
   if (!dest || data.pieces[dest]) {
-    var freeDest = findFreePlaceForMiddlePiece(data);
+    var freeDest = findFreeDropForMiddlePiece(data);
     dest = freeDest;
   }
   callUserFunction(util.partial(data.events.move, move.drawMiddleEnd));
@@ -176,6 +176,9 @@ function selectSquare(data, key) {
 
 function setSelected(data, key) {
   data.selected = key;
+
+  if (key && util.isBoardKey(key)) {
+  }
 }
 
 function isTurnMovable(data) {
@@ -218,7 +221,7 @@ function canOpenPairs(data, group) {
     open.pairs(group.map(key => data.pieces[key]));
 }
 
-function findFreePlaceForMiddlePiece(data) {
+function findFreeDropForMiddlePiece(data) {
   var nexts = util.allKeys.slice(1);
   var nnexts = util.allKeys.slice(2);
   var frees = util.allKeys.map((key, i) => {

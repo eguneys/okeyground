@@ -46,14 +46,14 @@ function baseOpponentLeaveTaken(data, dest, piece) {
   return true;
 }
 
-function basePlaceOpens(data, orig, dest) {
+function baseDropOpens(data, orig, dest) {
   if (!data.pieces[orig]) return false;
   var piece = data.pieces[orig];
 
   var seriePos = pieces.getOpenSerieFromPos(data, util.miniKey2pos(dest));
 
   if (seriePos) {
-    callUserFunction(util.partial(data.events.move, move.placeOpens));
+    callUserFunction(util.partial(data.events.move, move.dropOpens));
 
     var [groupIndex, index] = seriePos;
     var group = data.opens.series[groupIndex];
@@ -71,7 +71,7 @@ function basePlaceOpens(data, orig, dest) {
   var pairPos = pieces.getOpenPairFromPos(data, util.miniKey2pos(dest));
 
   if (pairPos) {
-    callUserFunction(util.partial(data.events.move, move.placeOpens));
+    callUserFunction(util.partial(data.events.move, move.dropOpens));
 
     [groupIndex, index] = pairPos;
     group = data.opens.pairs[groupIndex];
@@ -86,7 +86,7 @@ function basePlaceOpens(data, orig, dest) {
   return false;
 }
 
-function basePlaceDiscard(data, orig, dest) {
+function baseDropDiscard(data, orig, dest) {
   const piece = data.pieces[orig];
   if (!piece) return false;
   callUserFunction(util.partial(data.events.move, move.discard, piece.key));
@@ -105,11 +105,11 @@ function baseGosterge(data, orig) {
   return false;
 }
 
-function placeOpens(data, orig, dest) {
+function dropOpens(data, orig, dest) {
   if (dest && util.isOpensKey(dest)) {
-    if (canPlaceOpens(data, orig, dest)) {
-      if (basePlaceOpens(data, orig, dest)) {
-        callUserFunction(util.partial(data.movable.events.after, move.placeOpens));
+    if (canDropOpens(data, orig, dest)) {
+      if (baseDropOpens(data, orig, dest)) {
+        callUserFunction(util.partial(data.movable.events.after, move.dropOpens));
         return true;
       }
     }
@@ -117,11 +117,11 @@ function placeOpens(data, orig, dest) {
   return false;
 }
 
-function placeTop(data, orig, dest) {
+function dropTop(data, orig, dest) {
   var piece = data.pieces[orig];
   if (dest && dest === util.discards[2]) {
     if (canDiscard(data, orig, dest)) {
-      if (basePlaceDiscard(data, orig, dest)) {
+      if (baseDropDiscard(data, orig, dest)) {
         callUserFunction(util.partial(data.movable.events.after, move.discard, piece.key));
         return true;
       }
@@ -155,7 +155,7 @@ function isMovable(data) {
   return data.povSide === data.turnSide;
 }
 
-function canPlaceOpens(data, orig, dest) {
+function canDropOpens(data, orig, dest) {
   return isMovable(data);
 }
 
@@ -213,8 +213,8 @@ const getDiscardKeyAtDomPos = withRowColumn(function(row, column) {
 export default {
   apiMove,
   selectTop,
-  placeTop,
-  placeOpens,
+  dropTop,
+  dropOpens,
   isDraggable,
   getDrawKeyAtDomPos,
   getDiscardKeyAtDomPos,
