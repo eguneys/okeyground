@@ -33,6 +33,10 @@
        ground.playOpenPairs();
      }
 
+     function leaveTaken(ground) {
+       ground.playLeaveTaken();
+     }
+
      function aiMove(ground, side) {
        console.log('draw middle', side);
        ground.apiMove('dm');
@@ -76,7 +80,7 @@
            }
          },
          movable: {
-           dests: ['dd', 'dl', 'dm', 'do', 'os'],
+           dests: ['dd', 'dl', 'dm', 'do', 'os', 'op'],
            events: {
              after: function(key, piece) {
                console.log('movable events after', key, piece);

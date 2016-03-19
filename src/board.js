@@ -7,19 +7,29 @@ import table from './table';
 const { callUserFunction }  = util;
 
 function playOpenSeries(data) {
-  var groups = getPieceGroupKeys(data);
-  groups = groups.filter(group => canOpenSeries(data, group));
-  if (groups.length > 0) {
-    baseOpenSeries(data, groups);
+  if (canOpenSeries(data)) {
+    var groups = getPieceGroupKeys(data);
+    groups = groups
+      .filter(group => open.series(group.map(key => data.pieces[key])));
+    if (groups.length > 0) {
+      baseOpenSeries(data, groups);
+      return true;
+    }
   }
+  return false;
 }
 
 function playOpenPairs(data) {
-  var groups = getPieceGroupKeys(data);
-  groups = groups.filter(group => canOpenPairs(data, group));
-  if (groups.length > 0) {
-    baseOpenPairs(data, groups);
+  if (canOpenPairs(data)) {
+    var groups = getPieceGroupKeys(data);
+    groups = groups
+      .filter(group => open.pairs(group.map(key => data.pieces[key])));
+    if (groups.length > 0) {
+      baseOpenPairs(data, groups);
+      return true;
+    }
   }
+  return false;
 }
 
 function apiDrawMiddleEnd(data, piece) {
@@ -221,16 +231,19 @@ function canDrawLeft(data, orig, dest) {
     util.containsX(data.movable.dests, move.drawLeft);
 }
 
-function canOpenSeries(data, group) {
+function canOpenSeries(data) {
   return isTurnMovable(data) &&
-    util.containsX(data.movable.dests, move.openSeries) &&
-    open.series(group.map(key => data.pieces[key]));
+    util.containsX(data.movable.dests, move.openSeries);
 }
 
-function canOpenPairs(data, group) {
+function canOpenPairs(data) {
   return isTurnMovable(data) &&
-    open.pairs(group.map(key => data.pieces[key])) &&
     util.containsX(data.movable.dests, move.openPairs);
+}
+
+function canLeaveTaken(data) {
+  return isTurnMovable(data) &&
+    util.containsX(data.movable.dests, move.leaveTaken);
 }
 
 function findFreeDropForMiddlePiece(data) {
@@ -312,6 +325,9 @@ module.exports = {
   selectSquare: selectSquare,
   selectTop: selectTop,
   setSelected: setSelected,
+  canOpenSeries: canOpenSeries,
+  canOpenPairs: canOpenPairs,
+  canLeaveTaken: canLeaveTaken,
   getKeyAtDomPos: getKeyAtDomPos,
   getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece,
   getPieceGroups: getPieceGroups

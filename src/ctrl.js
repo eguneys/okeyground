@@ -17,4 +17,10 @@ module.exports = function(cfg) {
   this.playOpenSeries = anim(board.playOpenSeries, this.data);
 
   this.playOpenPairs = anim(board.playOpenPairs, this.data);
+
+  //this.playLeaveTaken = anim(board.playLeaveTaken, this.data);
+
+  this.canLeaveTaken = util.partial(board.canLeaveTaken, this.data);
+  this.canOpenSeries = util.partial(board.canOpenSeries, this.data);
+  this.canOpenPairs = util.partial(board.canOpenPairs, this.data);
 };
