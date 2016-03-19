@@ -1,6 +1,7 @@
 import m from 'mithril';
 import drag from './drag';
 import util from './util';
+import move from './move';
 
 function pieceClass(p) {
   return p.color + ' ' + p.number;
@@ -123,48 +124,34 @@ function renderPiece(ctrl, pos, key, p) {
   };
 }
 
-function renderTopWithClass(klass) {
-  return function(ctrl, key) {
-    return {
-      tag: 'div',
-      attrs: {
-        class: klass + ' oc ' + key
-      }
-    };
+function renderTopWithClass(klass, ctrl, key) {
+  return {
+    tag: 'div',
+    attrs: {
+      class: klass + ' oc ' + key
+    }
   };
 }
 
-function renderMiniWithClass(klass) {
-  return function(ctrl, pos) {
-    return {
-      tag: 'div',
-      attrs: {
-        style: miniPosStyle(pos),
-        class: klass + ' oc'
-      }
-    };
+function renderMiniWithClass(klass, ctrl, pos) {
+  return {
+    tag: 'div',
+    attrs: {
+      style: miniPosStyle(pos),
+      class: klass + ' oc'
+    }
   };
 }
 
-function renderBoardPieceWithClass(klass) {
-  return function(ctrl, pos) {
-    return {
-      tag: 'div',
-      attrs: {
-        style: posStyle(pos),
-        class: klass
-      }
-    };
+function renderBoardPieceWithClass(klass, ctrl, pos) {
+  return {
+    tag: 'div',
+    attrs: {
+      style: posStyle(pos),
+      class: klass
+    }
   };
 }
-
-const renderTopDragOver = renderTopWithClass('drag-over');
-const renderDragOver = renderBoardPieceWithClass('drag-over');
-const renderMiniDragOver = renderMiniWithClass('drag-over');
-
-
-const renderMiniDest = renderMiniWithClass('move-dest');
-const renderTopDest = renderTopWithClass('move-dest');
 
 function renderBoard(ctrl) {
   var d = ctrl.data;
@@ -180,7 +167,7 @@ function renderBoard(ctrl) {
     }
 
     if (d.draggable.current.over === key) {
-      dragOver = renderDragOver(ctrl, positions[i]);
+      dragOver = renderBoardPieceWithClass('drag-over', ctrl, positions[i]);
     }
   }
 
@@ -205,7 +192,6 @@ function renderOpenGroups(ctrl, groups) {
   var d = ctrl.data;
   var positions = util.miniAllPos;
   var children = [];
-  var dragOver;
   var miniDests = [];
 
   for (var i = 0; i < positions.length; i++) {
@@ -216,16 +202,14 @@ function renderOpenGroups(ctrl, groups) {
       children.push(renderMiniPiece(ctrl, positions[i], key, piece));
     }
 
-    if (d.draggable.current.over === key) {
-      dragOver = renderMiniDragOver(ctrl, positions[i]);
+    var miniKlass = util.classSet({
+      'drag-over': d.draggable.current.over === key,
+      'move-dest': util.containsX(d.openable.dests, key)
+    });
+
+    if (miniKlass !== '') {
+      miniDests.push(renderMiniWithClass(miniKlass, ctrl, positions[i]));
     }
-
-    if (!piece || piece.color === "red")
-      miniDests.push(renderMiniDest(ctrl, positions[i]));
-  }
-
-  if (dragOver) {
-    children.push(dragOver);
   }
 
   children.push(miniDests);
@@ -255,7 +239,7 @@ function renderOpens(ctrl) {
 function renderDiscards(ctrl) {
   var d = ctrl.data;
   var children = [];
-  var dragOver;
+  var topDests = [];
 
   for (var key in d.discards) {
     var piece = d.discards[key][0];
@@ -264,20 +248,17 @@ function renderDiscards(ctrl) {
       children.push(renderTopPiece(ctrl, key, piece));
     }
 
-    if (d.draggable.current.over === key) {
-      dragOver = renderTopDragOver(ctrl, key);
+    var miniKlass = util.classSet({
+      'drag-over': d.draggable.current.over === key,
+      'move-dest': key === 'ddown' && d.selected && util.isBoardKey(d.selected) && util.containsX(d.movable.dests, move.discard)
+    });
+
+    if (miniKlass !== '') {
+      topDests.push(renderTopWithClass(miniKlass, ctrl, key));
     }
   }
 
-  if (dragOver) {
-    children.push(dragOver);
-  }
-
-  var topDest = renderTopDest(ctrl, 'ddown');
-
-  if (topDest) {
-    children.push(topDest);
-  }
+  children.push(topDests);
 
   return children;
 }
@@ -293,7 +274,7 @@ function renderMiddles(ctrl) {
   children.push(renderMiddlePiece(ctrl, util.middleCount, draggingMiddlePiece, true));
 
   if (d.draggable.current.over === util.gosterge) {
-    children.push(renderTopDragOver(ctrl, util.gosterge));
+    children.push(renderTopWithClass('drag-over', ctrl, util.gosterge));
   }
 
   return children;

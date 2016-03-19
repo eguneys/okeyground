@@ -128,6 +128,10 @@ function classSet(classes) {
   return arr.join(' ');
 }
 
+function containsX(xs, x) {
+  return xs && xs.indexOf(x) !== -1;
+}
+
 function eventPosition(e) {
   return [e.clientX, e.clientY];
 }
@@ -209,6 +213,7 @@ module.exports = {
   middleCount: middleCountKey,
   gosterge: gostergeKey,
   classSet: classSet,
+  containsX: containsX,
   eventPosition: eventPosition,
   distance: distance,
   transformProp: transformProp,

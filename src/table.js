@@ -1,6 +1,7 @@
 import util from './util';
 import move from './move';
 import pieces from './pieces';
+import open from './open';
 
 const { callUserFunction }  = util;
 
@@ -151,16 +152,30 @@ function isDraggable(data, key) {
   } else return util.isBoardKey(key);
 }
 
+function isDroppableOpens(data, key) {
+  var piece = data.pieces[key];
+
+  if (piece && data.povSide === data.turnSide) {
+    return true;
+  }
+  return false;
+}
+
 function isMovable(data) {
   return data.povSide === data.turnSide;
 }
 
 function canDropOpens(data, orig, dest) {
-  return isMovable(data);
+  return isDroppableOpens(data, orig) &&
+    util.isBoardKey(orig) &&
+    util.isOpensKey(dest) &&
+    util.containsX(data.movable.dests, move.dropOpens) &&
+    util.containsX(open.compute(data.opens, data.pieces[orig]), dest);
 }
 
 function canDiscard(data, orig, dest) {
-  return isMovable(data);
+  return isMovable(data) &&
+    util.containsX(data.movable.dests, move.discard);
 }
 
 function canGosterge(data, orig) {
@@ -216,6 +231,7 @@ export default {
   dropTop,
   dropOpens,
   isDraggable,
+  isDroppableOpens,
   getDrawKeyAtDomPos,
   getDiscardKeyAtDomPos,
   getOpensKeyAtDomPos

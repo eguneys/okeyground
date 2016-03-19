@@ -2,6 +2,7 @@ import util from './util';
 import move from './move';
 import pieces from './pieces';
 import open from './open';
+import table from './table';
 
 const { callUserFunction }  = util;
 
@@ -178,6 +179,13 @@ function setSelected(data, key) {
   data.selected = key;
 
   if (key && util.isBoardKey(key)) {
+    if (table.isDroppableOpens(data, key)) {
+      data.openable.dests = open.compute(data.opens, data.pieces[key]);
+    } else {
+      data.openable.dests = [];
+    }
+  } else {
+    data.openable.dests = [];
   }
 }
 
@@ -200,7 +208,8 @@ function isDrawable(data) {
 }
 
 function canDrawMiddle(data, orig) {
-  return isDrawable(data) && !data.middleHolder.current;
+  return isDrawable(data) && !data.middleHolder.current &&
+    util.containsX(data.movable.dests, move.drawMiddle);
 }
 
 function canEndDrawMiddle(data) {
@@ -208,17 +217,20 @@ function canEndDrawMiddle(data) {
 }
 
 function canDrawLeft(data, orig, dest) {
-  return isDrawable(data) && !canEndDrawMiddle(data);
+  return isDrawable(data) && !canEndDrawMiddle(data) &&
+    util.containsX(data.movable.dests, move.drawLeft);
 }
 
 function canOpenSeries(data, group) {
   return isTurnMovable(data) &&
+    util.containsX(data.movable.dests, move.openSeries) &&
     open.series(group.map(key => data.pieces[key]));
 }
 
 function canOpenPairs(data, group) {
   return isTurnMovable(data) &&
-    open.pairs(group.map(key => data.pieces[key]));
+    open.pairs(group.map(key => data.pieces[key])) &&
+    util.containsX(data.movable.dests, move.openPairs);
 }
 
 function findFreeDropForMiddlePiece(data) {

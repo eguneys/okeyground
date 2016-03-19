@@ -41,6 +41,7 @@ const allSeries = (() => {
 
 const seriesByColor = (color) => allSeries[color];
 
+var mixed = 'g7r7b7l7 g8r8b8l8 g13r13b13l13 l12 r6r5r4r12r13 g9g8g13 g6 l8l7l12';
 var rainbow = 'r1g1l1b1 r2g2l2b2 r3g3l3b3 r4g4l4b4 r13g13l13b13 r1g1l1b1';
 var initial = 'r1r2 r3r4r5r6r7r8r9r10r11r12r13l1l2l3l4l5l6l7   g1g2  l3';
 var initialMiddles = '20l3';
@@ -265,6 +266,26 @@ function layoutOpens(series, pairs) {
   return { layout, groupMap };
 }
 
+function getOpenKeyFromGroupIndex(groupMap, groupIndex, index) {
+  for (var key in groupMap) {
+    if (groupMap[key] === groupIndex) {
+      var [column, row] = util.miniKey2pos(key);
+      var pos = [column + index, row];
+      return util.miniPos2key(pos);
+    }
+  }
+}
+
+function getOpenPairKeyFromGroupIndex(opens, groupIndex, index) {
+  var groupMap = opens.layout.groupMap.pairs;
+  return getOpenKeyFromGroupIndex(groupMap, groupIndex, index);
+}
+
+function getOpenSerieKeyFromGroupIndex(opens, groupIndex, index) {
+  var groupMap = opens.layout.groupMap.series;
+  return getOpenKeyFromGroupIndex(groupMap, groupIndex, index);
+}
+
 function getOpenSerieFromPos(data, pos) {
   var { series, layout: { groupMap } } = data.opens;
   var [column, row] = pos;
@@ -332,6 +353,7 @@ function makePiece(color, number) {
 module.exports = {
   initial: initial,
   rainbow: rainbow,
+  mixed: mixed,
   read: read,
   readPiece: readPiece,
   readBoard: readBoard,
@@ -344,6 +366,8 @@ module.exports = {
   layoutOpens: layoutOpens,
   seriesByColor: seriesByColor,
   colors: colors,
+  getOpenSerieKeyFromGroupIndex: getOpenSerieKeyFromGroupIndex,
+  getOpenPairKeyFromGroupIndex: getOpenPairKeyFromGroupIndex,
   getOpenSerieFromPos: getOpenSerieFromPos,
   getOpenPairFromPos: getOpenPairFromPos
 };

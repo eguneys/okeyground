@@ -67,7 +67,30 @@ function pairs(group) {
   return p1.key === p2.key;
 }
 
+function compute(opens, piece) {
+  var result = [];
+
+  opens.series.forEach((group, i) => {
+    var appendLeft = group.slice(0);
+    var appendRight = group.slice(0);
+
+    appendLeft.splice(0, 0, piece);
+    appendRight.splice(group.length, 0, piece);
+
+    if (series(appendLeft)) {
+      result.push(pieces.getOpenSerieKeyFromGroupIndex(opens, i, 0));
+    }
+
+    if (series(appendRight)) {
+      result.push(pieces.getOpenSerieKeyFromGroupIndex(opens, i, group.length + 1));
+    }
+  });
+
+  return result;
+}
+
 export default {
+  compute,
   series,
   pairs
 };
