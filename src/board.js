@@ -246,6 +246,11 @@ function canLeaveTaken(data) {
     util.containsX(data.movable.dests, move.leaveTaken);
 }
 
+function canCollectOpen(data) {
+  return isTurnMovable(data) &&
+    util.containsX(data.movable.dests, move.collectOpen);
+}
+
 function findFreeDropForMiddlePiece(data) {
   var nexts = util.allKeys.slice(1);
   var nnexts = util.allKeys.slice(2);
@@ -328,6 +333,7 @@ module.exports = {
   canOpenSeries: canOpenSeries,
   canOpenPairs: canOpenPairs,
   canLeaveTaken: canLeaveTaken,
+  canCollectOpen: canCollectOpen,
   getKeyAtDomPos: getKeyAtDomPos,
   getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece,
   getPieceGroups: getPieceGroups

@@ -77,11 +77,24 @@ g12g12
 `;
 
 function readDigit(str) {
-  var number1 = parseInt(str[0]);
-  var number2 = parseInt(str[0] + str[1]);
+  var digitMap = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9
+  };
 
-  if (isNaN(number2)) {
-    if (isNaN(number1)) {
+  var number1 = digitMap[str[0]];
+  var number2 = digitMap[str[1]];
+
+  if (number2 === undefined) {
+    if (number1 === undefined) {
       return {
         left: str.slice(1)
       };
@@ -92,7 +105,7 @@ function readDigit(str) {
     };
   } else {
     return {
-      number: number2,
+      number: (number1 * 10) + number2,
       left: str.slice(2)
     };
   }
