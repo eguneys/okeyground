@@ -7,6 +7,8 @@ const topRows = 7;
 const miniColumns = 20;
 const miniRows = 8;
 
+const allSides = ['east', 'west', 'north', 'south'];
+
 const povMap = {
   east: { east: 'down', west: 'up', north: 'right', south: 'left' },
   west: { east: 'up', west: 'down', north: 'left', south: 'right' },
@@ -190,6 +192,7 @@ module.exports = {
   rows: rows,
   emptyPiece: emptyPiece,
   pieceEqual: pieceEqual,
+  allSides: allSides,
   allPos: allPos,
   allKeys: allKeys,
   topKey2pos: topKey2pos,

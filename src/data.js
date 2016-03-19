@@ -7,7 +7,7 @@ module.exports = function(cfg) {
     povSide: 'east', // side of board
     turnSide: 'east', // turn to play. east | west | north | south
     pieces: pieces.readBoard(pieces.mixed),
-    discards: pieces.readDiscards(pieces.initialDiscards), // array of discarded pieces
+    discards: pieces.readDiscards(pieces.initialDiscards, 'east'), // array of discarded pieces
     opens: pieces.readOpenGroups(pieces.initialOpenGroups),
     middles: pieces.readMiddles(pieces.initialMiddles),
     selected: null, // piece currently selected  poskey || null

@@ -45,7 +45,7 @@ var mixed = 'g7r7b7l7 g8r8b8l8 g13r13b13l13 l12 r6r5r4r12r13 g9g8g13 g6 l8l7l12'
 var rainbow = 'r1g1l1b1 r2g2l2b2 r3g3l3b3 r4g4l4b4 r13g13l13b13 r1g1l1b1';
 var initial = 'r1r2 r3r4r5r6r7r8r9r10r11r12r13l1l2l3l4l5l6l7   g1g2  l3';
 var initialMiddles = '20l3';
-var initialDiscards = ' r2r3l1';
+var initialDiscards = 'b1  r1r2 g1';
 var initialOpenGroups = `r8l8b8
 b1b2b3
 b9b10b11b12
@@ -176,17 +176,14 @@ function readBoard(pieces) {
   return res;
 }
 
-function readDiscards(discards) {
+function readDiscards(discards, povSide) {
+  discards = discards.split(' ');
   var res = {};
 
-  discards = readBoardPieceGroup(discards);
-
-  for (var i = 0; i < 4; i++) {
-    res[util.discards[i]] = [];
-    if (discards[i]) {
-      res[util.discards[i]].push(discards[i]);
-    }
-  }
+  util.allSides.map(_ => util.findPov(povSide, _)).forEach((pov, i) => {
+    var group = readBoardPieceGroup(discards[i] || "");
+    res[util.discardByPov(pov)] = group;
+  });
 
   return res;
 }
@@ -334,9 +331,16 @@ function readMiddles(middles) {
 function read(fen) {
   fen = fen.split('/');
 
+  var povSide = {
+    e: 'east',
+    w: 'west',
+    n: 'north',
+    s: 'south'
+  }[fen[5]];
+
   return {
     pieces: readBoard(fen[0]),
-    discards: readDiscards(fen[1]),
+    discards: readDiscards(fen[1], povSide),
     opens: readOpenGroups([fen[2], fen[3]].join('/')),
     middles: readMiddles(fen[4])
   };
