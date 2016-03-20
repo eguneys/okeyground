@@ -16,7 +16,7 @@ function playOpenSeries(data) {
 
       baseOpenSeries(data, groups);
 
-      callUserFunction(util.partial(data.movable.events.after, move.openSeries, openFen));
+      callUserFunction(util.partial(data.movable.events.after, move.openSeries, null, openFen));
       return true;
     }
   }
@@ -33,7 +33,7 @@ function playOpenPairs(data) {
 
       baseOpenPairs(data, groups);
 
-      callUserFunction(util.partial(data.movable.events.after, move.openPairs, openFen));
+      callUserFunction(util.partial(data.movable.events.after, move.openPairs, null, openFen));
       return true;
     }
   }
@@ -51,7 +51,7 @@ function baseOpenPairs(data, groups) {
   var groupPieces = groups.map(group => group.map(_ => data.pieces[_]));
 
   var openFen = pieceGroupToFen(groupPieces);
-  callUserFunction(util.partial(data.events.move, move.openPairs, openFen));
+  callUserFunction(util.partial(data.events.move, move.openPairs, null, openFen));
 
   groups.forEach(group => group.map(key => delete data.pieces[key]));
 
@@ -64,7 +64,7 @@ function baseOpenSeries(data, groups) {
   var groupPieces = groups.map(group => group.map(_ => data.pieces[_]));
 
   var openFen = pieceGroupToFen(groupPieces);
-  callUserFunction(util.partial(data.events.move, move.openSeries, openFen));
+  callUserFunction(util.partial(data.events.move, move.openSeries, null, openFen));
 
   groups.forEach(group => group.map(key => delete data.pieces[key]));
 
