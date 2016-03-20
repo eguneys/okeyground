@@ -13,6 +13,8 @@
     <button onclick="openSeries(window.ground1)">Open Series</button>
     <button onclick="openPairs(window.ground1)">Open Pairs</button>
     <button onclick="getFen(window.ground1)">Log Fen</button>
+    <button onclick="getPieceGroupOpens(window.ground1)">Log Opens</button>
+    <button onclick="opponentOpenPairs(window.ground1)">Opponent Open Pairs</button>
     <script>
 
      function delay(f, d) {
@@ -38,12 +40,41 @@
        ground.playLeaveTaken();
      }
 
+     function getPieceGroupOpens(ground) {
+       console.log(ground.getPieceGroupSeries(ground));
+       console.log(ground.getPieceGroupPairs(ground));
+     }
+
      function getFen(ground) {
        var fen = ground.getFen();
        console.log(fen);
 
        ground.set({
          fen: [fen, "", "", "", "20r1", "e"].join("/")
+       });
+     }
+
+     function opponentOpenPairs(ground) {
+       var pairs = ground.getPieceGroupPairs(ground);
+
+       ground.set({
+         turnSide: 'north'
+       });
+       ground.apiMove('op', pairs);
+       ground.set({
+         turnSide: 'east'
+       });
+     }
+
+     function opponentOpenSeries(ground) {
+       var series = ground.getPieceGroupSeries(ground);
+
+       ground.set({
+         turnSide: 'north'
+       });
+       ground.apiMove('os', series);
+       ground.set({
+         turnSide: 'east'
        });
      }
 

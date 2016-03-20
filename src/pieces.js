@@ -140,6 +140,8 @@ function readPieceGroup(str) {
 
   var i = 0;
 
+  str = str + "\n";
+
   while (str.length > 0) {
     var parsed = readPiece(str);
 
@@ -414,6 +416,7 @@ module.exports = {
   initialOpenGroups: initialOpenGroups,
   readMiddles: readMiddles,
   readDiscards: readDiscards,
+  readPieceGroup: readPieceGroup,
   readOpenGroups: readOpenGroups,
   layoutOpens: layoutOpens,
   seriesByColor: seriesByColor,

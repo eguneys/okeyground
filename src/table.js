@@ -22,10 +22,34 @@ function apiMove(data, mmove, piece) {
       piece = pieces.readPiece(piece).piece;
       baseOpponentLeaveTaken(data, util.drawByPov(pov), piece);
       break;
+    case move.openSeries:
+      piece = pieces.readPieceGroup(piece);
+      baseOpponentOpenSeries(data, piece);
+      break;
+    case move.openPairs:
+      piece = pieces.readPieceGroup(piece);
+      baseOpponentOpenPairs(data, piece);
+      break;
     default: console.error('unknown move');
     }
   }
 };
+
+function baseOpponentOpenSeries(data, pieces) {
+  var groupPieces = pieces;
+
+  var series = data.opens.series.concat(groupPieces);
+  data.opens.series = series;
+  data.opens.relayout(data);
+}
+
+function baseOpponentOpenPairs(data, pieces) {
+  var groupPieces = pieces;
+
+  var pairs = data.opens.pairs.concat(groupPieces);
+  data.opens.pairs = pairs;
+  data.opens.relayout(data);
+}
 
 function baseOpponentDiscard(data, dest, piece) {
   data.discards[dest].unshift(piece);

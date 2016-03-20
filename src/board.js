@@ -12,7 +12,11 @@ function playOpenSeries(data) {
     groups = groups
       .filter(group => open.series(group.map(key => data.pieces[key])));
     if (groups.length > 0) {
+      var openFen = pieceGroupToFen(groups.map(group => group.map(_ => data.pieces[_])));
+
       baseOpenSeries(data, groups);
+
+      callUserFunction(util.partial(data.movable.events.after, move.openSeries, openFen));
       return true;
     }
   }
@@ -25,7 +29,11 @@ function playOpenPairs(data) {
     groups = groups
       .filter(group => open.pairs(group.map(key => data.pieces[key])));
     if (groups.length > 0) {
+      var openFen = pieceGroupToFen(groups.map(group => group.map(_ => data.pieces[_])));
+
       baseOpenPairs(data, groups);
+
+      callUserFunction(util.partial(data.movable.events.after, move.openPairs, openFen));
       return true;
     }
   }
@@ -42,6 +50,9 @@ function apiDrawMiddleEnd(data, piece) {
 function baseOpenPairs(data, groups) {
   var groupPieces = groups.map(group => group.map(_ => data.pieces[_]));
 
+  var openFen = pieceGroupToFen(groupPieces);
+  callUserFunction(util.partial(data.events.move, move.openPairs, openFen));
+
   groups.forEach(group => group.map(key => delete data.pieces[key]));
 
   var pairs = data.opens.pairs.concat(groupPieces);
@@ -51,6 +62,9 @@ function baseOpenPairs(data, groups) {
 
 function baseOpenSeries(data, groups) {
   var groupPieces = groups.map(group => group.map(_ => data.pieces[_]));
+
+  var openFen = pieceGroupToFen(groupPieces);
+  callUserFunction(util.partial(data.events.move, move.openSeries, openFen));
 
   groups.forEach(group => group.map(key => delete data.pieces[key]));
 
@@ -287,6 +301,21 @@ function getKeyAtDomPos(data, pos, bounds) {
     return util.pos2key([column, row]);
 };
 
+function pieceGroupToFen(groups) {
+  return groups.map(group => group.map(_ => _.key).join(""))
+    .join(" ");
+}
+
+function getPieceGroupSeries(data) {
+  var groups = getPieceGroups(data).filter(group => open.series(group));
+  return pieceGroupToFen(groups);
+}
+
+function getPieceGroupPairs(data) {
+  var groups = getPieceGroups(data).filter(group => open.pairs(group));
+  return pieceGroupToFen(groups);
+}
+
 function getPieceGroups(data) {
   return getPieceGroupKeys(data)
     .map(group => group.map((key) => data.pieces[key]));
@@ -336,5 +365,7 @@ module.exports = {
   canCollectOpen: canCollectOpen,
   getKeyAtDomPos: getKeyAtDomPos,
   getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece,
-  getPieceGroups: getPieceGroups
+  getPieceGroups: getPieceGroups,
+  getPieceGroupSeries: getPieceGroupSeries,
+  getPieceGroupPairs: getPieceGroupPairs
 };

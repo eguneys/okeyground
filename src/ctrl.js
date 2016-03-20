@@ -13,6 +13,14 @@ module.exports = function(cfg) {
     return pieces.write(this.data.pieces);
   };
 
+  this.getPieceGroupSeries = () => {
+    return board.getPieceGroupSeries(this.data);
+  };
+
+  this.getPieceGroupPairs = () => {
+    return board.getPieceGroupPairs(this.data);
+  };
+
   this.set = anim(configure, this.data);
 
   this.apiMove = anim(table.apiMove, this.data);
