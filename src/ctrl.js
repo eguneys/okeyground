@@ -4,9 +4,14 @@ import data from './data';
 import configure from './configure';
 import util from './util';
 import anim from './anim';
+import pieces from './pieces';
 
 module.exports = function(cfg) {
   this.data = data(cfg);
+
+  this.getFen = () => {
+    return pieces.write(this.data.pieces);
+  };
 
   this.set = anim(configure, this.data);
 

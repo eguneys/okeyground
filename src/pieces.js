@@ -359,6 +359,40 @@ function read(fen) {
   };
 }
 
+function write(pieces) {
+  var keys = util.allKeys.map(key => pieces[key])
+    .map(p => p && p.key || "");
+
+  var result = "";
+
+  var trimSpace = 0;
+
+  for (var i = 0; i < keys.length - 1; i+= 2) {
+    var [k1, k2] = [keys[i], keys[i + 1]];
+
+    if (k1 === "" && k2 === "") {
+      result += " ";
+    }
+
+    if (k1 !== "") {
+      result += k1;
+    }
+    if (k2 !== "") {
+      result += k2;
+    }
+
+    if (k1 !== "" && k2 !== "") {
+      trimSpace++;
+    }
+  }
+
+  while (trimSpace-- > 0) {
+    result = result.replace(/\s/, "");
+  }
+
+  return result;
+}
+
 function makePiece(color, number) {
   return {
     color: colors[color],
@@ -371,6 +405,7 @@ module.exports = {
   initial: initial,
   rainbow: rainbow,
   mixed: mixed,
+  write: write,
   read: read,
   readPiece: readPiece,
   readBoard: readBoard,

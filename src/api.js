@@ -9,6 +9,7 @@ module.exports = function(controller) {
     apiMove: controller.apiMove,
     apiDrawMiddleEnd: controller.apiDrawMiddleEnd,
     playOpenSeries: controller.playOpenSeries,
-    playOpenPairs: controller.playOpenPairs
+    playOpenPairs: controller.playOpenPairs,
+    getFen: controller.getFen
   };
 };

@@ -12,6 +12,7 @@
     <div class="okeyground normal" id="ground7"></div>
     <button onclick="openSeries(window.ground1)">Open Series</button>
     <button onclick="openPairs(window.ground1)">Open Pairs</button>
+    <button onclick="getFen(window.ground1)">Log Fen</button>
     <script>
 
      function delay(f, d) {
@@ -35,6 +36,15 @@
 
      function leaveTaken(ground) {
        ground.playLeaveTaken();
+     }
+
+     function getFen(ground) {
+       var fen = ground.getFen();
+       console.log(fen);
+
+       ground.set({
+         fen: [fen, "", "", "", "20r1", "e"].join("/")
+       });
      }
 
      function aiMove(ground, side) {
