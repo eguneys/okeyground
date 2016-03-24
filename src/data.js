@@ -31,6 +31,7 @@ module.exports = function(cfg) {
       current: {}
     },
     movable: {
+      board: true,
       free: true,
       events: {
         // move key: dm | dl | dd | lt

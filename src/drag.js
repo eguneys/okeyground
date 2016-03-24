@@ -125,8 +125,16 @@ function end(data, e) {
   draggable.current = {};
 }
 
+function cancel(data) {
+  if (data.draggable.current.orig) {
+    data.draggable.current = {};
+    board.selectSquare(data, null);
+  }
+}
+
 module.exports = {
   start: start,
   move: move,
-  end: end
+  end: end,
+  cancel: cancel
 };

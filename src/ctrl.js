@@ -4,6 +4,7 @@ import data from './data';
 import configure from './configure';
 import util from './util';
 import anim from './anim';
+import drag from './drag';
 import pieces from './pieces';
 
 module.exports = function(cfg) {
@@ -37,4 +38,9 @@ module.exports = function(cfg) {
   this.canCollectOpen = util.partial(board.canCollectOpen, this.data);
   this.canOpenSeries = util.partial(board.canOpenSeries, this.data);
   this.canOpenPairs = util.partial(board.canOpenPairs, this.data);
+
+  this.stop = anim((data) => {
+    board.stop(data);
+    drag.cancel(data);
+  }, this.data);
 };

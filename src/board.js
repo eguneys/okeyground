@@ -219,7 +219,7 @@ function isTurnMovable(data) {
 
 function isMovable(data, orig) {
   var piece = data.pieces[orig];
-  return piece;
+  return piece && data.movable.board;
 }
 
 function canMove(data, orig, dest) {
@@ -263,6 +263,18 @@ function canLeaveTaken(data) {
 function canCollectOpen(data) {
   return isTurnMovable(data) &&
     util.containsX(data.movable.dests, move.collectOpen);
+}
+
+function cancelMove(data) {
+  selectSquare(data, null);
+}
+
+function stop(data) {
+  data.movable.side = null;
+  data.movable.dests = [];
+  data.openable.dests = [];
+  data.movable.board = false;
+  cancelMove(data);
 }
 
 function findFreeDropForMiddlePiece(data) {
@@ -363,6 +375,7 @@ module.exports = {
   canOpenPairs: canOpenPairs,
   canLeaveTaken: canLeaveTaken,
   canCollectOpen: canCollectOpen,
+  stop: stop,
   getKeyAtDomPos: getKeyAtDomPos,
   getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece,
   getPieceGroups: getPieceGroups,
