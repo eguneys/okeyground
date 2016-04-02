@@ -10,16 +10,25 @@
 
     <section>
     <div class="okeyground normal" id="ground7"></div>
-    <button onclick="openSeries(window.ground1)">Open Series</button>
-    <button onclick="openPairs(window.ground1)">Open Pairs</button>
-    <button onclick="getFen(window.ground1)">Log Fen</button>
-    <button onclick="getPieceGroupOpens(window.ground1)">Log Opens</button>
-    <button onclick="opponentOpenPairs(window.ground1)">Opponent Open Pairs</button>
+    <div class="controls">
+      <button onclick="openSeries(window.ground1)">Open Series</button>
+      <button onclick="openPairs(window.ground1)">Open Pairs</button>
+      <button onclick="getFen(window.ground1)">Log Fen</button>
+      <button onclick="getPieceGroupOpens(window.ground1)">Log Opens</button>
+      <button onclick="opponentOpenPairs(window.ground1)">Opponent Open Pairs</button>
+      <button onclick="setFen(window.ground1)">Set Fen</button>
+    </div>
     <script>
 
      function delay(f, d) {
        d = d | 1000;
        setTimeout(f, d);
+     }
+
+     function setFen(ground) {
+       ground.set({
+         fen: 'g3g3g3 g1g2g3g4g5 r3b3l3r3 r7r8r9r10r11r12r13 r4 f1f1 g7g9g10g8//r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3/9g2/s'
+       });
      }
 
      function setTurn(ground, side) {
@@ -110,8 +119,8 @@
        var ground;
        ground = Okeyground(document.getElementById('ground7'), {
          events: {
-           move: function(key, piece) {
-             console.log('events move', key, piece);
+           move: function(key, args) {
+             console.log('events move', key, args);
 
              if (key === 'dm') {
                setTimeout(function() {
@@ -123,8 +132,8 @@
          movable: {
            dests: ['dd', 'dl', 'dm', 'do', 'os', 'op'],
            events: {
-             after: function(key, piece) {
-               console.log('movable events after', key, piece);
+             after: function(key, args) {
+               console.log('movable events after', key, args);
                //onMove();
              }
            }
@@ -148,6 +157,8 @@
        };
        //onMove();
        //delay(onMoveLeft.bind(null), 12000);
+
+       setFen(ground);
      })();
     </script>
     </section>

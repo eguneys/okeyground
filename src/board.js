@@ -8,9 +8,10 @@ const { callUserFunction }  = util;
 
 function playOpenSeries(data) {
   if (canOpenSeries(data)) {
+    var sign = data.middles[util.gosterge];
     var groups = getPieceGroupKeys(data);
     groups = groups
-      .filter(group => open.series(group.map(key => data.pieces[key])));
+      .filter(group => open.series(group.map(key => data.pieces[key]), sign));
     if (groups.length > 0) {
       var openFen = pieceGroupToFen(groups.map(group => group.map(_ => data.pieces[_])));
 
@@ -25,9 +26,10 @@ function playOpenSeries(data) {
 
 function playOpenPairs(data) {
   if (canOpenPairs(data)) {
+    var sign = data.middles[util.gosterge];
     var groups = getPieceGroupKeys(data);
     groups = groups
-      .filter(group => open.pairs(group.map(key => data.pieces[key])));
+      .filter(group => open.pairs(group.map(key => data.pieces[key]), sign));
     if (groups.length > 0) {
       var openFen = pieceGroupToFen(groups.map(group => group.map(_ => data.pieces[_])));
 
@@ -204,7 +206,8 @@ function setSelected(data, key) {
 
   if (key && util.isBoardKey(key)) {
     if (table.isDroppableOpens(data, key)) {
-      data.openable.dests = open.compute(data.opens, data.pieces[key]);
+      var sign = data.middles[util.gosterge];
+      data.openable.dests = open.compute(data.opens, data.pieces[key], sign);
     } else {
       data.openable.dests = [];
     }
@@ -319,12 +322,14 @@ function pieceGroupToFen(groups) {
 }
 
 function getPieceGroupSeries(data) {
-  var groups = getPieceGroups(data).filter(group => open.series(group));
+  var sign = data.middles[util.gosterge];
+  var groups = getPieceGroups(data).filter(group => open.series(group, sign));
   return pieceGroupToFen(groups);
 }
 
 function getPieceGroupPairs(data) {
-  var groups = getPieceGroups(data).filter(group => open.pairs(group));
+  var sign = data.middles[util.gosterge];
+  var groups = getPieceGroups(data).filter(group => open.pairs(group, sign));
   return pieceGroupToFen(groups);
 }
 

@@ -4,7 +4,8 @@ const colors = {
   b: 'blue',
   r: 'red',
   g: 'green',
-  l: 'black'
+  l: 'black',
+  f: 'fake'
 };
 
 const numbers = {
@@ -255,6 +256,7 @@ function layoutOpens(series, pairs) {
   i = 0; j = 0; key = 0; column = 0;
   row = 0;
 
+
   for (i = 0; i < pairs.length; i++) {
     var pair = pairs[i];
 
@@ -262,7 +264,8 @@ function layoutOpens(series, pairs) {
     r1 = row;
     groupMap.pairs[util.miniPos2key([c1, r1])] = i;
 
-    for (j = 0; j < pair.length; j++) {
+    // go reverse
+    for (j = pair.length - 1; j >= 0; j--) {
       column = startColumn[row] || util.miniColumns - 1;
       key = util.miniPos2key([column, row]);
       layout[key] = pair[j];
@@ -399,9 +402,27 @@ function makePiece(color, number) {
   return {
     color: colors[color],
     number: numbers[number],
+    c: color,
+    n: parseInt(number),
     key: color + number
   };
 };
+
+function pieceUp(piece) {
+  var color = piece.c;
+  var number = (piece.n % 13) + 1;
+  return makePiece(color, number);
+}
+
+function pieceDown(piece) {
+  var color = piece.c;
+  var number = (piece.n + 11) % 13 + 1;
+  return makePiece(color, number);
+}
+
+function pieceFake(piece) {
+  return piece.color === 'fake';
+}
 
 module.exports = {
   initial: initial,
@@ -420,6 +441,10 @@ module.exports = {
   readOpenGroups: readOpenGroups,
   layoutOpens: layoutOpens,
   seriesByColor: seriesByColor,
+  makePiece: makePiece,
+  pieceUp: pieceUp,
+  pieceDown: pieceDown,
+  pieceFake: pieceFake,
   colors: colors,
   getOpenSerieKeyFromGroupIndex: getOpenSerieKeyFromGroupIndex,
   getOpenPairKeyFromGroupIndex: getOpenPairKeyFromGroupIndex,

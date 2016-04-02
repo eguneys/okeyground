@@ -101,7 +101,7 @@ function baseDropOpens(data, orig, dest) {
     [groupIndex, index] = pairPos;
     group = data.opens.pairs[groupIndex];
 
-    group.splice((index + 1) % 2, 1, piece);
+    group.splice(index, 1, piece);
 
     data.opens.relayout(data);
 
@@ -190,11 +190,12 @@ function isMovable(data) {
 }
 
 function canDropOpens(data, orig, dest) {
+  var sign = data.middles[util.gosterge];
   return isDroppableOpens(data, orig) &&
     util.isBoardKey(orig) &&
     util.isOpensKey(dest) &&
     util.containsX(data.movable.dests, move.dropOpens) &&
-    util.containsX(open.compute(data.opens, data.pieces[orig]), dest);
+    util.containsX(open.compute(data.opens, data.pieces[orig], sign), dest);
 }
 
 function canDiscard(data, orig, dest) {

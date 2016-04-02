@@ -56,19 +56,139 @@ function numberSeries(group) {
     .some(comb => isColorMatch(comb.slice(0, group.length), group));
 }
 
-function series(group) {
-  return colorSeries(group) | numberSeries(group);
+function replaceFake(piece, okey) {
+  var fakeOkey = pieces.makePiece(okey.c, okey.n);
+  fakeOkey.isFake = true;
+
+  return pieces.pieceFake(piece) ? fakeOkey : piece;
 }
 
-function pairs(group) {
+function isOkey(piece, okey) {
+  return (!piece.isFake) && piece.key === okey.key;
+}
+
+// assumes there is a single okey in a group
+function replaceOkey(group, okey) {
+  function diff(list, sublist) {
+    return list.filter(_ => sublist.indexOf(_) < 0);
+  }
+
+  function pieceEqual(p1, p2) {
+    return p1.key === p2.key;
+  }
+
+  function matchRainbow(group, okey) {
+    var colors = ['r', 'g', 'b', 'l'];
+    var ps = group.filter(_ => !isOkey(_, okey));
+    var diffColors = diff(colors, ps.map(_ => _.c));
+
+    if (diffColors.length < 1) return group;
+    if (ps.length < 1) return group;
+    if (! (ps.length < group.length)) return group;
+
+    var c = diffColors[0];
+    var n = ps[0].n;
+
+    var piece = pieces.makePiece(c, n);
+
+    ps.push(piece);
+    return ps;
+  }
+
+  function matchSerie(group, okey) {
+    var rest;
+    if (group.length === 0) {
+      return group;
+    } else if (group.length < 3) {
+      // idk
+      return group;
+    } else {
+      var [a, b, c] = group;
+      var head = [a, b, c];
+
+      rest = group.slice(3, group.length);
+
+      if (isOkey(a, okey)) {
+        if (pieceEqual(pieces.pieceUp(b), c)) {
+          head = [pieces.pieceDown(b), b, c];
+        } else if (pieceEqual(pieces.pieceDown(b), c)) {
+          head = [pieces.pieceUp(b), b, c];
+        }
+      } else if (isOkey(b, okey)) {
+        if (pieceEqual(pieces.pieceUp(pieces.pieceUp(a)), c)) {
+          head = [a, pieces.pieceUp(a), c];
+        } else if (pieceEqual(pieces.pieceDown(pieces.pieceDown(a)), c)) {
+          head = [a, pieces.pieceDown(a), c];
+        }
+      } else if (isOkey(c, okey)) {
+        if (pieceEqual(pieces.pieceUp(a), b)) {
+          head = [a, b, pieces.pieceUp(b)];
+        } else if (pieceEqual(pieces.pieceDown(a), b)) {
+          head = [a, b, pieces.pieceDown(b)];
+        }
+      } else {
+        rest = matchSerie(group.slice(1, group.length), okey);
+        rest.unshift(group[0]);
+        return rest;
+      }
+
+      return head.concat(rest);
+    }
+  }
+
+  function matchPair(group, okey) {
+    if (group.length != 2) {
+      return group;
+    } else {
+      var [a, b] = group;
+      if (isOkey(a, okey)) return [b, b];
+      else if (isOkey(b, okey)) return [a, a];
+      return group;
+    }
+  }
+
+  // single okey only
+  if (group.filter(_ => isOkey(_, okey)).length > 1) return group;
+
+  if (group.length < 3) {
+    return matchPair(group, okey);
+  } else {
+    var nonOkeys = group.filter(_ => !isOkey(_, okey));
+    if (nonOkeys.every(_ => _.n === nonOkeys[0].n))
+      return matchRainbow(group, okey);
+    else if (nonOkeys.every(_ => _.c === nonOkeys[0].c))
+      return matchSerie(group, okey);
+    return group;
+  }
+}
+
+function series(group, sign) {
+  var okey = pieces.pieceUp(sign);
+
+  var replacedFake = group.map(_ => replaceFake(_, okey));
+  var replaced = replaceOkey(replacedFake, okey);
+
+  return colorSeries(replaced) | numberSeries(replaced);
+}
+
+function pairs(group, sign) {
   if (group.length !== 2) return false;
-  var [p1, p2] = group;
+
+  var okey = pieces.pieceUp(sign);
+
+  var replacedFake = group.map(_ => replaceFake(_, okey));
+  var replaced = replaceOkey(replacedFake, okey);
+
+  var [p1, p2] = replaced;
 
   return p1.key === p2.key;
 }
 
-function compute(opens, piece) {
+function compute(opens, piece, sign) {
   var result = [];
+
+  var okey = pieces.pieceUp(sign);
+  piece = replaceFake(piece, okey);
 
   opens.series.forEach((group, i) => {
     var appendLeft = group.slice(0);
@@ -77,12 +197,28 @@ function compute(opens, piece) {
     appendLeft.splice(0, 0, piece);
     appendRight.splice(group.length, 0, piece);
 
-    if (series(appendLeft)) {
+    if (series(appendLeft, sign)) {
       result.push(pieces.getOpenSerieKeyFromGroupIndex(opens, i, 0));
     }
 
-    if (series(appendRight)) {
+    if (series(appendRight, sign)) {
       result.push(pieces.getOpenSerieKeyFromGroupIndex(opens, i, group.length + 1));
+    }
+
+    var replaceOkey = group.map(_ => isOkey(_, okey)?piece:_);
+    if (series(replaceOkey, sign)) {
+      var okeyIndex;
+      group.forEach((_, i) => { if (isOkey(_, okey)) okeyIndex = i; });
+      result.push(pieces.getOpenSerieKeyFromGroupIndex(opens, i, okeyIndex + 1));
+    }
+  });
+
+  opens.pairs.forEach((group, i) => {
+    var replaceOkey = group.map(_ => isOkey(_, okey)?piece:_);
+    if (pairs(replaceOkey, sign)) {
+      var okeyIndex;
+      group.forEach((_, i) => { if (isOkey(_, okey)) okeyIndex = i; });
+      result.push(pieces.getOpenPairKeyFromGroupIndex(opens, i, okeyIndex));
     }
   });
 
