@@ -62,6 +62,21 @@ each piece group is separated by a `\s`
 example: `r13b1l1 r2b2l2 r1r2r3r4r5/r1r1 g2g2 l2l2`
 
 
+#### Drop Opens
+
+drop open series = dos (piece) pos
+drop open pairs = dop (piece) pos
+
+pos = append type + group index
+
+append type = l|r|p
+
+append left = l
+append right = r
+replace okey = p
+
+example: `l1` `r0` `p2`
+
 #### FEN
 
 fen = board/discard/series/pairs/middle/povSide
@@ -75,6 +90,8 @@ draw left
 discard
 discard end
 show sign
+drop open series
+drop open pairs
 
 ## Moves
 
@@ -107,7 +124,7 @@ opponent
     ground.set(options);
 
     // make a move for turn side.
-    // dm | dl | dd | lt
+    // dm | dl | dd | lt | dop | dos
     ground.apiMove(move, piece);
 
     // provide the drawn middle piece, required to end the draw middle progress.

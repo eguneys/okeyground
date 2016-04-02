@@ -6,7 +6,12 @@ const sign = "ss";
 const openSeries = "os";
 const openPairs = "op";
 const collectOpen = "co";
-const dropOpens = "do";
+const dropOpenSeries = "dos";
+const dropOpenPairs = "dop";
+
+const dropLeft = 'l';
+const dropRight = 'r';
+const dropReplace = 'p';
 
 module.exports = {
   drawMiddle: drawMiddle,
@@ -17,5 +22,9 @@ module.exports = {
   openSeries: openSeries,
   openPairs: openPairs,
   collectOpen: collectOpen,
-  dropOpens: dropOpens
+  dropOpenSeries: dropOpenSeries,
+  dropOpenPairs: dropOpenPairs,
+  dropLeft: dropLeft,
+  dropRight: dropRight,
+  dropReplace: dropReplace
 };

@@ -3,7 +3,7 @@ import move from './move';
 import pieces from './pieces';
 import open from './open';
 
-const { callUserFunction }  = util;
+const { wrapDrop, wrapPiece, callUserFunction }  = util;
 
 function apiMove(data, mmove, piece) {
   if (data.turnSide === data.povSide) {
@@ -71,50 +71,45 @@ function baseOpponentLeaveTaken(data, dest, piece) {
   return true;
 }
 
-function baseDropOpens(data, orig, dest) {
-  if (!data.pieces[orig]) return false;
+function baseDropOpenSeries(data, orig, dest, pos) {
+  if (!data.pieces[orig] || !pos) return false;
   var piece = data.pieces[orig];
 
-  var seriePos = pieces.getOpenSerieFromPos(data, util.miniKey2pos(dest));
+  callUserFunction(util.partial(data.events.move, move.dropOpenSeries, wrapPiece(piece.key)));
 
-  if (seriePos) {
-    callUserFunction(util.partial(data.events.move, move.dropOpens));
+  var [groupIndex, index] = pos;
+  var group = data.opens.series[groupIndex];
 
-    var [groupIndex, index] = seriePos;
-    var group = data.opens.series[groupIndex];
+  var isAppend = (getDropType(group, index) !== move.dropReplace) ? 0: 1;
 
-    var isAppend = (index === 0 || index === group.length + 1) ? 0: 1;
+  group.splice(index - isAppend, isAppend, piece);
 
-    group.splice(index - isAppend, isAppend, piece);
+  data.opens.relayout(data);
 
-    data.opens.relayout(data);
+  delete data.pieces[orig];
+  return true;
+}
+function baseDropOpenPairs(data, orig, dest, pos) {
+  if (!data.pieces[orig] || !pos) return false;
+  var piece = data.pieces[orig];
 
-    delete data.pieces[orig];
-    return true;
-  }
+  callUserFunction(util.partial(data.events.move, move.dropOpenPairs, wrapPiece(piece.key)));
 
-  var pairPos = pieces.getOpenPairFromPos(data, util.miniKey2pos(dest));
+  var [groupIndex, index] = pos;
+  var group = data.opens.pairs[groupIndex];
 
-  if (pairPos) {
-    callUserFunction(util.partial(data.events.move, move.dropOpens));
+  group.splice(index, 1, piece);
 
-    [groupIndex, index] = pairPos;
-    group = data.opens.pairs[groupIndex];
+  data.opens.relayout(data);
 
-    group.splice(index, 1, piece);
-
-    data.opens.relayout(data);
-
-    delete data.pieces[orig];
-  }
-
-  return false;
+  delete data.pieces[orig];
+  return true;
 }
 
 function baseDropDiscard(data, orig, dest) {
   const piece = data.pieces[orig];
   if (!piece) return false;
-  callUserFunction(util.partial(data.events.move, move.discard, piece.key));
+  callUserFunction(util.partial(data.events.move, move.discard, wrapPiece(piece.key)));
   data.discards[dest].unshift(data.pieces[orig]);
   delete data.pieces[orig];
   return true;
@@ -124,18 +119,50 @@ function baseGosterge(data, orig) {
   var piece = data.pieces[orig];
   if (!piece) return false;
   if (util.pieceEqual(piece, data.middles[util.gosterge])) {
-    callUserFunction(util.partial(data.events.move, move.sign, piece.key));
+    callUserFunction(util.partial(data.events.move, move.sign, wrapPiece(piece.key)));
     return true;
   }
   return false;
 }
 
+function getDropType(group, index) {
+  if (index === 0) {
+    return move.dropLeft;
+  } else if (index === group.length + 1) {
+    return move.dropRight;
+  } else {
+    return move.dropReplace;
+  }
+}
+
 function dropOpens(data, orig, dest) {
   if (dest && util.isOpensKey(dest)) {
     if (canDropOpens(data, orig, dest)) {
-      if (baseDropOpens(data, orig, dest)) {
-        callUserFunction(util.partial(data.movable.events.after, move.dropOpens));
+      var piece = data.pieces[orig];
+      var groupIndex, index, group, dropType, dropKey;
+
+      var seriePos = pieces.getOpenSerieFromPos(data, util.miniKey2pos(dest));
+      if (seriePos) {
+        [groupIndex, index] = seriePos;
+        group = data.opens.series[groupIndex];
+        dropType = getDropType(group, index);
+        dropKey = dropType + groupIndex;
+      }
+      if (baseDropOpenSeries(data, orig, dest, seriePos)) {
+        callUserFunction(util.partial(data.movable.events.after, move.dropOpenSeries, wrapDrop(piece.key, dropKey)));
         return true;
+      } else {
+        var pairPos = pieces.getOpenPairFromPos(data, util.miniKey2pos(dest));
+        if (pairPos) {
+          [groupIndex, index] = pairPos;
+          group = data.opens.pairs[groupIndex];
+          dropType = getDropType(group, index);
+          dropKey = dropType + groupIndex;
+        }
+        if (baseDropOpenPairs(data, orig, dest, pairPos)) {
+          callUserFunction(util.partial(data.movable.events.after, move.dropOpenPairs, wrapDrop(piece.key, dropKey)));
+          return true;
+        }
       }
     }
   }
@@ -147,14 +174,14 @@ function dropTop(data, orig, dest) {
   if (dest && dest === util.discards[2]) {
     if (canDiscard(data, orig, dest)) {
       if (baseDropDiscard(data, orig, dest)) {
-        callUserFunction(util.partial(data.movable.events.after, move.discard, piece.key));
+        callUserFunction(util.partial(data.movable.events.after, move.discard, wrapPiece(piece.key)));
         return true;
       }
     }
   } else if (dest === util.gosterge) {
     if (canGosterge(data, orig)) {
       if (baseGosterge(data, orig)) {
-        callUserFunction(util.partial(data.movable.events.after, move.sign));
+        callUserFunction(util.partial(data.movable.events.after, wrapPiece(move.sign)));
         return true;
       }
     }
@@ -194,7 +221,8 @@ function canDropOpens(data, orig, dest) {
   return isDroppableOpens(data, orig) &&
     util.isBoardKey(orig) &&
     util.isOpensKey(dest) &&
-    util.containsX(data.movable.dests, move.dropOpens) &&
+    util.containsX(data.movable.dests, move.dropOpenSeries) &&
+    util.containsX(data.movable.dests, move.dropOpenPairs) &&
     util.containsX(open.compute(data.opens, data.pieces[orig], sign), dest);
 }
 

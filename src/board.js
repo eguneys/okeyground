@@ -4,7 +4,7 @@ import pieces from './pieces';
 import open from './open';
 import table from './table';
 
-const { callUserFunction }  = util;
+const { wrapGroup, callUserFunction }  = util;
 
 function playOpenSeries(data) {
   if (canOpenSeries(data)) {
@@ -17,7 +17,7 @@ function playOpenSeries(data) {
 
       baseOpenSeries(data, groups);
 
-      callUserFunction(util.partial(data.movable.events.after, move.openSeries, null, openFen));
+      callUserFunction(util.partial(data.movable.events.after, move.openSeries, wrapGroup(openFen)));
       return true;
     }
   }
@@ -35,7 +35,7 @@ function playOpenPairs(data) {
 
       baseOpenPairs(data, groups);
 
-      callUserFunction(util.partial(data.movable.events.after, move.openPairs, null, openFen));
+      callUserFunction(util.partial(data.movable.events.after, move.openPairs, wrapGroup(openFen)));
       return true;
     }
   }
@@ -53,7 +53,7 @@ function baseOpenPairs(data, groups) {
   var groupPieces = groups.map(group => group.map(_ => data.pieces[_]));
 
   var openFen = pieceGroupToFen(groupPieces);
-  callUserFunction(util.partial(data.events.move, move.openPairs, null, openFen));
+  callUserFunction(util.partial(data.events.move, move.openPairs, wrapGroup(openFen)));
 
   groups.forEach(group => group.map(key => delete data.pieces[key]));
 
@@ -66,7 +66,7 @@ function baseOpenSeries(data, groups) {
   var groupPieces = groups.map(group => group.map(_ => data.pieces[_]));
 
   var openFen = pieceGroupToFen(groupPieces);
-  callUserFunction(util.partial(data.events.move, move.openSeries, null, openFen));
+  callUserFunction(util.partial(data.events.move, move.openSeries, wrapGroup(openFen)));
 
   groups.forEach(group => group.map(key => delete data.pieces[key]));
 

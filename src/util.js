@@ -185,6 +185,10 @@ function callUserFunction(f) {
   setTimeout(f, 1);
 }
 
+const wrapPiece = (key) => ({ piece: key });
+const wrapGroup = (group) => ({ group: group });
+const wrapDrop = (key, pos) => ({ piece: key, pos: pos });
+
 module.exports = {
   topColumns: topColumns,
   topRows: topRows,
@@ -225,5 +229,8 @@ module.exports = {
   partialApply: partialApply,
   partial: partial,
   memo: memo,
+  wrapPiece: wrapPiece,
+  wrapGroup: wrapGroup,
+  wrapDrop: wrapDrop,
   callUserFunction: callUserFunction
 };
