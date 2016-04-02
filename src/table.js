@@ -123,14 +123,21 @@ function baseDropOpenSeries(data, orig, dest, pos) {
 
   var [groupIndex, index] = pos;
   var group = data.opens.series[groupIndex];
+  var dropType = getDropType(group, index);
 
-  var isAppend = (getDropType(group, index) !== move.dropReplace) ? 0: 1;
+  var isAppend = (dropType !== move.dropReplace) ? 0: 1;
 
   group.splice(index - isAppend, isAppend, piece);
 
   data.opens.relayout(data);
 
   delete data.pieces[orig];
+
+  if (dropType === move.dropReplace) {
+    var okey = pieces.pieceUp(data.middles[util.gosterge]);
+    data.pieces[orig] = okey;
+  }
+
   return true;
 }
 function baseDropOpenPairs(data, orig, dest, pos) {
@@ -147,6 +154,13 @@ function baseDropOpenPairs(data, orig, dest, pos) {
   data.opens.relayout(data);
 
   delete data.pieces[orig];
+
+  // always replace okey
+  if (true) {
+    var okey = pieces.pieceUp(data.middles[util.gosterge]);
+    data.pieces[orig] = okey;
+  }
+
   return true;
 }
 
