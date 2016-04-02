@@ -112,6 +112,16 @@ function readDigit(str) {
   }
 }
 
+function readDropPos(str) {
+  var r = /([l|r|p])(\d\d?)/;
+  var match = str.match(r);
+
+  var type = match[1];
+  var groupIndex = parseInt(match[2]);
+
+  return { type, groupIndex };
+}
+
 function readPiece(str) {
   var color = str[0];
   var digit1 = str[1];
@@ -430,6 +440,7 @@ module.exports = {
   mixed: mixed,
   write: write,
   read: read,
+  readDropPos: readDropPos,
   readPiece: readPiece,
   readBoard: readBoard,
   initialMiddles: initialMiddles,

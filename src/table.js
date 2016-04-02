@@ -5,7 +5,7 @@ import open from './open';
 
 const { wrapDrop, wrapPiece, callUserFunction }  = util;
 
-function apiMove(data, mmove, piece) {
+function apiMove(data, mmove, { piece, group, pos }) {
   if (data.turnSide === data.povSide) {
   } else {
     const pov = util.findPov(data.povSide, data.turnSide);
@@ -23,17 +23,61 @@ function apiMove(data, mmove, piece) {
       baseOpponentLeaveTaken(data, util.drawByPov(pov), piece);
       break;
     case move.openSeries:
-      piece = pieces.readPieceGroup(piece);
-      baseOpponentOpenSeries(data, piece);
+      group = pieces.readPieceGroup(group);
+      baseOpponentOpenSeries(data, group);
       break;
     case move.openPairs:
-      piece = pieces.readPieceGroup(piece);
-      baseOpponentOpenPairs(data, piece);
+      group = pieces.readPieceGroup(group);
+      baseOpponentOpenPairs(data, group);
+      break;
+    case move.dropOpenSeries:
+      piece = pieces.readPiece(piece).piece;
+      pos = pieces.readDropPos(pos);
+      baseOpponentDropSeries(data, piece, pos);
+      break;
+    case move.dropOpenPairs:
+      piece = pieces.readPiece(piece).piece;
+      pos = pieces.readDropPos(pos);
+      baseOpponentDropPairs(data, piece, pos);
       break;
     default: console.error('unknown move');
     }
   }
 };
+
+function baseOpponentDropSeries(data, piece, pos) {
+  var { type, groupIndex } = pos;
+  var group = data.opens.series[groupIndex];
+
+  var isAppend = (type !== move.dropReplace) ? 0: 1;
+
+  var index = 0;
+
+  if (type === move.dropLeft) {
+    index = 0;
+  } else if (type === move.dropRight) {
+    index = group.length + 1;
+  } else {
+    var okey = pieces.pieceUp(data.middles[util.gosterge]);
+    index = open.findOkeyIndex(group, okey) + 1;
+  }
+
+  group.splice(index - isAppend, isAppend, piece);
+
+  data.opens.relayout(data);
+}
+
+function baseOpponentDropPairs(data, piece, pos) {
+  var { groupIndex } = pos;
+  var group = data.opens.pairs[groupIndex];
+
+  var okey = pieces.pieceUp(data.middles[util.gosterge]);
+  var index = open.findOkeyIndex(group, okey);
+
+  group.splice(index, 1, piece);
+
+  data.opens.relayout(data);
+}
 
 function baseOpponentOpenSeries(data, pieces) {
   var groupPieces = pieces;

@@ -216,8 +216,7 @@ function compute(opens, piece, sign) {
   opens.pairs.forEach((group, i) => {
     var replaceOkey = group.map(_ => isOkey(_, okey)?piece:_);
     if (pairs(replaceOkey, sign)) {
-      var okeyIndex;
-      group.forEach((_, i) => { if (isOkey(_, okey)) okeyIndex = i; });
+      var okeyIndex = findOkeyIndex(group, okey);
       result.push(pieces.getOpenPairKeyFromGroupIndex(opens, i, okeyIndex));
     }
   });
@@ -225,8 +224,15 @@ function compute(opens, piece, sign) {
   return result;
 }
 
+function findOkeyIndex(group, okey) {
+  var okeyIndex;
+  group.forEach((_, i) => { if (isOkey(_, okey)) okeyIndex = i; });
+  return okeyIndex;
+}
+
 export default {
   compute,
   series,
-  pairs
+  pairs,
+  findOkeyIndex
 };

@@ -15,7 +15,9 @@
       <button onclick="openPairs(window.ground1)">Open Pairs</button>
       <button onclick="getFen(window.ground1)">Log Fen</button>
       <button onclick="getPieceGroupOpens(window.ground1)">Log Opens</button>
-      <button onclick="opponentOpenPairs(window.ground1)">Opponent Open Pairs</button>
+      <button onclick="opponentOpenSeries(window.ground1)">Opponent Open Pairs</button>
+      <button onclick="opponentDropSeries(window.ground1)">Opponent Drop Series</button>
+      <button onclick="opponentDropPairs(window.ground1)">Opponent Drop Pairs</button>
       <button onclick="setFen(window.ground1)">Set Fen</button>
     </div>
     <script>
@@ -63,28 +65,43 @@
        });
      }
 
-     function opponentOpenPairs(ground) {
+     function wrapPiece(key) { return { piece: key }; }
+     function wrapGroup(key) { return { group: key }; }
+     function wrapDrop(piece, pos) { return { piece: piece, pos: pos }; }
+
+     var opponentOpenPairs = withOpponent(function(ground) {
        var pairs = ground.getPieceGroupPairs(ground);
+       ground.apiMove('op', wrapGroup(pairs));
+     });
 
-       ground.set({
-         turnSide: 'north'
-       });
-       ground.apiMove('op', pairs);
-       ground.set({
-         turnSide: 'east'
-       });
-     }
-
-     function opponentOpenSeries(ground) {
+     var opponentOpenSeries = withOpponent(function(ground) {
        var series = ground.getPieceGroupSeries(ground);
+       ground.apiMove('os', wrapGroup(series));
+     });
 
-       ground.set({
-         turnSide: 'north'
-       });
-       ground.apiMove('os', series);
-       ground.set({
-         turnSide: 'east'
-       });
+     var opponentDropSeries = withOpponent(function(ground) {
+       ground.apiMove('dos', wrapDrop('l1', 'p1'));
+       ground.apiMove('dos', wrapDrop('l2', 'r2'));
+       ground.apiMove('dos', wrapDrop('l3', 'l3'));
+     });
+
+     var opponentDropPairs = withOpponent(function(ground) {
+       ground.apiMove('dop', wrapDrop('l1', 'p0'));
+       ground.apiMove('dop', wrapDrop('l2', 'r1'));
+       ground.apiMove('dop', wrapDrop('l3', 'l2'));
+       ground.apiMove('dop', wrapDrop('l3', 'l3'));
+     });
+
+     function withOpponent(f) {
+       return function(ground) {
+         ground.set({
+           turnSide: 'north'
+         });
+         f(ground);
+         ground.set({
+           turnSide: 'east'
+         });
+       }
      }
 
      function aiMove(ground, side) {
