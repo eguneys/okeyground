@@ -8,7 +8,7 @@ var browserify = require('browserify');
 var uglify = require('gulp-uglify');
 var streamify = require('gulp-streamify');
 
-var sass = require('gulp-ruby-sass');
+var sass = require('gulp-sass');
 
 var assetFiles = './assets/**/*';
 var sassFiles = ['./sass/*.scss'];
@@ -67,8 +67,8 @@ gulp.task('assets', function() {
 });
 
 gulp.task('sass', function() {
-  return sass(sassFiles)
-    .on('error', sass.logError)
+  return gulp.src(sassFiles)
+    .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(destination));
 });
 
