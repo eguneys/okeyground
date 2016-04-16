@@ -26,9 +26,14 @@ section {
   margin: 2px;
 }
 
+/* .okeyground.small { */
+/*   width: 304px; */
+/*   height: 228px; */
+/* } */
+
 .okeyground.small {
-  width: 304px;
-  height: 228px;
+  width: 325px;
+  height: 250px;
 }
 
 /*

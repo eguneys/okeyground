@@ -5,7 +5,8 @@ import open from './open';
 
 const { wrapDrop, wrapPiece, callUserFunction }  = util;
 
-function apiMove(data, mmove, { piece, group, pos }) {
+function apiMove(data, mmove, args = {}) {
+  var { piece, group, pos } = args;
   if (data.turnSide === data.povSide) {
   } else {
     const pov = util.findPov(data.povSide, data.turnSide);

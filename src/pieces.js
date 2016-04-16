@@ -193,10 +193,13 @@ function readBoard(pieces) {
 
   pieces = readBoardPieceGroup(pieces);
 
+  var bI = 0;
   for (var i = 0; i < pieces.length; i++) {
     if (pieces[i]) {
-      res[util.encodeKey(i * 2, 'b')] = pieces[i];
+      res[util.encodeKey(bI, 'b')] = pieces[i];
+      bI++;
     }
+    bI++;
   }
 
   return res;
@@ -375,6 +378,13 @@ function read(fen) {
 }
 
 function write(pieces) {
+  var keys = util.allKeys.map(key => pieces[key])
+      .map(p => p && p.key || " ").join("");
+
+  return keys.replace(/([^\s])\s/g, "$1");
+}
+
+function writeOld(pieces) {
   var keys = util.allKeys.map(key => pieces[key])
     .map(p => p && p.key || "");
 
