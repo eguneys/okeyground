@@ -135,7 +135,7 @@ function containsX(xs, x) {
 }
 
 function eventPosition(e) {
-  return [e.clientX, e.clientY];
+  return e.touches ? [e.targetTouches[0].clientX, e.targetTouches[0].clientY] : [e.clientX, e.clientY];
 }
 
 function distance(pos1, pos2) {
