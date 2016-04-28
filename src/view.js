@@ -159,6 +159,17 @@ function renderBoard(ctrl) {
   var children = [];
   var dragOver;
 
+  function renderWood(side) {
+    return {
+      tag: 'div',
+      attrs: {
+        class: 'wood ' + side
+      }
+    };
+  };
+
+  children.push(renderWood('left'), renderWood('right'));
+
   for (var i = 0; i < positions.length; i++) {
     var key = util.pos2key(positions[i]);
     var piece = d.pieces[key];

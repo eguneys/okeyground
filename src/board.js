@@ -302,8 +302,13 @@ function getKeyAtDomPosOnPiece(data, pos, bounds, except) {
   var prevKey = util.decBoardKey(key);
 
   if (prevKey !== except && data.pieces[prevKey]) {
-    return prevKey;
+    key = prevKey;
   }
+
+  if (util.notAllowedBoardKeys.indexOf(key) !== -1) {
+    return null;
+  }
+
   return key;
 }
 

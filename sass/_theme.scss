@@ -1,5 +1,20 @@
+.og-table-wrap {
+  // background-image: url('images/board/istaka740.png');
+}
+
 .og-board {
-  background-color: brown;
+  width: 100%;
+  background-image: url('images/board/istakain.png');
+  background-size: cover;
+}
+
+.og-board .wood {
+  background-image: url('images/board/istakaside.png');
+  background-size: cover;
+}
+
+.og-board {
+  //background-color: brown;
 }
 
 piece.empty {

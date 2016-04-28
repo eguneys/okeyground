@@ -196,6 +196,9 @@ function readBoard(pieces) {
   var bI = 0;
   for (var i = 0; i < pieces.length; i++) {
     if (pieces[i]) {
+      while (bI < 100 && !util.isAllowedBoardKey(util.encodeKey(bI, 'b'))) {
+        bI++;
+      }
       res[util.encodeKey(bI, 'b')] = pieces[i];
       bI++;
     }
