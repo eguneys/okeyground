@@ -107,8 +107,8 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
 
   &:not(.dragging)::before {
     position: absolute;
-    top: calc(50% - 7px);
-    left: calc(50% - 3px);
+    top: calc(50%);
+    left: calc(50% - 5px);
     font-size: 11px;
     font-weight: bold;
     opacity: 0.7;
@@ -123,27 +123,27 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
 
 .og-top piece.dup,
 .og-top .piece-holder.dup {
-  top: 0%;
-  left: 0%
+  top: 1.3%;
+  left: 1%
 }
 
 .og-top piece.dleft,
 .og-top .piece-holder.dleft {
   cursor: pointer;
-  bottom: 0%;
-  left: 0%;
+  bottom: 1.3%;
+  left: 1%;
 }
 
 .og-top piece.ddown,
 .og-top .piece-holder.ddown {
-  right: 0%;
-  bottom: 0%;
+  right: 1.3%;
+  bottom: 1%;
 }
 
 .og-top piece.dright,
 .og-top .piece-holder.dright {
-  top: 0%;
-  right: 0%;
+  top: 1.3%;
+  right: 1%;
 }
 
 .og-opens {
@@ -182,7 +182,7 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
   bottom: 0;
   width: $board-width;
   /* height: 21.9%; */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
   height: $board-height
 }
 
@@ -219,7 +219,7 @@ piece.selected:not(.dragging) {
 }
 
 .last-move {
-  box-shadow: 0 0 10px rgba(155,199,0,0.5) !important;
+  box-shadow: 0 0 10px rgba(155,199,0,0.8) !important;
 }
 
 piece.dragging {
