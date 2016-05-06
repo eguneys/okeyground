@@ -76,7 +76,7 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
 
   &.mgosterge {
     bottom: 0%;
-    left: $top-piece-width * ($i-top-cols - 3)
+    left: $top-piece-width * ($i-top-cols - 3);
   }
 }
 
@@ -84,9 +84,15 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
  * 
  * .21.9 .50 / .78.1 
  */
-.og-top>piece {
+.og-top>piece,
+.og-top>.piece-holder {
   height: $top-piece-height;
   width: $top-piece-width;
+}
+
+.og-top .piece-holder {
+  position: absolute;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .og-top .mgosterge {
@@ -97,7 +103,7 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
 .og-top piece.mmiddleCount {
   cursor: pointer;
   bottom: 0%;
-  left: $top-piece-width * ($i-top-cols - 4);
+  left: $top-piece-width * ($i-top-cols - 4) - 1%;
 
   &:not(.dragging)::before {
     position: absolute;
@@ -110,23 +116,32 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
   }
 }
 
-.og-top piece.dup {
+
+.og-top piece.mmiddleCount {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.og-top piece.dup,
+.og-top .piece-holder.dup {
   top: 0%;
   left: 0%
 }
 
-.og-top piece.dleft {
+.og-top piece.dleft,
+.og-top .piece-holder.dleft {
   cursor: pointer;
   bottom: 0%;
   left: 0%;
 }
 
-.og-top piece.ddown {
+.og-top piece.ddown,
+.og-top .piece-holder.ddown {
   right: 0%;
   bottom: 0%;
 }
 
-.og-top piece.dright {
+.og-top piece.dright,
+.og-top .piece-holder.dright {
   top: 0%;
   right: 0%;
 }
@@ -135,14 +150,14 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
   position: absolute;
   width: $opens-width;
   height: $opens-height;
-  border: 1px solid;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
   margin: auto;
   bottom: 0;
   top: 0;
   left: 0;
   right: 0;
 }
-
 
 .og-opens piece.mini {
   height: $opens-piece-height;
@@ -167,6 +182,7 @@ $opens-height: percentage($top-ratio / $opens-ratio * $opens-shrink-rate);
   bottom: 0;
   width: $board-width;
   /* height: 21.9%; */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
   height: $board-height
 }
 
@@ -191,7 +207,7 @@ piece {
   position: absolute;
   height: 100%;
   width: $piece-width / 2;
-
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
   &.right {
     right: 0;
   }
@@ -202,17 +218,27 @@ piece.selected:not(.dragging) {
   box-shadow: 0 0 0 2px rgba(0, 85, 80, 0.5);
 }
 
+.last-move {
+  box-shadow: 0 0 10px rgba(155,199,0,0.5) !important;
+}
+
 piece.dragging {
   z-index: 9;
   cursor: move;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
 }
 
 .move-dest {
   background: radial-gradient(transparent 0%, transparent 70%, rgba(216, 85, 0, 0.5) 80%);
 }
 
+.og-top piece.move-dest {
+  box-shadow: 0 0 10px rgba(216, 85, 0, 0.9) !important;
+}
+
 .og-board .drag-over,
-.move-dest.drag-over {
+.move-dest.drag-over,
+.og-top piece.move-dest.drag-over {
   //background: rgba(20, 85, 30, 0.3);
-  box-shadow: inset 0 0 10px 2px rgba(216, 85, 0, 0.9)
+  box-shadow: inset 0 0 10px 2px rgba(216, 85, 0, 0.9) !important;
 }

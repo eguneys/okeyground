@@ -40,7 +40,8 @@ function renderMiddlePiece(ctrl, key, p, drag = false) {
   var d = ctrl.data;
 
   var classes = util.classSet({
-    'selected': d.selected === key
+    'selected': d.selected === key,
+    'last-move': d.lastMove &&  util.containsX(d.lastMove, key)
   });
 
   var attrs = {
@@ -64,7 +65,7 @@ function renderMiddlePiece(ctrl, key, p, drag = false) {
   };
 }
 
-function renderTopPiece(ctrl, key, p) {
+function renderTopPiece(ctrl, key, p, klass) {
   var d = ctrl.data;
 
   var classes = util.classSet({
@@ -76,6 +77,8 @@ function renderTopPiece(ctrl, key, p) {
     style: {},
     class: [pieceClass(p), key, classes].join(' ')
   };
+
+  if (klass) attrs.class += ' ' + klass;
 
   var draggable = ctrl.data.draggable.current;
   if (draggable.orig === key) {
@@ -91,7 +94,26 @@ function renderTopPiece(ctrl, key, p) {
   };
 }
 
-function renderPiece(ctrl, pos, key, p) {
+function renderTopPieceHolder(ctrl, key, klass) {
+  var d = ctrl.data;
+
+  var classes = util.classSet({
+    'piece-holder': true
+  });
+
+  var attrs = {
+    key: key,
+    style: {},
+    class: [key, classes, klass].join(' ')
+  };
+
+  return {
+    tag: 'div',
+    attrs: attrs
+  };
+}
+
+function renderPiece(ctrl, pos, key, p, klass) {
   var d = ctrl.data;
 
   var classes = util.classSet({
@@ -103,6 +125,10 @@ function renderPiece(ctrl, pos, key, p) {
     style: posStyle(pos),
     class: [pieceClass(p), classes].join(' ')
   };
+
+  if (klass) {
+    attrs.class += ' ' + klass;
+  }
 
   var draggable = ctrl.data.draggable.current;
   if (draggable.orig === key) {
@@ -182,6 +208,10 @@ function renderBoard(ctrl) {
     }
   }
 
+  if (d.middleHolder.key) {
+    children.push(renderPiece(ctrl, util.key2pos(d.middleHolder.key), d.middleHolder.key, util.emptyPiece, 'loading'));
+  }
+
   if (dragOver) {
     children.push(dragOver);
   }
@@ -255,17 +285,16 @@ function renderDiscards(ctrl) {
   for (var key in d.discards) {
     var piece = d.discards[key][0];
 
-    if (piece) {
-      children.push(renderTopPiece(ctrl, key, piece));
-    }
-
     var miniKlass = util.classSet({
       'drag-over': d.draggable.current.over === key,
-      'move-dest': key === 'ddown' && d.selected && util.isBoardKey(d.selected) && util.containsX(d.movable.dests, move.discard)
+      'move-dest': key === 'ddown' && d.selected && util.isBoardKey(d.selected) && util.containsX(d.movable.dests, move.discard),
+      'last-move': d.lastMove &&  util.containsX(d.lastMove, key)
     });
 
-    if (miniKlass !== '') {
-      topDests.push(renderTopWithClass(miniKlass, ctrl, key));
+    if (piece) {
+      topDests.push(renderTopPiece(ctrl, key, piece, miniKlass));
+    } else {
+      children.push(renderTopPieceHolder(ctrl, key, miniKlass));
     }
   }
 
@@ -282,7 +311,10 @@ function renderMiddles(ctrl) {
 
   children.push(renderTopPiece(ctrl, util.gosterge, d.middles[util.gosterge]));
   children.push(renderMiddlePiece(ctrl, util.middleCount, util.emptyPiece));
-  children.push(renderMiddlePiece(ctrl, util.middleCount, draggingMiddlePiece, true));
+
+  if (util.isMiddleKey(d.draggable.current.orig)) {
+    children.push(renderMiddlePiece(ctrl, util.middleCount, draggingMiddlePiece, true));
+  }
 
   if (d.draggable.current.over === util.gosterge) {
     children.push(renderTopWithClass('drag-over', ctrl, util.gosterge));

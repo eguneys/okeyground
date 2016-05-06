@@ -80,6 +80,7 @@ function baseSettleMiddleHolder(data) {
   var piece = data.middleHolder.piece;
   if (key && piece) {
     data.pieces[key] = piece;
+    data.lastMove = [util.middleCount];
     data.middleHolder.current = false;
     data.middleHolder.key = null;
     data.middleHolder.piece = null;
@@ -281,9 +282,9 @@ function stop(data) {
 }
 
 function findFreeDropForMiddlePiece(data) {
-  var nexts = util.allKeys.slice(1);
-  var nnexts = util.allKeys.slice(2);
-  var frees = util.allKeys.map((key, i) => {
+  var nexts = util.allAllowedBoardKeys.slice(1);
+  var nnexts = util.allAllowedBoardKeys.slice(2);
+  var frees = util.allAllowedBoardKeys.map((key, i) => {
     return [key, nexts[i], nnexts[i]];
   }).filter(([key1, key2, key3]) => {
     return key1 && key2 && key3 && !data.pieces[key1] && !data.pieces[key2] && !data.pieces[key3];

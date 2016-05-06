@@ -120,13 +120,15 @@ function miniKey2pos(key) {
 const allPos = allPosBy(rows, columns);
 const miniAllPos = allPosBy(miniRows, miniColumns);
 
-const allKeys = allPos.map(pos2key);
-
 const notAllowedBoardKeys =
       [[0, 0], [30, 0], [31, 0], [32, 0], [62, 0], [63, 0]]
       .map(pos2key);
 
 const isAllowedBoardKey = (key) => notAllowedBoardKeys.indexOf(key) === -1;
+
+const allKeys = allPos.map(pos2key);
+
+const allAllowedBoardKeys = allKeys.filter(isAllowedBoardKey);
 
 function classSet(classes) {
   var arr = [];
@@ -217,6 +219,7 @@ module.exports = {
   decBoardKey: decBoardKey,
   notAllowedBoardKeys: notAllowedBoardKeys,
   isAllowedBoardKey: isAllowedBoardKey,
+  allAllowedBoardKeys: allAllowedBoardKeys,
   isBoardKey: isBoardKey,
   isOpensKey: isOpensKey,
   isMiddleKey: isMiddleKey,

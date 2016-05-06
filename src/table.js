@@ -5,6 +5,11 @@ import open from './open';
 
 const { wrapDrop, wrapPiece, callUserFunction }  = util;
 
+const pushLastMove = (data, k) => {
+  if (!data.lastMove) data.lastMove = [];
+  data.lastMove.push(k);
+};
+
 function apiMove(data, mmove, args = {}) {
   var { piece, group, pos } = args;
   if (data.turnSide === data.povSide) {
@@ -98,11 +103,14 @@ function baseOpponentOpenPairs(data, pieces) {
 
 function baseOpponentDiscard(data, dest, piece) {
   data.discards[dest].unshift(piece);
+  data.lastMove = [dest];
+  //pushLastMove(data, dest);
   return true;
 }
 
 function baseOpponentDrawMiddle(data) {
   data.middles[util.middleCount]--;
+  data.lastMove = [util.middleCount];
   return true;
 }
 
@@ -171,6 +179,8 @@ function baseDropDiscard(data, orig, dest) {
   callUserFunction(util.partial(data.events.move, move.discard, wrapPiece(piece.key)));
   data.discards[dest].unshift(data.pieces[orig]);
   delete data.pieces[orig];
+  //pushLastMove(data, dest);
+  data.lastMove = [dest];
   return true;
 }
 

@@ -109,7 +109,7 @@
        ground.apiMove('dm');
        delay(function() {
          console.log('discard ', side);
-         ground.apiMove('dd', 'l10');
+         ground.apiMove('dd', { piece: 'l10' });
          setTurn(ground, side);
        });
      }
@@ -119,7 +119,7 @@
        ground.apiMove('dl');
        delay(function() {
          console.log('leave taken', side);
-         ground.apiMove('lt', 'r9');
+         ground.apiMove('lt', { piece: 'r9' });
        });
        delay(function() {
          console.log('draw left', side);
@@ -127,7 +127,7 @@
        }, 1500);
        delay(function() {
          console.log('discard ', side);
-         ground.apiMove('dd', 'l10');
+         ground.apiMove('dd', { piece: 'l10' });
          setTurn(ground, side);
        }, 2000);
      }
@@ -151,7 +151,7 @@
            events: {
              after: function(key, args) {
                console.log('movable events after', key, args);
-               //onMove();
+               onMove();
              }
            }
          }
