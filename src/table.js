@@ -2,6 +2,7 @@ import util from './util';
 import move from './move';
 import pieces from './pieces';
 import open from './open';
+import board from './board';
 
 const { wrapDrop, wrapPiece, callUserFunction }  = util;
 
@@ -13,6 +14,19 @@ const pushLastMove = (data, k) => {
 function apiMove(data, mmove, args = {}) {
   var { piece, group, pos } = args;
   if (data.turnSide === data.povSide) {
+    switch (mmove) {
+    case move.discard:
+      piece = pieces.readPiece(piece).piece;
+      baseForceDropDiscard(data, piece, util.discards[2]);
+      break;
+    case move.drawMiddle:
+      piece = pieces.readPiece(piece).piece;
+      if (data.middleHolder.current) {
+        board.apiDrawMiddleEnd(data, piece);
+      } else {
+        board.apiForceDrawMiddleEnd(data, piece);
+      }
+    }
   } else {
     const pov = util.findPov(data.povSide, data.turnSide);
     switch (mmove) {
@@ -173,6 +187,17 @@ function baseDropOpenPairs(data, orig, dest, pos) {
   return true;
 }
 
+function baseForceDropDiscard(data, piece, dest) {
+  for (var orig in data.pieces) {
+    var piece2 = data.pieces[orig];
+    if (piece2 && util.pieceEqual(piece, piece2)) {
+      baseDropDiscard(data, orig, dest);
+      return true;
+    }
+  };
+  return false;
+}
+
 function baseDropDiscard(data, orig, dest) {
   const piece = data.pieces[orig];
   if (!piece) return false;
@@ -272,22 +297,13 @@ function isDraggable(data, key) {
   } else return util.isBoardKey(key);
 }
 
-function isDroppableOpens(data, key) {
-  var piece = data.pieces[key];
-
-  if (piece && data.povSide === data.turnSide) {
-    return true;
-  }
-  return false;
-}
-
 function isMovable(data) {
   return data.povSide === data.turnSide;
 }
 
 function canDropOpens(data, orig, dest) {
   var sign = data.middles[util.gosterge];
-  return isDroppableOpens(data, orig) &&
+  return board.isDroppableOpens(data, orig) &&
     util.isBoardKey(orig) &&
     util.isOpensKey(dest) &&
     util.containsX(data.movable.dests, move.dropOpenSeries) &&
@@ -353,7 +369,6 @@ export default {
   dropTop,
   dropOpens,
   isDraggable,
-  isDroppableOpens,
   getDrawKeyAtDomPos,
   getDiscardKeyAtDomPos,
   getOpensKeyAtDomPos

@@ -2,7 +2,6 @@ import util from './util';
 import move from './move';
 import pieces from './pieces';
 import open from './open';
-import table from './table';
 
 const { wrapGroup, callUserFunction }  = util;
 
@@ -42,8 +41,19 @@ function playOpenPairs(data) {
   return false;
 }
 
+function apiForceDrawMiddleEnd(data, piece) {
+
+  var orig = util.middleCount;
+  baseUserBeginDrawMiddle(data, orig);
+  baseUserEndDrawMiddle(data, orig);
+
+  apiDrawMiddleEnd(data, piece);
+}
+
 function apiDrawMiddleEnd(data, piece) {
-  piece = pieces.readPiece(piece).piece;
+  if (typeof piece === "string") {
+    piece = pieces.readPiece(piece).piece;
+  }
   data.middleHolder.piece = piece;
   baseSettleMiddleHolder(data);
 }
@@ -206,7 +216,7 @@ function setSelected(data, key) {
   data.selected = key;
 
   if (key && util.isBoardKey(key)) {
-    if (table.isDroppableOpens(data, key)) {
+    if (isDroppableOpens(data, key)) {
       var sign = data.middles[util.gosterge];
       data.openable.dests = open.compute(data.opens, data.pieces[key], sign);
     } else {
@@ -279,6 +289,15 @@ function stop(data) {
   data.openable.dests = [];
   data.movable.board = false;
   cancelMove(data);
+}
+
+function isDroppableOpens(data, key) {
+  var piece = data.pieces[key];
+
+  if (piece && data.povSide === data.turnSide) {
+    return true;
+  }
+  return false;
 }
 
 function findFreeDropForMiddlePiece(data) {
@@ -375,6 +394,7 @@ module.exports = {
   playOpenSeries: playOpenSeries,
   playOpenPairs: playOpenPairs,
   apiDrawMiddleEnd, apiDrawMiddleEnd,
+  apiForceDrawMiddleEnd, apiForceDrawMiddleEnd,
   userMove: userMove,
   userDrawLeft: userDrawLeft,
   userBeginDrawMiddle: userBeginDrawMiddle,
@@ -387,6 +407,7 @@ module.exports = {
   canLeaveTaken: canLeaveTaken,
   canCollectOpen: canCollectOpen,
   stop: stop,
+  isDroppableOpens,
   getKeyAtDomPos: getKeyAtDomPos,
   getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece,
   getPieceGroups: getPieceGroups,

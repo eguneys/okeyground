@@ -19,6 +19,8 @@
       <button onclick="opponentDropSeries(window.ground1)">Opponent Drop Series</button>
       <button onclick="opponentDropPairs(window.ground1)">Opponent Drop Pairs</button>
       <button onclick="setFen(window.ground1)">Set Fen</button>
+      <button onclick="forceDraw(window.ground1)">Force Draw</button>
+      <button onclick="forceDiscard(window.ground1)">Force Discard</button>
     </div>
     <script>
 
@@ -102,6 +104,16 @@
            turnSide: 'east'
          });
        }
+     }
+
+     function forceDraw(ground) {
+       delay(function() { ground.apiMove('dm', { piece: 'l1' }); });
+     }
+
+     function forceDiscard(ground) {
+       delay(function() {
+         ground.apiMove('dd', { piece: 'g3' });
+       });
      }
 
      function aiMove(ground, side) {
