@@ -22,7 +22,7 @@ var standalone = 'Okeyground';
 
 gulp.task('lint', function() {
   return gulp.src('./src/main.js')
-    .pipe(jshint())
+    .pipe(jshint({ esversion: 6 }))
     .pipe(jshint.reporter('default'));
 });
 

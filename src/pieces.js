@@ -365,18 +365,24 @@ function readMiddles(middles) {
 function read(fen) {
   fen = fen.split('/');
 
+  var iPieces = 2;
+  var iDiscard = 3;
+  var iOpens = 4;
+  var iMiddles = 1;
+  var iSide = 0;
+
   var povSide = {
     e: 'east',
     w: 'west',
     n: 'north',
     s: 'south'
-  }[fen[5]];
+  }[fen[iSide]];
 
   return {
-    pieces: readBoard(fen[0]),
-    discards: readDiscards(fen[1], povSide),
-    opens: readOpenGroups([fen[2], fen[3]].join('/')),
-    middles: readMiddles(fen[4])
+    pieces: readBoard(fen[iPieces]),
+    discards: readDiscards(fen[iDiscard], povSide),
+    opens: readOpenGroups([fen[iOpens], fen[iOpens + 1]].join('/')),
+    middles: readMiddles(fen[iMiddles])
   };
 }
 

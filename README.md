@@ -79,7 +79,9 @@ example: `l1` `r0` `p2`
 
 #### FEN
 
-fen = board/discard/series/pairs/middle/povSide
+~~ fen = board/discard/series/pairs/middle/povSide ~~
+
+fen = povSide/middle/board/discard/openSeries/openPairs
 
 
 #### Rules
