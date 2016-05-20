@@ -193,7 +193,7 @@ function callUserFunction(f) {
   setTimeout(f, 1);
 }
 
-const wrapPiece = (key) => ({ piece: key });
+const wrapPiece = (key, obj = {}) => { obj.piece = key; return obj; };
 const wrapGroup = (group) => ({ group: group });
 const wrapDrop = (key, pos) => ({ piece: key, pos: pos });
 

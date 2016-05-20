@@ -4,7 +4,7 @@ import pieces from './pieces';
 import open from './open';
 import board from './board';
 
-const { wrapDrop, wrapPiece, callUserFunction }  = util;
+const { wrapDrop, wrapPiece, wrapGroup, callUserFunction }  = util;
 
 const pushLastMove = (data, k) => {
   if (!data.lastMove) data.lastMove = [];
@@ -212,7 +212,8 @@ function baseDropDiscard(data, orig, dest) {
 function baseGosterge(data, orig) {
   var piece = data.pieces[orig];
   if (!piece) return false;
-  if (util.pieceEqual(piece, data.middles[util.gosterge])) {
+  //if (util.pieceEqual(piece, data.middles[util.gosterge])) {
+  if (true) {
     callUserFunction(util.partial(data.events.move, move.sign, wrapPiece(piece.key)));
     return true;
   }
@@ -275,7 +276,23 @@ function dropTop(data, orig, dest) {
   } else if (dest === util.gosterge) {
     if (canGosterge(data, orig)) {
       if (baseGosterge(data, orig)) {
-        callUserFunction(util.partial(data.movable.events.after, wrapPiece(move.sign)));
+
+        // FIX THIS
+        data.pieces[orig] = undefined;
+        var discardFen = pieces.write(data.pieces);
+        var series = board.getPieceGroupSeries(data);
+        var pairs = board.getPieceGroupPairs(data);
+
+        if (pieces.validDuzOkeyGroupFen(series)) {
+          callUserFunction(util.partial(data.movable.events.after, move.discardEndSeries, wrapGroup(series)));
+        } else if (pieces.validDuzOkeyGroupFen(pairs)) {
+          callUserFunction(util.partial(data.movable.events.after, move.discardEndPairs, wrapGroup(pairs)));
+        }
+
+        data.pieces[orig] = piece;
+        // FIX THIS
+
+        callUserFunction(util.partial(data.movable.events.after, move.sign, wrapPiece(piece.key)));
         return true;
       }
     }

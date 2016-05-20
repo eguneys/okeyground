@@ -348,7 +348,8 @@ function pieceGroupToFen(groups) {
 
 function getPieceGroupSeries(data) {
   var sign = data.middles[util.gosterge];
-  var groups = getPieceGroups(data).filter(group => open.series(group, sign));
+  var withTore = data.withTore;
+  var groups = getPieceGroups(data).filter(group => open.series(group, sign, withTore));
   return pieceGroupToFen(groups);
 }
 

@@ -8,6 +8,8 @@ const openPairs = "op";
 const collectOpen = "co";
 const dropOpenSeries = "dos";
 const dropOpenPairs = "dop";
+const discardEndSeries = "dds";
+const discardEndPairs = "ddp";
 
 const dropLeft = 'l';
 const dropRight = 'r';
@@ -26,5 +28,7 @@ module.exports = {
   dropOpenPairs: dropOpenPairs,
   dropLeft: dropLeft,
   dropRight: dropRight,
-  dropReplace: dropReplace
+  dropReplace: dropReplace,
+  discardEndSeries: discardEndSeries,
+  discardEndPairs: discardEndPairs
 };

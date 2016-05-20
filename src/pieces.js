@@ -24,6 +24,8 @@ const numbers = {
   '13': 'thirteen'
 };
 
+const regPiece = /[f|r|l|b|g]\d\d?/g;
+
 function colorSeries(color) {
   var ps = [];
   for (var number in numbers) {
@@ -453,7 +455,12 @@ function pieceFake(piece) {
   return piece.color === 'fake';
 }
 
+function validDuzOkeyGroupFen(fen) {
+  return fen.length > 0 && fen.match(regPiece).length === 14;
+}
+
 module.exports = {
+  validDuzOkeyGroupFen: validDuzOkeyGroupFen,
   initial: initial,
   rainbow: rainbow,
   mixed: mixed,

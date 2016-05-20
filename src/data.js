@@ -7,6 +7,7 @@ module.exports = function(cfg) {
     povSide: 'east', // side of board
     turnSide: 'east', // turn to play. east | west | north | south
     lastMove: null,
+    withTore: false, // allow 12 13 1 binding on group series
     pieces: pieces.readBoard(pieces.mixed),
     discards: pieces.readDiscards(pieces.initialDiscards, 'east'), // array of discarded pieces
     opens: pieces.readOpenGroups(pieces.initialOpenGroups),

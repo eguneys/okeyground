@@ -24,7 +24,7 @@ const colorCombinations = (() => {
   return ps;
 })();
 
-function colorSeries(group) {
+function colorSeries(group, withTore) {
   if (group.length < 3) return false;
 
   var groupLength = group.length;
@@ -32,6 +32,11 @@ function colorSeries(group) {
   var groupKeys = group.map(_ => _.key);
   var groupKeysReverse = groupKeys.slice(0).reverse();
   var serieKeys = pieces.seriesByColor(groupColor);
+
+  if (withTore) {
+    serieKeys = serieKeys.slice(0);
+    serieKeys.push(serieKeys[0]);
+  }
 
   for (var i = 0; i <= serieKeys.length - groupLength; i++) {
     var matchKeys = serieKeys.slice(i, i + groupLength);
@@ -162,13 +167,13 @@ function replaceOkey(group, okey) {
   }
 }
 
-function series(group, sign) {
+function series(group, sign, withTore = false) {
   var okey = pieces.pieceUp(sign);
 
   var replacedFake = group.map(_ => replaceFake(_, okey));
   var replaced = replaceOkey(replacedFake, okey);
 
-  return colorSeries(replaced) | numberSeries(replaced);
+  return colorSeries(replaced, withTore) | numberSeries(replaced);
 }
 
 function pairs(group, sign) {
