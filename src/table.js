@@ -212,12 +212,33 @@ function baseDropDiscard(data, orig, dest) {
 function baseGosterge(data, orig) {
   var piece = data.pieces[orig];
   if (!piece) return false;
-  //if (util.pieceEqual(piece, data.middles[util.gosterge])) {
-  if (true) {
+  if (util.pieceEqual(piece, data.middles[util.gosterge])) {
     callUserFunction(util.partial(data.events.move, move.sign, wrapPiece(piece.key)));
     return true;
   }
   return false;
+}
+
+function baseDiscardEnd(data, orig) {
+  var piece = data.pieces[orig];
+  if (!piece) return false;
+
+  delete data.pieces[orig];
+
+  var discardFen = pieces.write(data.pieces);
+  var series = board.getPieceGroupSeries(data);
+  var pairs = board.getPieceGroupPairs(data);
+
+  if (pieces.validDuzOkeyGroupFen(series)) {
+    callUserFunction(util.partial(data.events.move, move.discardEndSeries, wrapGroup(series)));
+  } else if (pieces.validDuzOkeyGroupFen(pairs)) {
+    callUserFunction(util.partial(data.events.move, move.discardEndPairs, wrapGroup(pairs)));
+  } else {
+    data.pieces[orig] = piece;
+    return false;
+  }
+
+  return true;
 }
 
 function getDropType(group, index) {
@@ -276,9 +297,12 @@ function dropTop(data, orig, dest) {
   } else if (dest === util.gosterge) {
     if (canGosterge(data, orig)) {
       if (baseGosterge(data, orig)) {
-
-        // FIX THIS
-        data.pieces[orig] = undefined;
+        callUserFunction(util.partial(data.movable.events.after, move.sign, wrapPiece(piece.key)));
+        return true;
+      }
+    }
+    if (canDiscardEnd(data, orig)) {
+      if (baseDiscardEnd(data, orig)) {
         var discardFen = pieces.write(data.pieces);
         var series = board.getPieceGroupSeries(data);
         var pairs = board.getPieceGroupPairs(data);
@@ -288,11 +312,6 @@ function dropTop(data, orig, dest) {
         } else if (pieces.validDuzOkeyGroupFen(pairs)) {
           callUserFunction(util.partial(data.movable.events.after, move.discardEndPairs, wrapGroup(pairs)));
         }
-
-        data.pieces[orig] = piece;
-        // FIX THIS
-
-        callUserFunction(util.partial(data.movable.events.after, move.sign, wrapPiece(piece.key)));
         return true;
       }
     }
@@ -333,8 +352,14 @@ function canDiscard(data, orig, dest) {
     util.containsX(data.movable.dests, move.discard);
 }
 
+function canDiscardEnd(data, orig) {
+  return isMovable(data) &&
+    util.containsX(data.movable.dests, move.discardEndSeries);
+}
+
 function canGosterge(data, orig) {
-  return isMovable(data);
+  return isMovable(data) &&
+    util.containsX(data.movable.dests, move.showSign);
 }
 
 function withRowColumn(f, tColumns = util.topColumns, tRows = util.topRows) {
