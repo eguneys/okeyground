@@ -22,6 +22,13 @@ function findPov(povSide, turnSide) {
 
 const discardPovMap = { up: 0, left: 1, down: 2, right: 3 };
 const drawPovMap = { up: 3, left: 0, down: 1, right: 2 };
+const vectorPovMap = {
+  up: [0.5, 0],
+  left: [0, 0.5],
+  right: [1, 0.5],
+  down: [0.5, 1]
+};
+const vectorByPov = (pov) => vectorPovMap[pov];
 
 const discardByPov = (pov) => discards[discardPovMap[pov]];
 const drawByPov = (pov) => discards[drawPovMap[pov]];
@@ -225,6 +232,7 @@ module.exports = {
   isMiddleKey: isMiddleKey,
   isDrawLeftKey: isDrawLeftKey,
   findPov: findPov,
+  vectorByPov: vectorByPov,
   drawByPov: drawByPov,
   discardByPov: discardByPov,
   discards: discards,

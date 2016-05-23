@@ -30,13 +30,16 @@ function apiMove(data, mmove, args = {}) {
   } else {
     const pov = util.findPov(data.povSide, data.turnSide);
     switch (mmove) {
-    case move.drawMiddle: baseOpponentDrawMiddle(data);
+    case move.drawMiddle:
+      baseOpponentDrawMiddle(data);
+      data.animation.current.hint = move.drawMiddle;
       break;
     case move.drawLeft: baseOpponentDrawLeft(data, util.drawByPov(pov));
       break;
     case move.discard:
       piece = pieces.readPiece(piece).piece;
       baseOpponentDiscard(data, util.discardByPov(pov), piece);
+      data.animation.current.hint = move.discard;
       break;
     case move.leaveTaken:
       piece = pieces.readPiece(piece).piece;

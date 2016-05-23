@@ -4,11 +4,11 @@ $i-board-height: 50 * 2;
 
 $board-ratio: $i-board-width / $i-board-height;
 
-$board-width: percentage(1);
-$board-height: percentage($aspect-ratio / $board-ratio);
+$board-width: percentage(1); /* 1 */
+$board-height: percentage($aspect-ratio / $board-ratio); /* 4/3 (38 * 16 / 50 * 2) */
 
-$piece-width: percentage(100/16/100); /* 6.25% */
-$piece-height: percentage(100/2/100); /* 50% */
+$piece-width: percentage(100/16/100); /* 6.25 */
+$piece-height: percentage(100/2/100); /* 0.5 */
 
 
 $i-top-cols: 16;
@@ -21,8 +21,8 @@ $top-ratio: $i-top-width / $i-top-height;
 $top-width: percentage(1);
 $top-height: percentage($aspect-ratio / $top-ratio);
 
-$top-piece-width: percentage(100/16/100);
-$top-piece-height: percentage(100/7/100);
+$top-piece-width: percentage(100/16/100); /* 6.25 */
+$top-piece-height: percentage(100/7/100); /* 0.14 */
 
 
 $opens-rows: 8;
@@ -229,7 +229,7 @@ piece.dragging {
 }
 
 .move-dest {
-  background: radial-gradient(transparent 0%, transparent 70%, rgba(216, 85, 0, 0.5) 80%);
+  box-shadow: radial-gradient(transparent 0%, transparent 70%, rgba(216, 85, 0, 0.5) 80%);
 }
 
 .og-top piece.move-dest {

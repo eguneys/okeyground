@@ -57,6 +57,9 @@ function renderMiddlePiece(ctrl, key, p, drag = false) {
       draggable.pos[1] + draggable.dec[1]
     ]);
     attrs.class += ' dragging';
+  } else if (!drag && ctrl.data.animation.current.anims) {
+    var animation = ctrl.data.animation.current.anims[key];
+    if (animation) attrs.style[util.transformProp()] = util.translate(animation[1]);
   }
 
   return {
@@ -65,7 +68,7 @@ function renderMiddlePiece(ctrl, key, p, drag = false) {
   };
 }
 
-function renderTopPiece(ctrl, key, p, klass) {
+function renderTopPiece(ctrl, key, p, klass, drag = true) {
   var d = ctrl.data;
 
   var classes = util.classSet({
@@ -73,7 +76,7 @@ function renderTopPiece(ctrl, key, p, klass) {
   });
 
   var attrs = {
-    key: key,
+    key: key + (drag ? '' : 'd'),
     style: {},
     class: [pieceClass(p), key, classes].join(' ')
   };
@@ -81,13 +84,17 @@ function renderTopPiece(ctrl, key, p, klass) {
   if (klass) attrs.class += ' ' + klass;
 
   var draggable = ctrl.data.draggable.current;
-  if (draggable.orig === key) {
+  if (drag && draggable.orig === key) {
     attrs.style[util.transformProp()] = util.translate([
       draggable.pos[0] + draggable.dec[0],
       draggable.pos[1] + draggable.dec[1]
     ]);
     attrs.class += ' dragging';
+  } else if (drag && ctrl.data.animation.current.anims) {
+    var animation = ctrl.data.animation.current.anims[key];
+    if (animation) attrs.style[util.transformProp()] = util.translate(animation[1]);
   }
+
   return {
     tag: 'piece',
     attrs: attrs
@@ -292,6 +299,9 @@ function renderDiscards(ctrl) {
     });
 
     if (piece) {
+      if (d.discards[key][1]) {
+        topDests.push(renderTopPiece(ctrl, key, d.discards[key][1], "fake", false));
+      }
       topDests.push(renderTopPiece(ctrl, key, piece, miniKlass));
     } else {
       children.push(renderTopPieceHolder(ctrl, key, miniKlass));
@@ -312,7 +322,8 @@ function renderMiddles(ctrl) {
   children.push(renderTopPiece(ctrl, util.gosterge, d.middles[util.gosterge]));
   children.push(renderMiddlePiece(ctrl, util.middleCount, util.emptyPiece));
 
-  if (util.isMiddleKey(d.draggable.current.orig)) {
+  if (util.isMiddleKey(d.draggable.current.orig) ||
+      (d.animation.current.anims && d.animation.current.anims[util.middleCount])) {
     children.push(renderMiddlePiece(ctrl, util.middleCount, draggingMiddlePiece, true));
   }
 

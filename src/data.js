@@ -18,6 +18,17 @@ module.exports = function(cfg) {
       key: null, // key to place on board
       piece: null // piece to draw from middle
     },
+    animation: {
+      enabled: true,
+      duration: 500,
+      // {
+      //   start: timestamp,
+      //   duration: ms,
+      //   anims: {
+      //   }
+      // }
+      current: {}
+    },
     draggable: {
       enabled: true,
       distance: 3, // minimum distance to initiate a drag, in pixels

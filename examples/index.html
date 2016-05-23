@@ -9,7 +9,7 @@
     <script src="../build/okeyground.js"></script>
 
     <section>
-    <div class="okeyground normal" id="ground7"></div>
+      <div class="okeyground normal" id="ground7"></div>
     <div class="controls">
       <button onclick="openSeries(window.ground1)">Open Series</button>
       <button onclick="openPairs(window.ground1)">Open Pairs</button>
@@ -31,12 +31,14 @@
 
      var pairFen = 's/9g13/g2g2 g4g4 g6g6 g8g8 g10g10 g12g12 r4r4 r8//r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
      var serieFen = 's/9g13/g1g2g3g4g5g6 r10g10b10l10 r10r12r13r1 g1//r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
+     var discardFen = 's/9g13/g1g2g3g4g5g6 r10g10b10l10 r10r12r13r1 g1/r10r11r12 r10g3r12 g4r4l4 g4g3l4/r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
 
      function setFen(ground) {
        ground.set({
-         // fen: 's/9g2/g3g3g3 g1g2g3g4g5 r3b3l3r3 r7r8r9r10r11r12r13 r4 f1f1 g7g9g10g8//r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3'
+         // fen: 's/9g2/g3g3g3 g1g2g3g4g5 r3b3l3r3 r7r8r9r10r11r12r13 r4 f1f1 g7g9g10g8/r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3'
          //fen: serieFen,
-         fen: pairFen,
+         // fen: pairFen,
+         fen: discardFen,
          withTore: true
        });
      }
@@ -124,11 +126,11 @@
 
      function aiMove(ground, side) {
        console.log('draw middle', side);
+       setTurn(ground, side);
        ground.apiMove('dm');
        delay(function() {
          console.log('discard ', side);
          ground.apiMove('dd', { piece: 'l10' });
-         setTurn(ground, side);
        });
      }
 
@@ -169,7 +171,7 @@
            events: {
              after: function(key, args) {
                console.log('movable events after', key, args);
-               // onMove();
+               onMove();
              }
            }
          }
@@ -178,10 +180,9 @@
        window.ground1 = ground;
 
        var onMove = function() {
-         setTurn(ground, 'north');
-         delay(aiMove.bind(null, ground, 'west'), 1000);
-         delay(aiMove.bind(null, ground, 'south'), 4000);
-         delay(aiMove.bind(null, ground, 'east'), 8000);
+         delay(aiMove.bind(null, ground, 'north'), 1000);
+         delay(aiMove.bind(null, ground, 'west'), 4000);
+         delay(aiMove.bind(null, ground, 'south'), 8000);
        };
        var onMoveLeft = function() {
          console.log('move left');
@@ -203,7 +204,8 @@
       <script>
        (function() {
          var ground;
-         ground = Okeyground(document.getElementById('ground8'), {});
+         ground = Okeyground(document.getElementById('ground8'), {
+         });
        })();
       </script>
     </section>
