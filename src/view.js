@@ -1,5 +1,6 @@
 import m from 'mithril';
 import drag from './drag';
+import draw from './draw';
 import util from './util';
 import move from './move';
 
@@ -120,6 +121,38 @@ function renderTopPieceHolder(ctrl, key, klass) {
   };
 }
 
+function withFlipper(front, back, flip) {
+
+  var classes = "flipper" + (flip ? ' hover': '');
+
+  var resetStyle = {
+    top: 0,
+    left: 0
+  };
+  var posStyle = front.attrs.style;
+  front.attrs.style = resetStyle;
+  back.attrs.style = resetStyle;
+
+  var attrs = {
+    class: classes,
+    style: posStyle
+  };
+
+  return {
+    tag: 'div',
+    attrs: attrs,
+    children: [{
+      tag: 'div',
+      attrs: { class: 'front' },
+      children: [front]
+    }, {
+      tag: 'div',
+      attrs: { class: 'back' },
+      children: [back]
+    }]
+  };
+}
+
 function renderPiece(ctrl, pos, key, p, klass) {
   var d = ctrl.data;
 
@@ -207,7 +240,26 @@ function renderBoard(ctrl) {
     var key = util.pos2key(positions[i]);
     var piece = d.pieces[key];
     if (piece) {
-      children.push(renderPiece(ctrl, positions[i], key, piece));
+      var rp = renderPiece(ctrl, positions[i], key, piece);
+
+      if (d.flippable.current.orig === key) {
+        var front, back;
+        var flip = d.flippable.current.flip;
+        var rp2 = renderPiece(ctrl, positions[i], key, util.emptyPiece);
+
+        if (piece.flip) {
+          front = rp2;
+          back = rp;
+        } else {
+          front = rp;
+          back = rp2;
+        }
+        children.push(withFlipper(front, back, flip));
+      } else {
+        if (piece.flip)
+          rp = renderPiece(ctrl, positions[i], key, util.emptyPiece);
+        children.push(rp);
+      }
     }
 
     if (d.draggable.current.over === key) {
@@ -359,17 +411,19 @@ function renderContent(ctrl) {
   return [renderTop(ctrl), renderBoard(ctrl)];
 }
 
-function doDrag(d, withDrag) {
+function dragOrDraw(d, withDrag, withDraw) {
   return function(e) {
-    withDrag(d, e);
+    if (util.isRightButton(e)) withDraw(d, e);
+    else
+      withDrag(d, e);
   };
 }
 
 function bindEvents(ctrl, el, context) {
   var d = ctrl.data;
-  var onstart = doDrag(d, drag.start);
-  var onmove = doDrag(d, drag.move);
-  var onend = doDrag(d, drag.end);
+  var onstart = dragOrDraw(d, drag.start, draw.start);
+  var onmove = dragOrDraw(d, drag.move, draw.move);
+  var onend = dragOrDraw(d, drag.end, draw.end);
 
   var startEvents = ['touchstart', 'mousedown'];
   var moveEvents = ['touchmove', 'mousemove'];
@@ -431,6 +485,10 @@ module.exports = function(ctrl) {
     attrs: {
       config: function(el, isUpdate) {
         if (isUpdate) return;
+        el.addEventListener('contextmenu', function(e) {
+          e.preventDefault();
+          return false;
+        });
         ['onscroll', 'onresize'].forEach(function(n) {
           var prev = window[n];
           window[n] = function() {
