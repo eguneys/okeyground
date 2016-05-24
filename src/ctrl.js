@@ -10,6 +10,23 @@ import pieces from './pieces';
 module.exports = function(cfg) {
   this.data = data(cfg);
 
+  this.data.flipPiece = function(orig, piece) {
+    if (!piece || this.flippable.current.orig) return;
+    this.flippable.current = {
+      orig: orig
+    };
+    this.renderRAF();
+    setTimeout(() => {
+      this.flippable.current.flip = true;
+      this.renderRAF();
+      setTimeout(() => {
+        piece.flip = !piece.flip;
+        this.flippable.current = {};
+        this.renderRAF();
+      }, 600);
+    }, 10);
+  }.bind(this.data);
+
   this.getFen = () => {
     return pieces.write(this.data.pieces);
   };

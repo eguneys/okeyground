@@ -10,24 +10,7 @@ function start(data, e) {
   var boardBounds = data.boardBounds();
   var orig = board.getKeyAtDomPosOnPiece(data, position, boardBounds);
   var piece = data.pieces[orig];
-
-  if (!piece || data.flippable.current.orig) return;
-
-  data.flippable.current = {
-    orig: orig
-  };
-
-  data.renderRAF();
-  setTimeout(() => {
-    data.flippable.current.flip = true;
-    data.renderRAF();
-    setTimeout(() => {
-      piece.flip = !piece.flip;
-      data.flippable.current = {};
-      data.renderRAF();
-    }, 600);
-  }, 10);
-
+  data.flipPiece(orig, piece);
   // processDraw(data);
 }
 

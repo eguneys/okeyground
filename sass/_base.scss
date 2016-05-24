@@ -249,11 +249,22 @@ piece.dragging {
   width: $piece-width;
 }
 
-.og-board .flipper .front,
-.og-board .flipper .back,
-.og-board .flipper piece {
+.og-top>.flipper {
+  height: $top-piece-height;
+  width: $top-piece-width;
+}
+
+.flipper .front,
+.flipper .back,
+.flipper piece {
   height: 100%;
   width: 100%;
+}
+
+
+.flipper.mmiddleCount {
+  bottom: 0%;
+  left: $top-piece-width * ($i-top-cols - 4) - 1%;
 }
 
 .flipper {

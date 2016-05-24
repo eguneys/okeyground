@@ -121,9 +121,8 @@ function renderTopPieceHolder(ctrl, key, klass) {
   };
 }
 
-function withFlipper(front, back, flip) {
-
-  var classes = "flipper" + (flip ? ' hover': '');
+function withFlipper(front, back, flip, klass) {
+  var classes = "flipper" + (flip ? ' hover': '') + ' ' + klass;
 
   var resetStyle = {
     top: 0,
@@ -376,7 +375,10 @@ function renderMiddles(ctrl) {
 
   if (util.isMiddleKey(d.draggable.current.orig) ||
       (d.animation.current.anims && d.animation.current.anims[util.middleCount])) {
-    children.push(renderMiddlePiece(ctrl, util.middleCount, draggingMiddlePiece, true));
+    var rp = renderMiddlePiece(ctrl,
+                               util.middleCount,
+                               draggingMiddlePiece, true);
+    children.push(rp);
   }
 
   if (d.draggable.current.over === util.gosterge) {
