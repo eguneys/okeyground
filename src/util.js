@@ -185,6 +185,10 @@ function partial() {
   return partialApply(arguments[0], Array.prototype.slice.call(arguments, 1));
 }
 
+function isRightButton(e) {
+  return e.buttons === 2 || e.button === 2;
+}
+
 function memo(f) {
   var v, ret = function() {
     if (v === undefined) v = f();
@@ -247,6 +251,7 @@ module.exports = {
   requestAnimationFrame: (window.requestAnimationFrame || window.setTimeout).bind(window),
   partialApply: partialApply,
   partial: partial,
+  isRightButton: isRightButton,
   memo: memo,
   wrapPiece: wrapPiece,
   wrapGroup: wrapGroup,

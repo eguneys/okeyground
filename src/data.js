@@ -51,6 +51,10 @@ module.exports = function(cfg) {
         after: function(key, piece) {} // called after the move has been played
       }
     },
+    flippable: {
+      enabled: true,
+      current: {}
+    },
     openable: {
       dests: [] // open droppable dests for the current selection
     },

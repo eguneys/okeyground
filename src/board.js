@@ -408,6 +408,7 @@ module.exports = {
   canLeaveTaken: canLeaveTaken,
   canCollectOpen: canCollectOpen,
   stop: stop,
+  cancelMove: cancelMove,
   isDroppableOpens,
   getKeyAtDomPos: getKeyAtDomPos,
   getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece,
