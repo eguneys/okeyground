@@ -26,7 +26,7 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('default'));
 });
 
-gulp.task('prod', ['prod-css'], function() {
+gulp.task('prod', ['assets', 'prod-css'], function() {
   return browserify('./src/main.js', {
     standalone: standalone
   }).transform('babelify',

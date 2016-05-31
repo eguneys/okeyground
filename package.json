@@ -1,6 +1,6 @@
 {
-  "name": "okeyground",
-  "description": "",
+  "name": "okeyground-mobile",
+  "description": "oyunkeyf.net mobile application okey UI",
   "scripts": {
     "compile": "rm -rf build && gulp prod"
   },
