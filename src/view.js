@@ -60,7 +60,10 @@ function renderMiddlePiece(ctrl, key, p, drag = false) {
     attrs.class += ' dragging';
   } else if (!drag && ctrl.data.animation.current.anims) {
     var animation = ctrl.data.animation.current.anims[key];
-    if (animation) attrs.style[util.transformProp()] = util.translate(animation[1]);
+    if (animation) {
+      attrs.class += ' animating';
+      attrs.style[util.transformProp()] = util.translate(animation[1]);
+    }
   }
 
   return {
@@ -77,7 +80,6 @@ function renderTopPiece(ctrl, key, p, klass, drag = true) {
   });
 
   var attrs = {
-    key: key + (drag ? '' : 'd'),
     style: {},
     class: [pieceClass(p), key, classes].join(' ')
   };
@@ -93,7 +95,10 @@ function renderTopPiece(ctrl, key, p, klass, drag = true) {
     attrs.class += ' dragging';
   } else if (drag && ctrl.data.animation.current.anims) {
     var animation = ctrl.data.animation.current.anims[key];
-    if (animation) attrs.style[util.transformProp()] = util.translate(animation[1]);
+    if (animation) {
+      attrs.class += ' animating';
+      attrs.style[util.transformProp()] = util.translate(animation[1]);
+    }
   }
 
   return {
@@ -388,12 +393,21 @@ function renderMiddles(ctrl) {
   return children;
 }
 
+function renderSides(ctrl) {
+  var children = [];
+
+  children.push('ok');
+
+  return children;
+}
+
 function renderTop(ctrl) {
 
   var children = [
     renderMiddles(ctrl),
     renderDiscards(ctrl),
-    renderOpens(ctrl)
+    renderOpens(ctrl),
+    renderSides(ctrl)
   ];
 
   return {

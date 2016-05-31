@@ -7,7 +7,7 @@
   "main": "build/okeyground.min.js",
   "dependencies": {
     "merge": "^1.2.0",
-    "mithril": "^0.2.0",
+    "mithril": "^0.2.5",
     "mousetrap": "^1.5.3"
   },
   "devDependencies": {

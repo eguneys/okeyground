@@ -51,15 +51,15 @@
 
 .og-top .mgosterge {
   bottom: 0%;
-  /* column 13 */
-  left: 75%;
+  /* column 14 */
+  left: 81.25%;
 }
 
 .og-top piece.mmiddleCount {
   cursor: pointer;
   bottom: 0%;
-  /* column 14 */
-  left: 81.25%;
+  /* column 13 */
+  left: 75%;
 }
 
 .og-top piece.mmiddleCount {
@@ -79,7 +79,7 @@
 
 .og-top piece.dup,
 .og-top .piece-holder.dup {
-  top: 1%;
+  top: 14.2%;
   left: 1%
 }
 
@@ -98,7 +98,7 @@
 
 .og-top piece.dright,
 .og-top .piece-holder.dright {
-  top: 1%;
+  top: 14.2%;
   right: 1%;
 }
 
@@ -158,7 +158,7 @@ piece {
   position: absolute;
   height: 100%;
   width: 3.12%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
 }
 
 .og-board .wood.right {
@@ -177,7 +177,7 @@ piece.selected:not(.dragging) {
 piece.dragging {
   z-index: 9;
   cursor: move;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
 }
 
 .move-dest {
@@ -192,4 +192,61 @@ piece.dragging {
 .move-dest.drag-over,
 .og-top piece.move-dest.drag-over {
   box-shadow: inset 0 0 10px 2px rgba(216, 85, 0, 0.9) !important;
+}
+
+/* flipping animations */
+.animating {
+  z-index: 9;
+}
+
+.og-board .flipper {
+  height: 50%;
+  width: 6.25%;
+}
+
+.og-top>.flipper {
+  height: 14.2%;
+  width: 6.25%; 
+}
+
+.flipper .front,
+.flipper .back,
+.flipper piece {
+  height: 100%;
+  width: 100%;
+}
+
+.flipper.mmiddleCount {
+  bottom: 0%;
+  left: 75%;
+}
+
+.flipper {
+  -webkit-transition: transform 0.6s;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  position: absolute;
+}
+
+.flipper.hover {
+  -webkit-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
+
+.flipper .front,
+.flipper .back {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.flipper .front {
+  z-index: 2;
+}
+
+.flipper .back {
+  -webkit-transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
