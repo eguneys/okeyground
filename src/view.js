@@ -115,7 +115,7 @@ function renderTopPieceHolder(ctrl, key, klass) {
   });
 
   var attrs = {
-    key: key,
+//    key: key,
     style: {},
     class: [key, classes, klass].join(' ')
   };
@@ -175,7 +175,13 @@ function renderPiece(ctrl, pos, key, p, klass) {
   }
 
   var draggable = ctrl.data.draggable.current;
-  if (draggable.orig === key) {
+  if (draggable.dragGroup && draggable.dragGroup.indexOf(key) !== -1) {
+    attrs.style[util.transformProp()] = util.translate([
+      draggable.pos[0] + draggable.dec[0],
+      draggable.pos[1] + draggable.dec[1]
+    ]);
+    attrs.class += ' group dragging';
+  } else if (draggable.orig === key) {
 
     if (draggable.over && util.isOpensKey(draggable.over)) {
       attrs.style['width'] = draggable.opensBounds.width / util.miniColumns + 'px';
@@ -396,7 +402,9 @@ function renderMiddles(ctrl) {
 function renderSides(ctrl) {
   var children = [];
 
-  children.push('ok');
+  var hooks = ctrl.data.topHooks;
+
+  if (hooks) children.push(hooks);
 
   return children;
 }

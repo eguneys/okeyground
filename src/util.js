@@ -78,8 +78,8 @@ function decodeKey(key, c) {
   return parseInt(key.slice(1));
 }
 
-function decBoardKey(key) {
-  return encodeKey(decodeKey(key) - 1, boardKeyPrefix);
+function decBoardKey(key, by = 1) {
+  return encodeKey(decodeKey(key) - by, boardKeyPrefix);
 }
 
 function isBoardKey(key) {
@@ -136,6 +136,8 @@ const isAllowedBoardKey = (key) => notAllowedBoardKeys.indexOf(key) === -1;
 const allKeys = allPos.map(pos2key);
 
 const allAllowedBoardKeys = allKeys.filter(isAllowedBoardKey);
+
+const isAllAllowedBoardKey = (key) => allAllowedBoardKeys.indexOf(key) !== -1;
 
 function classSet(classes) {
   var arr = [];
@@ -230,6 +232,7 @@ module.exports = {
   decBoardKey: decBoardKey,
   notAllowedBoardKeys: notAllowedBoardKeys,
   isAllowedBoardKey: isAllowedBoardKey,
+  isAllAllowedBoardKey: isAllAllowedBoardKey,
   allAllowedBoardKeys: allAllowedBoardKeys,
   isBoardKey: isBoardKey,
   isOpensKey: isOpensKey,

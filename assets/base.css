@@ -46,24 +46,25 @@
 
 .og-top .piece-holder {
   position: absolute;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .og-top .mgosterge {
-  bottom: 0%;
+  bottom: -1%;
   /* column 14 */
   left: 81.25%;
 }
 
 .og-top piece.mmiddleCount {
   cursor: pointer;
-  bottom: 0%;
+  bottom: -1%;
   /* column 13 */
-  left: 75%;
+  left: 74%;
 }
 
 .og-top piece.mmiddleCount {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.6);
+/*  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6); */
 }
 
 .og-top piece.mmiddleCount:not(.dragging)::before {
@@ -104,10 +105,10 @@
 
 .og-opens {
   position: absolute;
-  width: 76.76%;
+  width: 70%;
   height: 70%;
   border-radius: 2px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
   margin: auto;
   bottom: 0;
   top: 0;
@@ -143,7 +144,7 @@
 piece {
   position: absolute;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: 100% 100%;
   background-position: center;
 }
 
@@ -174,10 +175,15 @@ piece.selected:not(.dragging) {
   box-shadow: 0 0 10px rgba(155,199,0,0.8) !important;
 }
 
+/* top only box-shadow http://stackoverflow.com/questions/6671375/css-box-shadow-top-and-bottom-only */
 piece.dragging {
   z-index: 9;
   cursor: move;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.6);
+}
+
+piece.dragging.group {
+
 }
 
 .move-dest {

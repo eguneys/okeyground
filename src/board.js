@@ -97,6 +97,41 @@ function baseSettleMiddleHolder(data) {
   }
 }
 
+function baseGroupMove(data, orig, dest) {
+  var groups = findBoardDragGroup(data, orig);
+  if (groups.length > 0) {
+    var metaDest = groups[0].map((from, i) => {
+      // calculate dest
+      var offset = groups[0].length - i - 1;
+      var to = util.decBoardKey(dest, offset * 2);
+      return [from, to, data.pieces[from]];
+    });
+
+
+    // check available
+    const allCool = metaDest.every(([from, to, piece]) => {
+      return (util.isAllAllowedBoardKey(to) &&
+              [to, util.decBoardKey(to, -1)]
+              .every(to => {
+                return (!data.pieces[to] ||
+                        metaDest
+                        .filter(([f, t, p]) => f === to).length > 0);
+              }));
+    });
+
+    if (!allCool) return false;
+
+    metaDest.map(([from, to, piece]) => {
+      delete data.pieces[from];
+      return [from, to, piece];
+    }).map(([from, to, piece]) => {
+      data.pieces[to] = piece;
+    });
+    return true;
+  }
+  return false;
+}
+
 function baseUserMove(data, orig, dest) {
   if (orig === dest || !data.pieces[orig]) return false;
   var temp = data.pieces[dest];
@@ -134,6 +169,9 @@ function baseUserDrawLeft(data, orig, dest) {
 function userMove(data, orig, dest) {
   if (dest && util.isBoardKey(orig) && util.isBoardKey(dest)) {
     if (canMove(data, orig, dest)) {
+      if (baseGroupMove(data, orig, dest)) {
+        return true;
+      }
       if (baseUserMove(data, orig, dest)) {
         return true;
       }
@@ -300,6 +338,16 @@ function isDroppableOpens(data, key) {
   return false;
 }
 
+function findBoardDragGroup(data, orig) {
+  var sign = data.middles[util.gosterge];
+  var groups = getPieceGroupKeys(data);
+  // get the group where the piece is the last one
+  groups = groups.filter(group => group[group.length - 1] === orig);
+  groups = groups
+    .filter(group => open.series(group.map(key => data.pieces[key]), sign));
+  return groups;
+}
+
 function findFreeDropForMiddlePiece(data) {
   var nexts = util.allAllowedBoardKeys.slice(1);
   var nnexts = util.allAllowedBoardKeys.slice(2);
@@ -410,6 +458,7 @@ module.exports = {
   stop: stop,
   cancelMove: cancelMove,
   isDroppableOpens,
+  findBoardDragGroup: findBoardDragGroup,
   getKeyAtDomPos: getKeyAtDomPos,
   getKeyAtDomPosOnPiece: getKeyAtDomPosOnPiece,
   getPieceGroups: getPieceGroups,

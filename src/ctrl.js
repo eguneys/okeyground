@@ -60,4 +60,12 @@ module.exports = function(cfg) {
     board.stop(data);
     drag.cancel(data);
   }, this.data);
+
+  // var onresize = () => {
+  //   if (this.data.element)
+  // };
+
+  this.onunload = function() {
+    // window.removeEventListener('resize', onresize);
+  };
 };

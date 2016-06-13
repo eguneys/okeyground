@@ -54,7 +54,9 @@ function start(data, e) {
           computeSquareBounds(data, boardBounds, util.key2pos(orig)):
           computeSquareBounds(data, topBounds, util.topKey2pos(orig), util.topRows, util.topColumns);
 
+    var dragGroup = board.findBoardDragGroup(data, orig)[0];
     data.draggable.current = {
+      dragGroup: dragGroup,
       orig: orig,
       rel: position,
       epos: position,

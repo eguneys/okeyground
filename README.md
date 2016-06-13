@@ -1,3 +1,8 @@
+### BUG
+
+* canDropOpens checks for both dop dos 
+
+
 ### Formatting
 
 #### Piece
