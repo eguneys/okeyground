@@ -72,7 +72,7 @@ function renderMiddlePiece(ctrl, key, p, drag = false) {
   };
 }
 
-function renderTopPiece(ctrl, key, p, klass, drag = true) {
+function renderTopPiece(ctrl, key, p, klass, drag = true, animKey = key) {
   var d = ctrl.data;
 
   var classes = util.classSet({
@@ -94,7 +94,7 @@ function renderTopPiece(ctrl, key, p, klass, drag = true) {
     ]);
     attrs.class += ' dragging';
   } else if (drag && ctrl.data.animation.current.anims) {
-    var animation = ctrl.data.animation.current.anims[key];
+    var animation = ctrl.data.animation.current.anims[animKey];
     if (animation) {
       attrs.class += ' animating';
       attrs.style[util.transformProp()] = util.translate(animation[1]);
@@ -365,6 +365,15 @@ function renderDiscards(ctrl) {
         topDests.push(renderTopPiece(ctrl, key, d.discards[key][1], "fake", false));
       }
       topDests.push(renderTopPiece(ctrl, key, piece, miniKlass));
+
+      var dlAnimationKey = move.drawLeft + key;
+      var dlAnimation = ctrl.data.animation.current.anims ?
+          ctrl.data.animation.current.anims[dlAnimationKey] : false;
+
+      if (dlAnimation) {
+        var animPiece = ctrl.data.animation.current.extra.piece;
+        topDests.push(renderTopPiece(ctrl, key, animPiece, miniKlass, true, dlAnimationKey));
+      }
     } else {
       children.push(renderTopPieceHolder(ctrl, key, miniKlass));
     }

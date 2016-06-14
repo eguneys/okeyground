@@ -120,14 +120,14 @@
 
      function forceDiscard(ground) {
        delay(function() {
-         ground.apiMove('dd', { piece: 'g3' });
+         ground.apiMove('dd', { piece: 'r10' });
        });
      }
 
      function aiMove(ground, side) {
        console.log('draw middle', side);
        setTurn(ground, side);
-       ground.apiMove('dm');
+       ground.apiMove('dl');
        delay(function() {
          console.log('discard ', side);
          ground.apiMove('dd', { piece: 'l10' });

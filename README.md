@@ -1,6 +1,22 @@
+### TODO
+
+- [ ] add open group by drag
+
+* animation
+- [ ] add force animations
+- [ ] add draw left animation
+- [ ] add open series animation
+- [ ] add leave-taken / collect open animation
+
 ### BUG
 
-* canDropOpens checks for both dop dos 
+~- [ ] fix force vs user move collisions~ not here
+- [ ] fix group rainbow with fake color collision
+- [ ] canDropOpens checks for both dop dos
+- [ ] slide pieces to make room / not replace
+- [ ] dont allow piece collision 
+- [ ] remove wood dom, less width
+
 
 
 ### Formatting

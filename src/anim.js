@@ -13,39 +13,58 @@ function computePlan(prev, current) {
   var pov = util.findPov(current.povSide, current.turnSide);
   var turnVector = util.vectorByPov(pov);
   var bounds = current.bounds(),
-      aspectRatio = 4/3,
-      boardWidth = bounds.width * 1,
-      boardHeight = bounds.height * (aspectRatio / (38 * 16 / 50 * 2)),
-      topRatio = (38 * 16) / (50 * 7),
-      topWidth = boardWidth,
-      topHeight = bounds.height * (aspectRatio / topRatio),
+      topBounds = current.topBounds(),
+      boardBounds = current.boardBounds(),
+      boardWidth = boardBounds.width,
+      boardHeight = boardBounds.height,
+      topWidth = topBounds.width,
+      topHeight = topBounds.height,
+      // aspectRatio = 4/3,
+      // boardWidth = bounds.width * 1,
+      // boardHeight = bounds.height * (aspectRatio / (38 * 16 / 50 * 2)),
+      // topRatio = (38 * 16) / (50 * 7),
+      // topWidth = boardWidth,
+      // topHeight = bounds.height * (aspectRatio / topRatio),
       topPieceWidth = topWidth * (6.25 / 100),
       topPieceHeight = topHeight * 0.14,
       width = boardWidth * (6.25 / 100),
       height = boardHeight * 0.5,
       anims = {},
-      fadings = [];
+      fadings = [],
+      extra = {};
 
+  var turnPos = [topWidth * turnVector[0],
+                 topHeight * turnVector[1] +
+                 ((pov==='up') ? -topPieceHeight :
+                  ((pov==='left') ? -topPieceHeight / 2 : 0))];
 
   var orig, dest, vector;
   if (currentAnim.hint === move.drawMiddle) {
     orig = [topPieceWidth * (16 - 4), topHeight];
-    dest = [topWidth * turnVector[0], topHeight * turnVector[1]];
-    var vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+    dest = turnPos;
+    vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
     anims[util.middleCount] = [vector, vector, true];
   } else if (currentAnim.hint === move.discard) {
-    var key = util.discardByPov(pov);
-    var topPos = util.topKey2pos(key);
-    orig = [topPieceWidth * topPos[0], topPieceHeight * topPos[1]];
-    dest = [topWidth * turnVector[0], topHeight * turnVector[1]];
+    var discardKey = util.discardByPov(pov);
+    var discardPos = util.topKey2pos(discardKey);
+    orig = [topPieceWidth * discardPos[0], topPieceHeight * discardPos[1]];
+    dest = turnPos;
     vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
-    anims[key] = [vector, vector];
+    anims[discardKey] = [vector, vector];
+  } else if (currentAnim.hint === move.drawLeft) {
+    var drawKey = util.drawByPov(pov);
+    var drawPos = util.topKey2pos(drawKey);
+    orig = [topPieceWidth * drawPos[0], topPieceHeight * drawPos[1]];
+    dest = turnPos;
+    vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+    anims[move.drawLeft + drawKey] = [vector, vector, true];
+    extra.piece = prev.discards[drawKey];
   }
-
 
   return {
     anims: anims,
-    fadings: fadings
+    fadings: fadings,
+    extra: extra
   };
 }
 
@@ -84,7 +103,8 @@ function animate(transformation, data) {
   var prev = {
     pieces: {},
     opens: {},
-    middles: {}
+    middles: {},
+    discards: {}
   };
 
   // clone pieces
@@ -93,6 +113,14 @@ function animate(transformation, data) {
     prev.pieces[key] = {
       color: data.pieces[key].color,
       number: data.pieces[key].number
+    };
+  }
+  // clone discards
+  for (var key in data.discards) {
+    if (!data.discards[key] || !data.discards[key][0]) continue;
+    prev.discards[key] = {
+      color: data.discards[key][0].color,
+      number: data.discards[key][0].number
     };
   }
 
@@ -105,7 +133,8 @@ function animate(transformation, data) {
       start: new Date().getTime(),
       duration: data.animation.duration,
       anims: plan.anims,
-      fadings: plan.fadings
+      fadings: plan.fadings,
+      extra: plan.extra
     };
     if (!alreadyRunning) go(data);
   } else {

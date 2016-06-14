@@ -34,7 +34,9 @@ function apiMove(data, mmove, args = {}) {
       baseOpponentDrawMiddle(data);
       data.animation.current.hint = move.drawMiddle;
       break;
-    case move.drawLeft: baseOpponentDrawLeft(data, util.drawByPov(pov));
+    case move.drawLeft:
+      baseOpponentDrawLeft(data, util.drawByPov(pov));
+      data.animation.current.hint = move.drawLeft;
       break;
     case move.discard:
       piece = pieces.readPiece(piece).piece;

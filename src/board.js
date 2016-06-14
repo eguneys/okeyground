@@ -344,7 +344,9 @@ function findBoardDragGroup(data, orig) {
   // get the group where the piece is the last one
   groups = groups.filter(group => group[group.length - 1] === orig);
   groups = groups
-    .filter(group => open.series(group.map(key => data.pieces[key]), sign));
+    .filter(group =>
+            open.series(group.map(key => data.pieces[key]), sign) ||
+            open.pairs(group.map(key => data.pieces[key]), sign));
   return groups;
 }
 
