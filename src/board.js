@@ -41,12 +41,21 @@ function playOpenPairs(data) {
   return false;
 }
 
+function playLeaveTaken(data, piece) {
+  piece = pieces.readPiece(piece).piece;
+  if (canLeaveTaken(data)) {
+    if (baseLeaveTaken(data, piece)) {
+      callUserFunction(util.partial(data.movable.events.after, move.leaveTaken));
+      return true;
+    }
+  }
+  return false;
+}
+
 function apiForceDrawMiddleEnd(data, piece) {
 
   var orig = util.middleCount;
-  baseUserBeginDrawMiddle(data, orig);
-  baseUserEndDrawMiddle(data, orig);
-
+  baseUserBeginEndDrawMiddleForce(data, orig);
   apiDrawMiddleEnd(data, piece);
 }
 
@@ -140,6 +149,15 @@ function baseUserMove(data, orig, dest) {
   return true;
 }
 
+function baseUserBeginEndDrawMiddleForce(data, orig) {
+  data.middles[util.middleCount]--;
+  data.middleHolder.current = true;
+
+  var dest = findFreeDropForMiddlePiece(data);
+  data.middleHolder.key = dest;
+  return true;
+}
+
 function baseUserEndDrawMiddle(data, orig, dest) {
   if (!dest || data.pieces[dest]) {
     var freeDest = findFreeDropForMiddlePiece(data);
@@ -163,6 +181,16 @@ function baseUserDrawLeft(data, orig, dest) {
   callUserFunction(util.partial(data.events.move, move.drawLeft));
   data.pieces[dest] = data.discards[util.discards[1]][0];
   data.discards[util.discards[1]].shift();
+  return true;
+}
+
+function baseLeaveTaken(data, piece) {
+  var orig = findOrigForPiece(data, piece);
+  if (!orig) return false;
+  callUserFunction(util.partial(data.events.move, move.leaveTaken));
+  var pov = util.findPov(data.povSide, data.turnSide);
+  delete data.pieces[orig];
+  data.discards[util.drawByPov(pov)].unshift(piece);
   return true;
 }
 
@@ -362,6 +390,13 @@ function findFreeDropForMiddlePiece(data) {
   return frees[frees.length - 1][1];
 }
 
+function findOrigForPiece(data, piece) {
+  return util.allAllowedBoardKeys
+    .filter(key =>
+            data.pieces[key] &&
+            util.pieceEqual(data.pieces[key], piece))[0];
+}
+
 function getKeyAtDomPosOnPiece(data, pos, bounds, except) {
   var key = getKeyAtDomPos(data, pos, bounds);
 
@@ -444,6 +479,7 @@ function getPieceGroupKeys(data) {
 module.exports = {
   playOpenSeries: playOpenSeries,
   playOpenPairs: playOpenPairs,
+  playLeaveTaken: playLeaveTaken,
   apiDrawMiddleEnd, apiDrawMiddleEnd,
   apiForceDrawMiddleEnd, apiForceDrawMiddleEnd,
   userMove: userMove,

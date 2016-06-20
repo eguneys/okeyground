@@ -10,6 +10,7 @@ module.exports = function(controller) {
     apiDrawMiddleEnd: controller.apiDrawMiddleEnd,
     playOpenSeries: controller.playOpenSeries,
     playOpenPairs: controller.playOpenPairs,
+    playLeaveTaken: controller.playLeaveTaken,
     stop: controller.stop,
     getPieceGroupSeries: controller.getPieceGroupSeries,
     getPieceGroupPairs: controller.getPieceGroupPairs,

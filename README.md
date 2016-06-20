@@ -8,6 +8,8 @@
 - [ ] add open series animation
 - [ ] add leave-taken / collect open animation
 
+- [ ] add leave taken api
+
 ### BUG
 
 ~- [ ] fix force vs user move collisions~ not here

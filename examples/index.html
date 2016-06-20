@@ -13,6 +13,7 @@
     <div class="controls">
       <button onclick="openSeries(window.ground1)">Open Series</button>
       <button onclick="openPairs(window.ground1)">Open Pairs</button>
+      <button onclick="leaveTaken(window.ground1)">Leave Taken</button>
       <button onclick="getFen(window.ground1)">Log Fen</button>
       <button onclick="getPieceGroupOpens(window.ground1)">Log Opens</button>
       <button onclick="opponentOpenSeries(window.ground1)">Opponent Open Pairs</button>
@@ -58,7 +59,7 @@
      }
 
      function leaveTaken(ground) {
-       ground.playLeaveTaken();
+       delay(function() { ground.playLeaveTaken('r1') }, 1000);
      }
 
      function getPieceGroupOpens(ground) {
@@ -167,11 +168,11 @@
            }
          },
          movable: {
-           dests: ['dd', 'dl', 'dm', 'dos', 'dop', 'dds', 'ddp', 'ss', 'os', 'op'],
+           dests: ['dd', 'dl', 'dm', 'lt', 'dos', 'dop', 'dds', 'ddp', 'ss', 'os', 'op'],
            events: {
              after: function(key, args) {
                console.log('movable events after', key, args);
-               onMove();
+               // onMove();
              }
            }
          }

@@ -49,7 +49,7 @@ module.exports = function(cfg) {
 
   this.playOpenPairs = anim(board.playOpenPairs, this.data);
 
-  //this.playLeaveTaken = anim(board.playLeaveTaken, this.data);
+  this.playLeaveTaken = anim(board.playLeaveTaken, this.data);
 
   this.canLeaveTaken = util.partial(board.canLeaveTaken, this.data);
   this.canCollectOpen = util.partial(board.canCollectOpen, this.data);
