@@ -6,6 +6,21 @@ var easing = {
   easeInOutCubic: function(t) {
     return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
   }
+};
+
+function boardTopDistance(boardBounds, topBounds, key) {
+  var pos = util.key2pos(key);
+  var delta = [pos[0] * (boardBounds.width / util.columns),
+               pos[1] * boardBounds.height * 0.5];
+
+  var topDelta = [boardBounds.left - topBounds.left,
+                  boardBounds.top - topBounds.top];
+
+  return [topDelta[0] + delta[0], topDelta[1] + delta[1]];
+}
+
+function arrPlus(arr1, arr2) {
+  return [arr1[0] - arr2[0], arr1[1] - arr2[1]];
 }
 
 function computePlan(prev, current) {
@@ -33,32 +48,99 @@ function computePlan(prev, current) {
       fadings = [],
       extra = {};
 
+  var discardKey = util.discardByPov(pov);
+  var drawKey = util.drawByPov(pov);
+
+  var drawPos = util.topKey2pos(drawKey);
+  var discardPos = util.topKey2pos(discardKey);
   var turnPos = [topWidth * turnVector[0],
                  topHeight * turnVector[1] +
                  ((pov==='up') ? -topPieceHeight :
                   ((pov==='left') ? -topPieceHeight / 2 : 0))];
 
+  var topMiddleDistance = [topPieceWidth * (16 - 4),
+                           topHeight - topPieceHeight];
+  var topDiscardDistance = [topPieceWidth * discardPos[0],
+                            topPieceHeight * discardPos[1]];
+  var topDrawDistance = [topPieceWidth * drawPos[0],
+                         topPieceHeight * drawPos[1]];
+
+  var missings = [], news = [];
+  var openMissings = [], openNews = [];
+
   var orig, dest, vector;
-  if (currentAnim.hint === move.drawMiddle) {
-    orig = [topPieceWidth * (16 - 4), topHeight];
-    dest = turnPos;
-    vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
-    anims[util.middleCount] = [vector, vector, true];
-  } else if (currentAnim.hint === move.discard) {
-    var discardKey = util.discardByPov(pov);
-    var discardPos = util.topKey2pos(discardKey);
-    orig = [topPieceWidth * discardPos[0], topPieceHeight * discardPos[1]];
-    dest = turnPos;
-    vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
-    anims[discardKey] = [vector, vector];
-  } else if (currentAnim.hint === move.drawLeft) {
-    var drawKey = util.drawByPov(pov);
-    var drawPos = util.topKey2pos(drawKey);
-    orig = [topPieceWidth * drawPos[0], topPieceHeight * drawPos[1]];
-    dest = turnPos;
-    vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
-    anims[move.drawLeft + drawKey] = [vector, vector, true];
-    extra.piece = prev.discards[drawKey];
+  if (pov === 'down') {
+    var i, key, curP, preP;
+    for (i = 0; i < util.allAllowedBoardKeys.length; i++) {
+      key = util.allAllowedBoardKeys[i];
+      curP = current.pieces[key];
+      preP = prev.pieces[key];
+      var topDistance = { key: key,
+                          distance: boardTopDistance(boardBounds, topBounds, key)
+                        };
+      if (!curP && preP) {
+        missings.push(topDistance);
+      } else if (curP && !preP) {
+        news.push(topDistance);
+      }
+    }
+
+    for (i = 0; i < util.miniAllKeys.length; i++) {
+      key = util.miniAllKeys[i];
+      curP = current.opens.layout ? current.opens.layout.layout[key] : null;
+      preP = prev.opens.layout ? prev.opens.layout.layout[key] : null;
+      var openDistance = { key: key };
+      if (curP && !preP) {
+        openNews.push(openDistance);
+      } else if (curP & !preP) {
+        openMissings.push(openDistance);
+      }
+    }
+
+    console.log(openNews);
+
+    if (currentAnim.hint === move.drawMiddle) {
+      key = news[0].key;
+      orig = news[0].distance;
+      orig = arrPlus(orig, topMiddleDistance);
+      dest = [0, 0];
+      vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+      anims[key] = [vector, vector];
+    } else if (currentAnim.hint === move.discard) {
+      dest = missings[0].distance;
+      dest = arrPlus(dest, topDiscardDistance);
+      orig = [0, 0];
+      vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+      anims[discardKey] = [vector, vector];
+    } else if (currentAnim.hint === move.leaveTaken) {
+      dest = missings[0].distance;
+      dest = arrPlus(dest, topDrawDistance);
+      orig = [0, 0];
+      vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+      anims[drawKey] = [vector, vector];
+    } else if (currentAnim.hint === move.openSeries) {
+      console.log(openNews, openMissings);
+    }
+  } else {
+    if (currentAnim.hint === move.drawMiddle) {
+      orig = [topPieceWidth * (16 - 4), topHeight];
+      dest = turnPos;
+      vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+      anims[util.middleCount] = [vector, vector, true];
+    } else if (currentAnim.hint === move.discard) {
+      orig = [topPieceWidth * discardPos[0], topPieceHeight * discardPos[1]];
+      dest = turnPos;
+      vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+      anims[discardKey] = [vector, vector];
+    } else if (currentAnim.hint === move.drawLeft) {
+      orig = [topPieceWidth * drawPos[0], topPieceHeight * drawPos[1]];
+      dest = turnPos;
+      vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+      anims[move.drawLeft + drawKey] = [vector, vector, true];
+      extra.piece = prev.discards[drawKey];
+    } else if (currentAnim.hint === move.openSeries) {
+      console.log(news, missings);
+    }
   }
 
   return {
@@ -107,8 +189,9 @@ function animate(transformation, data) {
     discards: {}
   };
 
+  var key;
   // clone pieces
-  for (var key in data.pieces) {
+  for (key in data.pieces) {
     if (!data.pieces[key]) continue;
     prev.pieces[key] = {
       color: data.pieces[key].color,
@@ -116,12 +199,24 @@ function animate(transformation, data) {
     };
   }
   // clone discards
-  for (var key in data.discards) {
+  for (key in data.discards) {
     if (!data.discards[key] || !data.discards[key][0]) continue;
     prev.discards[key] = {
       color: data.discards[key][0].color,
       number: data.discards[key][0].number
     };
+  }
+
+  if (data.opens.layout) {
+    var miniP;
+    prev.opens.layout = {layout: {}};
+    for (key in data.opens.layout.layout) {
+      miniP = data.opens.layout.layout[key];
+      prev.opens.layout.layout[key] = {
+        color: miniP.color,
+        number: miniP.number
+      };
+    }
   }
 
   var result = transformation();

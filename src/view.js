@@ -194,6 +194,15 @@ function renderPiece(ctrl, pos, key, p, klass) {
     ]);
     attrs.class += ' dragging';
   }
+
+  if (ctrl.data.animation.current.anims) {
+    var animation = ctrl.data.animation.current.anims[key];
+    if (animation) {
+      attrs.class += ' animating';
+      attrs.style[util.transformProp()] = util.translate(animation[1]);
+    }
+  }
+
   return {
     tag: 'piece',
     attrs: attrs

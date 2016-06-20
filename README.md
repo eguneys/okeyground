@@ -3,17 +3,18 @@
 - [ ] add open group by drag
 
 * animation
+- [x] add draw left animation
 - [ ] add force animations
-- [ ] add draw left animation
 - [ ] add open series animation
 - [ ] add leave-taken / collect open animation
 
-- [ ] add leave taken api
+- [x] add leave taken api
+- [ ] draw middle flip animation wait on board
 
 ### BUG
 
 ~- [ ] fix force vs user move collisions~ not here
-- [ ] fix group rainbow with fake color collision
+~- [ ] fix group rainbow with fake color collision~ not a bug
 - [ ] canDropOpens checks for both dop dos
 - [ ] slide pieces to make room / not replace
 - [ ] dont allow piece collision 

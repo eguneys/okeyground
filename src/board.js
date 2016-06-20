@@ -17,6 +17,7 @@ function playOpenSeries(data) {
       baseOpenSeries(data, groups);
 
       callUserFunction(util.partial(data.movable.events.after, move.openSeries, wrapGroup(openFen)));
+      data.animation.current.hint = move.openSeries;
       return true;
     }
   }
@@ -35,6 +36,7 @@ function playOpenPairs(data) {
       baseOpenPairs(data, groups);
 
       callUserFunction(util.partial(data.movable.events.after, move.openPairs, wrapGroup(openFen)));
+      data.animation.current.hint = move.openSeries;
       return true;
     }
   }
@@ -46,6 +48,7 @@ function playLeaveTaken(data, piece) {
   if (canLeaveTaken(data)) {
     if (baseLeaveTaken(data, piece)) {
       callUserFunction(util.partial(data.movable.events.after, move.leaveTaken));
+      data.animation.current.hint = move.leaveTaken;
       return true;
     }
   }

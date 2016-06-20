@@ -139,6 +139,8 @@ const allAllowedBoardKeys = allKeys.filter(isAllowedBoardKey);
 
 const isAllAllowedBoardKey = (key) => allAllowedBoardKeys.indexOf(key) !== -1;
 
+const miniAllKeys = miniAllPos.map(miniPos2key);
+
 function classSet(classes) {
   var arr = [];
   for (var i in classes) {
@@ -226,6 +228,7 @@ module.exports = {
   miniColumns: miniColumns,
   miniRows: miniRows,
   miniAllPos: miniAllPos,
+  miniAllKeys: miniAllKeys,
   miniPos2key: miniPos2key,
   miniKey2pos: miniKey2pos,
   encodeKey: encodeKey,

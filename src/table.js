@@ -18,6 +18,7 @@ function apiMove(data, mmove, args = {}) {
     case move.discard:
       piece = pieces.readPiece(piece).piece;
       baseForceDropDiscard(data, piece, util.discards[2]);
+      data.animation.current.hint = move.discard;
       break;
     case move.drawMiddle:
       piece = pieces.readPiece(piece).piece;
@@ -26,6 +27,8 @@ function apiMove(data, mmove, args = {}) {
       } else {
         board.apiForceDrawMiddleEnd(data, piece);
       }
+      data.animation.current.hint = move.drawMiddle;
+      break;
     }
   } else {
     const pov = util.findPov(data.povSide, data.turnSide);
