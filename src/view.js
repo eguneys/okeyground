@@ -31,6 +31,19 @@ function renderMiniPiece(ctrl, pos, key, p) {
     class: pieceClass(p) + ' mini'
   };
 
+  if (ctrl.data.animation.current.anims) {
+    var animation = ctrl.data.animation.current.anims[key];
+    var scaling = ctrl.data.animation.current.scales[key];
+    if (animation) {
+      attrs.class += ' animating';
+      attrs.style[util.transformProp()] = util.translate(animation[1]);
+      if (scaling) {
+        attrs.style[util.transformProp()] += ` scale(${scaling[0]}, ${scaling[1]})`;
+        attrs.style.transformOrigin = 'center';
+      }
+    }
+  }
+
   return {
     tag: 'piece',
     attrs: attrs

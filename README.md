@@ -1,6 +1,8 @@
 ### TODO
 
 - [ ] add open group by drag
+- [ ] add move dests
+- [ ] notify move guide
 
 * animation
 - [x] add draw left animation
@@ -13,8 +15,8 @@
 
 ### BUG
 
-~- [ ] fix force vs user move collisions~ not here
-~- [ ] fix group rainbow with fake color collision~ not a bug
+~~- [ ] fix force vs user move collisions~~ not here
+~~- [ ] fix group rainbow with fake color collision~~ not a bug
 - [ ] canDropOpens checks for both dop dos
 - [ ] slide pieces to make room / not replace
 - [ ] dont allow piece collision 
