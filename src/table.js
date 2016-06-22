@@ -14,21 +14,24 @@ const pushLastMove = (data, k) => {
 function apiMove(data, mmove, args = {}) {
   var { piece, group, pos } = args;
   if (data.turnSide === data.povSide) {
-    switch (mmove) {
-    case move.discard:
-      piece = pieces.readPiece(piece).piece;
-      baseForceDropDiscard(data, piece, util.discards[2]);
-      data.animation.current.hint = move.discard;
-      break;
-    case move.drawMiddle:
-      piece = pieces.readPiece(piece).piece;
-      if (data.middleHolder.current) {
-        board.apiDrawMiddleEnd(data, piece);
-      } else {
-        board.apiForceDrawMiddleEnd(data, piece);
+    if (data.spectator) {
+    } else {
+      switch (mmove) {
+      case move.discard:
+        piece = pieces.readPiece(piece).piece;
+        baseForceDropDiscard(data, piece, util.discards[2]);
+        data.animation.current.hint = move.discard;
+        break;
+      case move.drawMiddle:
+        piece = pieces.readPiece(piece).piece;
+        if (data.middleHolder.current) {
+          board.apiDrawMiddleEnd(data, piece);
+        } else {
+          board.apiForceDrawMiddleEnd(data, piece);
+        }
+        data.animation.current.hint = move.drawMiddle;
+        break;
       }
-      data.animation.current.hint = move.drawMiddle;
-      break;
     }
   } else {
     const pov = util.findPov(data.povSide, data.turnSide);
@@ -49,6 +52,7 @@ function apiMove(data, mmove, args = {}) {
     case move.leaveTaken:
       piece = pieces.readPiece(piece).piece;
       baseOpponentLeaveTaken(data, util.drawByPov(pov), piece);
+      data.animation.current.hint = move.leaveTaken;
       break;
     case move.openSeries:
       group = pieces.readPieceGroup(group);

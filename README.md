@@ -5,14 +5,24 @@
 - [ ] notify move guide
 
 * animation
-- [x] add draw left animation
-- [x] add force animations
-- [x] add open series animation
-- [x] add leave-taken
-- [ ] add collect open animation
+  - [x] add draw left animation
+  - [x] add force animations
+  - [x] add open series animation
+  - [x] add leave-taken
+  - [ ] add collect open animation
 
-- [x] add leave taken api
-- [ ] draw middle flip animation wait on board
+  * spectator
+  - [ ] add draw middle
+  - [ ] add discard
+  - [ ] add leave-taken
+  - [ ] add open-series
+
+  * opponent
+  - [x] add leave-taken
+  - [ ] add open-series
+
+  - [x] add leave taken api
+  - [ ] draw middle flip animation wait on board
 
 ### BUG
 

@@ -128,7 +128,7 @@
      function aiMove(ground, side) {
        console.log('draw middle', side);
        setTurn(ground, side);
-       ground.apiMove('dl');
+       ground.apiMove('dm');
        delay(function() {
          console.log('discard ', side);
          ground.apiMove('dd', { piece: 'l10' });
@@ -137,20 +137,20 @@
 
      function aiMoveLeft(ground, side) {
        console.log('draw left', side);
+       setTurn(ground, side);
        ground.apiMove('dl');
        delay(function() {
          console.log('leave taken', side);
          ground.apiMove('lt', { piece: 'r9' });
-       });
+       }, 1500);
        delay(function() {
          console.log('draw left', side);
          ground.apiMove('dl');
-       }, 1500);
+       }, 2500);
        delay(function() {
          console.log('discard ', side);
          ground.apiMove('dd', { piece: 'l10' });
-         setTurn(ground, side);
-       }, 2000);
+       }, 3500);
      }
 
      (function() {
@@ -172,7 +172,7 @@
            events: {
              after: function(key, args) {
                console.log('movable events after', key, args);
-               // onMove();
+               onMove();
              }
            }
          }
@@ -181,9 +181,9 @@
        window.ground1 = ground;
 
        var onMove = function() {
-         delay(aiMove.bind(null, ground, 'north'), 1000);
-         delay(aiMove.bind(null, ground, 'west'), 4000);
-         delay(aiMove.bind(null, ground, 'south'), 8000);
+         delay(aiMoveLeft.bind(null, ground, 'north'), 1000);
+         delay(aiMove.bind(null, ground, 'west'), 6000);
+         delay(aiMoveLeft.bind(null, ground, 'south'), 12000);
        };
        var onMoveLeft = function() {
          console.log('move left');

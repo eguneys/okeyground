@@ -7,6 +7,11 @@ module.exports = function(data, config) {
 
   // if a fen was provided, replace the pieces
   if (data.fen) {
+    // override fen side for spectator
+    if (data.spectator) {
+      data.fen = data.povSide[0] + data.fen.slice(1);
+    }
+
     var fen = pieces.read(data.fen);
     data.pieces = fen.pieces;
     data.discards = fen.discards;
@@ -14,4 +19,4 @@ module.exports = function(data, config) {
     data.middles = fen.middles;
     delete data.fen;
   }
-}
+};

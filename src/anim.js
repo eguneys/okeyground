@@ -188,6 +188,11 @@ function computePlan(prev, current) {
       extra.piece = prev.discards[drawKey];
     } else if (currentAnim.hint === move.openSeries) {
       console.log(news, missings);
+    } else if (currentAnim.hint === move.leaveTaken) {
+      orig = [topPieceWidth * drawPos[0], topPieceHeight * drawPos[1]];
+      dest = turnPos;
+      vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+      anims[drawKey] = [vector, vector];
     }
   }
 
