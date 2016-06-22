@@ -1,14 +1,15 @@
 ### TODO
 
 - [ ] add open group by drag
-- [ ] add move dests
+- [x] add move dests
 - [ ] notify move guide
 
 * animation
 - [x] add draw left animation
-- [ ] add force animations
-- [ ] add open series animation
-- [ ] add leave-taken / collect open animation
+- [x] add force animations
+- [x] add open series animation
+- [x] add leave-taken
+- [ ] add collect open animation
 
 - [x] add leave taken api
 - [ ] draw middle flip animation wait on board

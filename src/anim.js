@@ -131,20 +131,20 @@ function computePlan(prev, current) {
       }
     }
 
-    if (currentAnim.hint === move.drawMiddle) {
+    if (currentAnim.hint === move.drawMiddle && news[0]) {
       key = news[0].key;
       orig = news[0].distance;
       orig = arrMinus(orig, topMiddleDistance);
       dest = [0, 0];
       vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
       anims[key] = [vector, vector];
-    } else if (currentAnim.hint === move.discard) {
+    } else if (currentAnim.hint === move.discard && missings[0]) {
       dest = missings[0].distance;
       dest = arrMinus(dest, topDiscardDistance);
       orig = [0, 0];
       vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
       anims[discardKey] = [vector, vector];
-    } else if (currentAnim.hint === move.leaveTaken) {
+    } else if (currentAnim.hint === move.leaveTaken && missings[0]) {
       dest = missings[0].distance;
       dest = arrMinus(dest, topDrawDistance);
       orig = [0, 0];

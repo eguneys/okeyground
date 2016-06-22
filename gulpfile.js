@@ -39,6 +39,20 @@ gulp.task('prod', ['assets', 'prod-css'], function() {
     .pipe(gulp.dest(destination));
 });
 
+gulp.task('prod-debug', ['assets', 'prod-css'], function() {
+  return browserify('./src/main.js', {
+    standalone: standalone,
+    debug: true
+  }).transform('babelify',
+               { presets: ["es2015"],
+                 plugins: ['add-module-exports'] })
+    .bundle()
+    .on('error', onError)
+    .pipe(source('okeyground.min.js'))
+    .pipe(streamify(uglify({ output: { comments: true, beautify: true } })))
+    .pipe(gulp.dest(destination));
+});
+
 gulp.task('assets', function() {
   var path = require('path');
   gulp.src(assetFiles)
