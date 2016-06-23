@@ -144,12 +144,19 @@ function computePlan(prev, current) {
       orig = [0, 0];
       vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
       anims[discardKey] = [vector, vector];
-    } else if (currentAnim.hint === move.leaveTaken && missings[0]) {
-      dest = missings[0].distance;
-      dest = arrMinus(dest, topDrawDistance);
-      orig = [0, 0];
-      vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
-      anims[drawKey] = [vector, vector];
+    } else if (currentAnim.hint === move.leaveTaken) {
+      if (missings[0]) {
+        dest = missings[0].distance;
+        dest = arrMinus(dest, topDrawDistance);
+        orig = [0, 0];
+        vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+        anims[drawKey] = [vector, vector];
+      } else {
+        orig = [topPieceWidth * drawPos[0], topPieceHeight * drawPos[1]];
+        dest = turnPos;
+        vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+        anims[drawKey] = [vector, vector];
+      }
     } else if (currentAnim.hint === move.openSeries) {
       openNews.forEach(function(newP, i) {
         var preP = closer(newP,

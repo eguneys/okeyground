@@ -23,6 +23,8 @@
 
 ### BUG
 
+- [ ] draw left animation fail if no discard piece
+- [ ] self leave taken/collect open
 - [ ] allow drag group not left collide itself
 ~~- [ ] fix force vs user move collisions~~ not here
 ~~- [ ] fix group rainbow with fake color collision~~ not a bug

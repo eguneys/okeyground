@@ -13,8 +13,15 @@ const pushLastMove = (data, k) => {
 
 function apiMove(data, mmove, args = {}) {
   var { piece, group, pos } = args;
+  const pov = util.findPov(data.povSide, data.turnSide);
+
   if (data.turnSide === data.povSide && !data.spectator) {
     if (data.spectator) {
+      if (mmove === move.leaveTaken) {
+        piece = pieces.readPiece(piece).piece;
+        baseOpponentLeaveTaken(data, util.drawByPov(pov), piece);
+        data.animation.current.hint = move.leaveTaken;
+      }
     } else {
       switch (mmove) {
       case move.discard:
@@ -31,10 +38,12 @@ function apiMove(data, mmove, args = {}) {
         }
         data.animation.current.hint = move.drawMiddle;
         break;
+      case move.leaveTaken:
+        board.playLeaveTaken(data, piece);
+        break;
       }
     }
   } else {
-    const pov = util.findPov(data.povSide, data.turnSide);
     switch (mmove) {
     case move.drawMiddle:
       baseOpponentDrawMiddle(data);
