@@ -13,7 +13,7 @@ const pushLastMove = (data, k) => {
 
 function apiMove(data, mmove, args = {}) {
   var { piece, group, pos } = args;
-  if (data.turnSide === data.povSide) {
+  if (data.turnSide === data.povSide && !data.spectator) {
     if (data.spectator) {
     } else {
       switch (mmove) {
@@ -57,10 +57,12 @@ function apiMove(data, mmove, args = {}) {
     case move.openSeries:
       group = pieces.readPieceGroup(group);
       baseOpponentOpenSeries(data, group);
+      data.animation.current.hint = move.openSeries;
       break;
     case move.openPairs:
       group = pieces.readPieceGroup(group);
       baseOpponentOpenPairs(data, group);
+      data.animation.current.hint = move.openSeries;
       break;
     case move.dropOpenSeries:
       piece = pieces.readPiece(piece).piece;

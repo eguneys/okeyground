@@ -12,6 +12,11 @@ module.exports = function(data, config) {
       data.fen = data.povSide[0] + data.fen.slice(1);
     }
 
+    if (data.animationHint) {
+      data.animation.current.hint = data.animationHint;
+      delete data.animationHint;
+    }
+
     var fen = pieces.read(data.fen);
     data.pieces = fen.pieces;
     data.discards = fen.discards;

@@ -19,7 +19,7 @@
       <button onclick="opponentOpenSeries(window.ground1)">Opponent Open Pairs</button>
       <button onclick="opponentDropSeries(window.ground1)">Opponent Drop Series</button>
       <button onclick="opponentDropPairs(window.ground1)">Opponent Drop Pairs</button>
-      <button onclick="setFen(window.ground1)">Set Fen</button>
+      <button onclick="setFen(window.ground1, true)">Set Fen</button>
       <button onclick="forceDraw(window.ground1)">Force Draw</button>
       <button onclick="forceDiscard(window.ground1)">Force Discard</button>
     </div>
@@ -34,13 +34,14 @@
      var serieFen = 's/9g13/g1g2g3g4g5g6 r10g10b10l10 r10r12r13r1 g1//r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
      var discardFen = 's/9g13/g1g2g3g4g5g6 r10g10b10l10 r10r12r13r1 g1/r10r11r12 r10g3r12 g4r4l4 g4g3l4/r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
 
-     function setFen(ground) {
+     function setFen(ground, spectator) {
        ground.set({
          // fen: 's/9g2/g3g3g3 g1g2g3g4g5 r3b3l3r3 r7r8r9r10r11r12r13 r4 f1f1 g7g9g10g8/r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3'
          //fen: serieFen,
          // fen: pairFen,
          fen: discardFen,
-         withTore: true
+         withTore: true,
+         spectator: spectator
        });
      }
 

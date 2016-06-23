@@ -103,34 +103,34 @@ function computePlan(prev, current) {
   var missings = [], news = [];
   var openMissings = [], openNews = [];
 
+  var i, key, curP, preP;
+  for (i = 0; i < util.allAllowedBoardKeys.length; i++) {
+    key = util.allAllowedBoardKeys[i];
+    curP = current.pieces[key];
+    preP = prev.pieces[key];
+    var topDistance = boardTopDistance(boardBounds, topBounds, key);
+    if (!curP && preP) {
+      missings.push(makePiece(key, preP, topDistance));
+    } else if (curP && !preP) {
+      news.push(makePiece(key, curP, topDistance));
+    }
+  }
+
+  for (i = 0; i < util.miniAllKeys.length; i++) {
+    key = util.miniAllKeys[i];
+    curP = current.opens.layout ? current.opens.layout.layout[key] : null;
+    preP = prev.opens.layout ? prev.opens.layout.layout[key] : null;
+    var openDistance = opensKeyDistance(topBounds, key);
+
+    if (curP && !preP) {
+      openNews.push(makePiece(key, curP, openDistance));
+    } else if (!curP && preP) {
+      openMissings.push(makePiece(key, preP, openDistance));
+    }
+  }
+
   var orig, dest, vector;
-  if (pov === 'down') {
-    var i, key, curP, preP;
-    for (i = 0; i < util.allAllowedBoardKeys.length; i++) {
-      key = util.allAllowedBoardKeys[i];
-      curP = current.pieces[key];
-      preP = prev.pieces[key];
-      var topDistance = boardTopDistance(boardBounds, topBounds, key);
-      if (!curP && preP) {
-        missings.push(makePiece(key, preP, topDistance));
-      } else if (curP && !preP) {
-        news.push(makePiece(key, curP, topDistance));
-      }
-    }
-
-    for (i = 0; i < util.miniAllKeys.length; i++) {
-      key = util.miniAllKeys[i];
-      curP = current.opens.layout ? current.opens.layout.layout[key] : null;
-      preP = prev.opens.layout ? prev.opens.layout.layout[key] : null;
-      var openDistance = opensKeyDistance(topBounds, key);
-
-      if (curP && !preP) {
-        openNews.push(makePiece(key, curP, openDistance));
-      } else if (!curP & preP) {
-        openMissings.push(makePiece(key, preP, openDistance));
-      }
-    }
-
+  if (pov === 'down' && !current.spectator) {
     if (currentAnim.hint === move.drawMiddle && news[0]) {
       key = news[0].key;
       orig = news[0].distance;
@@ -186,13 +186,31 @@ function computePlan(prev, current) {
       vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
       anims[move.drawLeft + drawKey] = [vector, vector, true];
       extra.piece = prev.discards[drawKey];
-    } else if (currentAnim.hint === move.openSeries) {
-      console.log(news, missings);
     } else if (currentAnim.hint === move.leaveTaken) {
       orig = [topPieceWidth * drawPos[0], topPieceHeight * drawPos[1]];
       dest = turnPos;
       vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
       anims[drawKey] = [vector, vector];
+    } else if (currentAnim.hint === move.openSeries) {
+      openNews.forEach(function(newP, i) {
+        dest = turnPos;
+        dest = arrMinus(dest, topOpenDistance);
+        dest = arrMinus(dest, newP.distance);
+        orig = [0, 0];
+        vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+        anims[newP.key] = [vector, vector];
+        scales[newP.key] = [1.75, 1.75];
+      });
+    } else if (currentAnim.hint === move.collectOpen) {
+      openMissings.forEach(function(preP, i) {
+        dest = turnPos;
+        dest = arrMinus(dest, topOpenDistance);
+        dest = arrMinus(dest, preP.distance);
+        orig = [0, 0];
+        vector = [(dest[0] - orig[0]), (dest[1] - orig[1])];
+        anims[preP.key] = [vector, vector, true];
+        extra[preP.key] = preP;
+      });
     }
   }
 

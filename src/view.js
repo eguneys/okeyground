@@ -334,6 +334,14 @@ function renderOpenGroups(ctrl, groups) {
       children.push(renderMiniPiece(ctrl, positions[i], key, piece));
     }
 
+  if (ctrl.data.animation.current.anims) {
+    var animation = ctrl.data.animation.current.anims[key];
+    piece = ctrl.data.animation.current.extra[key];
+    if (animation && piece) {
+      children.push(renderMiniPiece(ctrl, positions[i], key, piece));
+    }
+  }
+
     var miniKlass = util.classSet({
       'drag-over': d.draggable.current.over === key,
       'move-dest': util.containsX(d.openable.dests, key)

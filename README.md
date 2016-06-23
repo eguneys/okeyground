@@ -9,23 +9,21 @@
   - [x] add force animations
   - [x] add open series animation
   - [x] add leave-taken
-  - [ ] add collect open animation
+  - [x] add collect open animation
+  - [ ] add drop open animation
 
-  * spectator
-  - [ ] add draw middle
-  - [ ] add discard
-  - [ ] add leave-taken
-  - [ ] add open-series
-
-  * opponent
-  - [x] add leave-taken
-  - [ ] add open-series
+  * spectator/opponent
+    - [x] add draw middle
+    - [x] add discard
+    - [x] add leave-taken
+    - [x] add open-series
 
   - [x] add leave taken api
   - [ ] draw middle flip animation wait on board
 
 ### BUG
 
+- [ ] allow drag group not left collide itself
 ~~- [ ] fix force vs user move collisions~~ not here
 ~~- [ ] fix group rainbow with fake color collision~~ not a bug
 - [ ] canDropOpens checks for both dop dos
