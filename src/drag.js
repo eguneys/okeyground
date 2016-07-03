@@ -23,6 +23,8 @@ function start(data, e) {
   e.stopPropagation();
   e.preventDefault();
 
+  if (data.viewOnly) return;
+
   originTarget = e.target;
   var previouslySelected = data.selected;
   var position = util.eventPosition(e);

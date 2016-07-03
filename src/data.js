@@ -18,6 +18,7 @@ module.exports = function(cfg) {
       key: null, // key to place on board
       piece: null // piece to draw from middle
     },
+    viewOnly: false, // don't bind events: the user will never be able to move pieces around
     animation: {
       enabled: true,
       duration: 500,

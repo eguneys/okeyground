@@ -477,8 +477,7 @@ function renderContent(ctrl) {
 function dragOrDraw(d, withDrag, withDraw) {
   return function(e) {
     if (util.isRightButton(e)) withDraw(d, e);
-    else
-      withDrag(d, e);
+    else if (!d.viewOnly) withDrag(d, e);
   };
 }
 
@@ -521,7 +520,11 @@ function renderTable(ctrl) {
       class: 'og-table',
       config: function(el, isUpdate, context) {
         if (isUpdate) return;
-        bindEvents(ctrl, el, context);
+
+        if (!ctrl.data.viewOnly) {
+          bindEvents(ctrl, el, context);
+        }
+
         // this function only repaints the board itself
         // it's called when dragging or animating pieces,
         // to prevent the full application embedding okeyground
