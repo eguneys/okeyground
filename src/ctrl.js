@@ -51,6 +51,8 @@ module.exports = function(cfg) {
 
   this.playLeaveTaken = anim(board.playLeaveTaken, this.data);
 
+  this.sortPairs = anim(board.sortPairs, this.data);
+
   this.canLeaveTaken = util.partial(board.canLeaveTaken, this.data);
   this.canCollectOpen = util.partial(board.canCollectOpen, this.data);
   this.canOpenSeries = util.partial(board.canOpenSeries, this.data);

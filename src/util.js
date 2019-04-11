@@ -110,6 +110,35 @@ function key2pos(key) {
   return [key % columns, Math.floor(key / columns)];
 }
 
+function iterator2Key(index) {
+  return encodeKey(index, boardKeyPrefix);
+}
+
+function nextIteratorForGroup(index, group) {
+  function index2pos(index) {
+    var row = Math.floor(index / columns);
+    var column = index % columns;
+    return [column, row];
+  }
+
+  function pos2Index(pos) {
+    return pos[1] * columns + pos[0];
+  }
+
+  var startPos = index2pos(index);
+  var endPos = index2pos(index + group * 2);
+
+  if (startPos[1] !== endPos[1]) {
+    return pos2Index([1, 1]);
+  }
+  // edge case
+  if (startPos[1] === 1 && startPos[0] === 0) {
+    startPos[0] = 1;
+  }
+
+  return pos2Index(startPos);
+}
+
 function topKey2pos(key) {
   return topPosMap[key];
 }
@@ -225,6 +254,8 @@ module.exports = {
   topKey2pos: topKey2pos,
   pos2key: pos2key,
   key2pos: key2pos,
+  iterator2Key: iterator2Key,
+  nextIteratorForGroup: nextIteratorForGroup,
   miniColumns: miniColumns,
   miniRows: miniRows,
   miniAllPos: miniAllPos,

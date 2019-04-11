@@ -22,6 +22,7 @@
       <button onclick="setFen(window.ground1, true)">Set Fen</button>
       <button onclick="forceDraw(window.ground1)">Force Draw</button>
       <button onclick="forceDiscard(window.ground1)">Force Discard</button>
+      <button onclick="sortPairs(window.ground1)">Sort Pairs</button>
     </div>
     <script>
 
@@ -36,10 +37,10 @@
 
      function setFen(ground, spectator) {
        ground.set({
-         // fen: 's/9g2/g3g3g3 g1g2g3g4g5 r3b3l3r3 r7r8r9r10r11r12r13 r4 f1f1 g7g9g10g8/r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3'
-         //fen: serieFen,
-         // fen: pairFen,
-         fen: discardFen,
+         // fen: 's/9g2/g3g3g3 g1g2g3g4g5 r3b3l3r3 r7r8r9r10r11r12r13 r4 f1f1 g7g9g10g8/r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3',
+         // fen: serieFen,
+         fen: pairFen,
+         // fen: discardFen,
          withTore: true,
          spectator: spectator
        });
@@ -124,6 +125,10 @@
        delay(function() {
          ground.apiMove('dd', { piece: 'r10' });
        });
+     }
+
+     function sortPairs(ground) {
+       ground.sortPairs();
      }
 
      function aiMove(ground, side) {
