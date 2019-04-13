@@ -7,6 +7,7 @@ module.exports = function(controller) {
       return board.getPieceGroups(controller.data);
     },
     sortPairs: controller.sortPairs,
+    sortSeries: controller.sortSeries,
     apiMove: controller.apiMove,
     apiDrawMiddleEnd: controller.apiDrawMiddleEnd,
     playOpenSeries: controller.playOpenSeries,

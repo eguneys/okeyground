@@ -23,6 +23,7 @@
       <button onclick="forceDraw(window.ground1)">Force Draw</button>
       <button onclick="forceDiscard(window.ground1)">Force Discard</button>
       <button onclick="sortPairs(window.ground1)">Sort Pairs</button>
+      <button onclick="sortSeries(window.ground1)">Sort Series</button>
     </div>
     <script>
 
@@ -33,14 +34,16 @@
 
      var pairFen = 's/9g13/g2g2 g4g4 g6g6 g8g8 g10g10 g12g12 r4r4 r8//r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
      var serieFen = 's/9g13/g1g2g3g4g5g6 r10g10b10l10 r10r12r13r1 g1//r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
+     var serie2Fen = 's/9g13/g1g3r12g5 r2g10r10 b10r1l10g4 b3r10r13 r11//r10r6r12r11 r5r10r7l4r12 g4g3l4 g6l3 r3g5r4/r1r1 g1g1 r4g3';
      var discardFen = 's/9g13/g1g2g3g4g5g6 r10g10b10l10 r10r12r13r1 g1/r10r11r12 r10g3r12 g4r4l4 g4g3l4/r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
 
      function setFen(ground, spectator) {
        ground.set({
          // fen: 's/9g2/g3g3g3 g1g2g3g4g5 r3b3l3r3 r7r8r9r10r11r12r13 r4 f1f1 g7g9g10g8/r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3',
          // fen: serieFen,
-         fen: pairFen,
+         // fen: pairFen,
          // fen: discardFen,
+         fen: serie2Fen,
          withTore: true,
          spectator: spectator
        });
@@ -129,6 +132,10 @@
 
      function sortPairs(ground) {
        ground.sortPairs();
+     }
+
+     function sortSeries(ground) {
+       ground.sortSeries();
      }
 
      function aiMove(ground, side) {

@@ -30,8 +30,8 @@ gulp.task('prod', ['assets', 'prod-css'], function() {
   return browserify('./src/main.js', {
     standalone: standalone
   }).transform('babelify',
-               { presets: ["es2015"],
-                 plugins: ['add-module-exports'] })
+               { presets: ["@babel/preset-env"],
+                 plugins: [] })
     .bundle()
     .on('error', onError)
     .pipe(source('okeyground.min.js'))
@@ -44,8 +44,8 @@ gulp.task('prod-debug', ['assets', 'prod-css'], function() {
     standalone: standalone,
     debug: true
   }).transform('babelify',
-               { presets: ["es2015"],
-                 plugins: ['add-module-exports'] })
+               { presets: ["@babel/preset-env"],
+                 plugins: [] })
     .bundle()
     .on('error', onError)
     .pipe(source('okeyground.min.js'))
@@ -78,8 +78,8 @@ gulp.task('dev', ['assets', 'css'], function() {
   opts.standalone = standalone;
   var bundleStream = watchify(browserify(sources, opts))
     .transform('babelify',
-               { presets: ["es2015"],
-                 plugins: ['add-module-exports'] })
+               { presets: ["@babel/preset-env"],
+                 plugins: [] })
     .on('update', rebundle)
     .on('log', gutil.log);
 

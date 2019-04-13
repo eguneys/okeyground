@@ -5,35 +5,6 @@ import open from './open';
 
 const { wrapGroup, callUserFunction }  = util;
 
-function sortPairs(data) {
-  var groups = {};
-
-  for (var key in data.pieces) {
-    var piece = data.pieces[key];
-
-    if (!piece) continue;
-
-    if (groups[piece.key]) {
-      groups[piece.key]++;
-    } else {
-      groups[piece.key] = 1;
-    }
-    delete data.pieces[key];
-  }
-
-  var boardIterator = 1;
-  for (var pieceKey in groups) {
-    var amount = groups[pieceKey];
-
-    boardIterator = util.nextIteratorForGroup(boardIterator, amount);
-
-    for (var i = 0; i < amount; i++)
-      data.pieces[util.iterator2Key(boardIterator + i * 2)] = pieces.readPiece(pieceKey).piece;
-
-    boardIterator += amount * 2 + 1;
-  }
-}
-
 function playOpenSeries(data) {
   if (canOpenSeries(data)) {
     var sign = data.middles[util.gosterge];
@@ -521,7 +492,6 @@ module.exports = {
   selectSquare: selectSquare,
   selectTop: selectTop,
   setSelected: setSelected,
-  sortPairs: sortPairs,
   canOpenSeries: canOpenSeries,
   canOpenPairs: canOpenPairs,
   canLeaveTaken: canLeaveTaken,

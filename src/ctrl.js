@@ -1,5 +1,6 @@
 import table from './table';
 import board from './board';
+import sorter from './sorter';
 import data from './data';
 import configure from './configure';
 import util from './util';
@@ -51,7 +52,9 @@ module.exports = function(cfg) {
 
   this.playLeaveTaken = anim(board.playLeaveTaken, this.data);
 
-  this.sortPairs = anim(board.sortPairs, this.data);
+  this.sortPairs = anim(sorter.sortPairs, this.data);
+
+  this.sortSeries = anim(sorter.sortSeries, this.data);
 
   this.canLeaveTaken = util.partial(board.canLeaveTaken, this.data);
   this.canCollectOpen = util.partial(board.canCollectOpen, this.data);
