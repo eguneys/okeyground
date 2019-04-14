@@ -32,6 +32,13 @@
        setTimeout(f, d);
      }
 
+     function doAfter(f, callback) {
+       f();
+       setTimeout(function() {
+         if (callback) callback();
+       }, 1000);
+     }
+
      var pairFen = 's/9g13/g2g2 g4g4 g6g6 g8g8 g10g10 g12g12 r4r4 r8//r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
      var serieFen = 's/9g13/g1g2g3g4g5g6 r10g10b10l10 r10r12r13r1 g1//r10r11r12 r10g3r12 g4r4l4 g4g3l4 l3b3r3 g6g5g4/r1r1 g1g1 r4g3';
      var serie2Fen = 's/9g13/g1g3r12g5 r2g10r10 b10r1l10g4 b3r10r13 r11//r10r6r12r11 r5r10r7l4r12 g4g3l4 g6l3 r3g5r4/r1r1 g1g1 r4g3';
@@ -138,13 +145,17 @@
        ground.sortSeries();
      }
 
-     function aiMove(ground, side) {
+     function aiMove(ground, side, callback) {
        console.log('draw middle', side);
-       setTurn(ground, side);
+       // setTurn(ground, side);
        ground.apiMove('dm');
        delay(function() {
          console.log('discard ', side);
          ground.apiMove('dd', { piece: 'l10' });
+         setTurn(ground, nextSide(side));
+         setTimeout(function() {
+           if (callback) callback();
+         }, 1000);
        });
      }
 
@@ -164,6 +175,13 @@
          console.log('discard ', side);
          ground.apiMove('dd', { piece: 'l10' });
        }, 3500);
+     }
+
+     function nextSide(side) {
+       var sides = ['east', 'north', 'west', 'south'];
+       var index = sides.indexOf(side);
+       index = (index + 1) % 4;
+       return sides[index];
      }
 
      (function() {
@@ -194,17 +212,21 @@
        window.ground1 = ground;
 
        var onMove = function() {
-         delay(aiMoveLeft.bind(null, ground, 'north'), 1000);
-         delay(aiMove.bind(null, ground, 'west'), 6000);
-         delay(aiMoveLeft.bind(null, ground, 'south'), 12000);
+         setTurn(ground, nextSide('east'));
+         aiMove(ground, 'north', function() {
+           aiMove(ground, 'west', function() {
+             aiMove(ground, 'south');
+           });
+         });
        };
-       var onMoveLeft = function() {
-         console.log('move left');
-         setTurn(ground, 'north');
-         delay(aiMoveLeft.bind(null, ground, 'west'), 1000);
-         delay(aiMoveLeft.bind(null, ground, 'south'), 4000);
-         delay(aiMoveLeft.bind(null, ground, 'east'), 8000);
-       };
+       /* var onMoveLeft = function() {
+        *   setTurn(ground, 'north');
+        *   doAfter(aiMoveLeft.bind(null, ground, 'west'), function() {
+        *     doAfter(aiMoveLeft.bind(null, ground, 'south'), function() {
+        *       doAfter(aiMoveLeft.bind(null, ground, 'east'));             
+        *     });
+        *   });
+        * }; */
        //onMove();
        //delay(onMoveLeft.bind(null), 12000);
 
