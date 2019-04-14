@@ -35,6 +35,7 @@ gulp.task('prod', ['assets', 'prod-css'], function() {
     .bundle()
     .on('error', onError)
     .pipe(source('okeyground.min.js'))
+    // .pipe(streamify(uglify({ compress: false, output: { beautify: true }})))
     .pipe(streamify(uglify()))
     .pipe(gulp.dest(destination));
 });

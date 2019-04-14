@@ -15,6 +15,8 @@ module.exports = function(data, config) {
     if (data.animationHint) {
       data.animation.current.hint = data.animationHint;
       delete data.animationHint;
+    } else {
+      data.animation.current.hint = '';
     }
 
     var fen = pieces.read(data.fen);
@@ -23,5 +25,7 @@ module.exports = function(data, config) {
     data.opens = fen.opens;
     data.middles = fen.middles;
     delete data.fen;
+  } else {
+    data.animation.current.hint = '';
   }
 };
